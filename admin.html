@@ -26,7 +26,7 @@
                 </button>
             </form>
             <div style="margin-top: 18px; font-size: 12.5px; color: #94a3b8;">
-                ডিফল্ট মাস্টার পিন: <strong>2424</strong>
+                মাস্টার অ্যাডমিন পিন: <strong>2424</strong> | রিপোর্টার ডেমো পিন: <strong>1234</strong>
             </div>
         </div>
     </div>
@@ -165,9 +165,52 @@
                                 </select>
                             </div>
 
-                            <div class="control-group">
-                                <label class="control-label">প্রতিবেদকের নাম</label>
-                                <input type="text" id="newsAuthor" class="control-input" value="রবিউল ইসলাম (প্রধান প্রতিবেদক)">
+                            <div class="control-group" id="reporterControlGroup">
+                                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                                    <label class="control-label" style="margin-bottom:0;">
+                                        <i class="fa-solid fa-user-pen text-primary"></i> প্রতিবেদকের নাম / বাইলাইন (Byline) *
+                                    </label>
+                                    <span id="reporterRoleBadge" style="display:none; font-size:11px; padding:2px 8px; border-radius:12px; font-weight:700;"></span>
+                                </div>
+
+                                <!-- Admin / Sub-Editor Selection Dropdown -->
+                                <div id="authorSelectorRow" style="margin-bottom: 8px;">
+                                    <select id="newsAuthorSelect" class="control-select" onchange="handleAuthorSelectChange(this.value)" style="font-weight: 600;">
+                                        <optgroup label="🏢 আওয়ার টাইমস২৪ অফিসিয়াল ডেস্ক (Direct Desk)">
+                                            <option value="desk_ourtimes">আওয়ার টাইমস২৪ ডেস্ক</option>
+                                            <option value="desk_online">অনলাইন ডেস্ক</option>
+                                            <option value="desk_staff">স্টাফ রিপোর্টার</option>
+                                            <option value="desk_special">বিশেষ প্রতিনিধি</option>
+                                            <option value="desk_own">নিজস্ব প্রতিবেদক</option>
+                                            <option value="desk_district">জেলা প্রতিনিধি</option>
+                                            <option value="desk_sports">খেলাধুলা ডেস্ক</option>
+                                            <option value="desk_biz">বাণিজ্য ডেস্ক</option>
+                                            <option value="desk_intl">আন্তর্জাতিক ডেস্ক</option>
+                                        </optgroup>
+                                        <optgroup label="👥 নিবন্ধিত সাংবাদিক ও প্রতিনিধি (User Accounts)" id="optgroupRegisteredUsers">
+                                            <!-- Dynamically populated from UserStore -->
+                                        </optgroup>
+                                        <optgroup label="✍️ কাস্টম নাম">
+                                            <option value="custom">অন্যান্য / কাস্টম নাম লিখুন...</option>
+                                        </optgroup>
+                                    </select>
+                                </div>
+
+                                <!-- Reporter Name Input & Avatar Preview -->
+                                <div style="position: relative; display: flex; align-items: center;">
+                                    <input type="text" id="newsAuthor" class="control-input" placeholder="প্রতিবেদকের নাম..." required style="padding-right: 42px;">
+                                    <div id="authorAvatarPreview" style="position: absolute; right: 10px; display: none; align-items: center;" title="প্রতিবেদকের ছবি">
+                                        <img id="authorAvatarPreviewImg" src="" style="width: 26px; height: 26px; border-radius: 50%; object-fit: cover; border: 1px solid var(--border-color);" alt="">
+                                    </div>
+                                </div>
+
+                                <!-- Hidden fields for avatar and userId -->
+                                <input type="hidden" id="newsAuthorAvatar" value="">
+                                <input type="hidden" id="newsAuthorId" value="">
+
+                                <div id="authorHelpText" style="font-size: 12px; color: var(--text-muted); margin-top: 5px;">
+                                    সংবাদের নিচে এই নামটি বাইলাইন হিসেবে প্রকাশিত হবে।
+                                </div>
                             </div>
                         </div>
 
@@ -580,6 +623,32 @@
             </div>
             <form id="userForm" onsubmit="handleUserSubmit(event)">
                 <input type="hidden" id="editUserId" value="">
+
+                <!-- User Avatar / Profile Photo -->
+                <div class="control-group" style="margin-bottom: 16px;">
+                    <label class="control-label">প্রোফাইল ছবি / অবতার (Profile Photo)</label>
+                    <div style="display: flex; align-items: center; gap: 14px; background: var(--bg-subtle); padding: 12px; border-radius: 8px; border: 1px solid var(--border-color);">
+                        <div id="editUserAvatarPreviewBox" style="width: 56px; height: 56px; border-radius: 50%; background: var(--bg-surface); border: 2px dashed var(--border-color); display: flex; align-items: center; justify-content: center; overflow: hidden; cursor: pointer; flex-shrink: 0;" onclick="document.getElementById('editUserAvatarFile').click()" title="ছবি নির্বাচন করতে ক্লিক করুন">
+                            <i class="fa-solid fa-camera" id="editUserAvatarIcon" style="color: var(--text-muted); font-size: 20px;"></i>
+                            <img id="editUserAvatarPreviewImg" src="" style="width: 100%; height: 100%; object-fit: cover; display: none;" alt="">
+                        </div>
+                        <div style="flex: 1;">
+                            <input type="file" id="editUserAvatarFile" accept="image/*" style="display: none;" onchange="handleUserAvatarFileSelect(event)">
+                            <input type="hidden" id="editUserAvatarData" value="">
+                            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <button type="button" class="tool-btn" style="padding: 6px 12px; font-size: 12px; font-weight: 700;" onclick="document.getElementById('editUserAvatarFile').click()">
+                                    <i class="fa-solid fa-cloud-arrow-up"></i> ছবি নির্বাচন
+                                </button>
+                                <button type="button" class="tool-btn" id="btnRemoveUserAvatar" style="padding: 6px 12px; font-size: 12px; color: #dc2626; display: none;" onclick="removeUserAvatar()">
+                                    <i class="fa-solid fa-trash"></i> মুছুন
+                                </button>
+                            </div>
+                            <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
+                                জেপিজি, পিএনজি বা সেলফি ছবি (স্বয়ংক্রিয়ভাবে অপটিমাইজ হবে)
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="control-group" style="margin-bottom: 14px;">
                     <label class="control-label">ইউজারের পূর্ণ নাম *</label>

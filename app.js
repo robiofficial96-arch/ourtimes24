@@ -492,8 +492,25 @@ function renderSingleArticle() {
 
     if (elCat) elCat.textContent = article.category;
     if (elHead) elHead.textContent = article.title;
-    if (elSub) elSub.textContent = article.subtitle || '';
-    if (elAuth) elAuth.textContent = article.author || 'স্টাফ রিপোর্টার';
+    if (elAuth) elAuth.textContent = article.author || 'আওয়ার টাইমস২৪ ডেস্ক';
+
+    // Dynamic Author Avatar / Profile Photo
+    const elAvatar = document.getElementById('artAuthorAvatarContainer');
+    if (elAvatar) {
+        if (article.authorAvatar && article.authorAvatar.trim()) {
+            elAvatar.innerHTML = `<img src="${article.authorAvatar}" alt="${escapeHtml(article.author || '')}" style="width:100%; height:100%; object-fit:cover; border-radius:50%;">`;
+            elAvatar.style.background = 'transparent';
+            elAvatar.style.border = '1px solid var(--border-color)';
+        } else if (article.author && (article.author.includes('ডেস্ক') || article.author.includes('Ourtimes') || article.author.includes('আওয়ার টাইমস'))) {
+            elAvatar.innerHTML = `<i class="fa-solid fa-newspaper" style="color:var(--primary); font-size:18px;"></i>`;
+            elAvatar.style.background = 'rgba(192, 6, 18, 0.08)';
+            elAvatar.style.border = '1px solid rgba(192, 6, 18, 0.2)';
+        } else {
+            elAvatar.innerHTML = `<i class="fa-solid fa-user-pen" style="color:var(--primary); font-size:18px;"></i>`;
+            elAvatar.style.background = 'var(--bg-subtle)';
+            elAvatar.style.border = '1px solid var(--border-color)';
+        }
+    }
     if (elDate) elDate.textContent = `${article.date || 'আজ'}`;
     if (elImg) elImg.src = article.image;
     if (elCap) elCap.textContent = `${article.title} — ছবি: Ourtimes24`;

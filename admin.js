@@ -177,6 +177,141 @@ function switchAdminTab(tabId) {
 }
 
 // ==========================================
+// 2.5 AUTHOR & BYLINE CONTROLLER (DESK / USER / CUSTOM)
+// ==========================================
+
+const DESK_NAMES = {
+    'desk_ourtimes': 'আওয়ার টাইমস২৪ ডেস্ক',
+    'desk_online': 'অনলাইন ডেস্ক',
+    'desk_staff': 'স্টাফ রিপোর্টার',
+    'desk_special': 'বিশেষ প্রতিনিধি',
+    'desk_own': 'নিজস্ব প্রতিবেদক',
+    'desk_district': 'জেলা প্রতিনিধি',
+    'desk_sports': 'খেলাধুলা ডেস্ক',
+    'desk_biz': 'বাণিজ্য ডেস্ক',
+    'desk_intl': 'আন্তর্জাতিক ডেস্ক'
+};
+
+function populateAuthorOptions() {
+    const optgroupUsers = document.getElementById('optgroupRegisteredUsers');
+    if (!optgroupUsers) return;
+
+    const users = UserStore.getAll().filter(u => u.status === 'active');
+    optgroupUsers.innerHTML = users.map(u => `
+        <option value="user_${u.id}">${u.name} (${u.role})</option>
+    `).join('');
+}
+
+function handleAuthorSelectChange(val) {
+    const authorInput = document.getElementById('newsAuthor');
+    const avatarInput = document.getElementById('newsAuthorAvatar');
+    const idInput = document.getElementById('newsAuthorId');
+    if (!authorInput) return;
+
+    if (val.startsWith('desk_')) {
+        const deskName = DESK_NAMES[val] || 'আওয়ার টাইমস২৪ ডেস্ক';
+        authorInput.value = deskName;
+        if (avatarInput) avatarInput.value = '';
+        if (idInput) idInput.value = '';
+        authorInput.readOnly = false;
+        updateAuthorAvatarPreview('');
+    } else if (val.startsWith('user_')) {
+        const userId = val.replace('user_', '');
+        const u = UserStore.getById(userId);
+        if (u) {
+            authorInput.value = u.name;
+            if (avatarInput) avatarInput.value = u.avatar || '';
+            if (idInput) idInput.value = u.id;
+            authorInput.readOnly = false;
+            updateAuthorAvatarPreview(u.avatar || '');
+        }
+    } else if (val === 'custom') {
+        if (avatarInput) avatarInput.value = '';
+        if (idInput) idInput.value = '';
+        authorInput.readOnly = false;
+        updateAuthorAvatarPreview('');
+        authorInput.value = '';
+        authorInput.focus();
+    }
+}
+
+function updateAuthorAvatarPreview(avatarUrl) {
+    const previewContainer = document.getElementById('authorAvatarPreview');
+    const previewImg = document.getElementById('authorAvatarPreviewImg');
+    if (previewContainer && previewImg) {
+        if (avatarUrl) {
+            previewImg.src = avatarUrl;
+            previewContainer.style.display = 'flex';
+        } else {
+            previewImg.src = '';
+            previewContainer.style.display = 'none';
+        }
+    }
+}
+
+function applyAuthorBylineRules(user) {
+    if (!user) user = UserStore.getCurrentUser();
+    if (!user) return;
+
+    populateAuthorOptions();
+
+    const selectorRow = document.getElementById('authorSelectorRow');
+    const authorInput = document.getElementById('newsAuthor');
+    const avatarInput = document.getElementById('newsAuthorAvatar');
+    const idInput = document.getElementById('newsAuthorId');
+    const badge = document.getElementById('reporterRoleBadge');
+    const helpText = document.getElementById('authorHelpText');
+    const authorSelect = document.getElementById('newsAuthorSelect');
+
+    const role = user.roleKey || 'reporter';
+
+    if (role === 'reporter' || role === 'correspondent') {
+        // Normal user / reporter: Locked to their own verified account!
+        if (selectorRow) selectorRow.style.display = 'none';
+        if (authorInput) {
+            authorInput.value = user.name;
+            authorInput.readOnly = true;
+            authorInput.style.backgroundColor = 'var(--bg-subtle)';
+            authorInput.style.cursor = 'not-allowed';
+        }
+        if (avatarInput) avatarInput.value = user.avatar || '';
+        if (idInput) idInput.value = user.id;
+        if (badge) {
+            badge.style.display = 'inline-block';
+            badge.style.background = '#fef2f2';
+            badge.style.color = '#dc2626';
+            badge.innerHTML = `<i class="fa-solid fa-lock"></i> একাউন্ট লকড (${user.role})`;
+        }
+        if (helpText) {
+            helpText.innerHTML = `🔒 আপনার প্রোফাইল (<strong>${user.name}</strong>) থেকে সংবাদটি সরাসরি আপনার নামে প্রকাশিত হবে। নাম পরিবর্তন করার অনুমতি নেই।`;
+        }
+        updateAuthorAvatarPreview(user.avatar || '');
+    } else {
+        // Admin or Subeditor: Full freedom!
+        if (selectorRow) selectorRow.style.display = 'block';
+        if (authorInput) {
+            authorInput.readOnly = false;
+            authorInput.style.backgroundColor = 'var(--bg-surface)';
+            authorInput.style.cursor = 'text';
+            // Default to desk if empty
+            if (!authorInput.value || authorInput.value === 'নিজস্ব প্রতিবেদক') {
+                authorInput.value = 'আওয়ার টাইমস২৪ ডেস্ক';
+                if (authorSelect) authorSelect.value = 'desk_ourtimes';
+            }
+        }
+        if (badge) {
+            badge.style.display = 'inline-block';
+            badge.style.background = '#e0f2fe';
+            badge.style.color = '#0284c7';
+            badge.innerHTML = `<i class="fa-solid fa-unlock"></i> অ্যাডমিন কন্ট্রোল (ডেস্ক বা যেকোনো ইউজার)`;
+        }
+        if (helpText) {
+            helpText.innerHTML = `অ্যাডমিন হিসেবে আপনি সরাসরি আওয়ার টাইমস২৪ অফিসিয়াল ডেস্ক, যেকোনো নিবন্ধিত সাংবাদিক বা কাস্টম নাম দিতে পারেন।`;
+        }
+    }
+}
+
+// ==========================================
 // 3. NEWS SUBMIT & MANAGEMENT
 // ==========================================
 
@@ -188,7 +323,9 @@ function handleNewsSubmit(e) {
     const subtitle = document.getElementById('newsSubtitle').value.trim();
     const category = document.getElementById('newsCategory').value;
     const district = document.getElementById('newsDistrict').value || 'ঢাকা';
-    const author = document.getElementById('newsAuthor').value || 'নিজস্ব প্রতিবেদক';
+    const author = document.getElementById('newsAuthor').value.trim() || 'নিজস্ব প্রতিবেদক';
+    let authorAvatar = document.getElementById('newsAuthorAvatar')?.value || '';
+    const authorId = document.getElementById('newsAuthorId')?.value || '';
     const image = document.getElementById('newsImage').value.trim();
     const excerpt = document.getElementById('newsExcerpt').value.trim() || (title + ' - বিস্তারিত পড়ুন।');
     const content = document.getElementById('newsContent').value.trim() || `<p>${excerpt}</p>`;
@@ -198,6 +335,14 @@ function handleNewsSubmit(e) {
     if (!image) {
         alert('অনুগ্রহ করে সংবাদের একটি ফিচার্ড ছবি আপলোড করুন বা ছবির URL দিন!');
         return;
+    }
+
+    // Auto-match avatar from UserStore if authorId is provided or matches name
+    if (!authorAvatar) {
+        const matched = UserStore.getAll().find(u => (authorId && u.id === authorId) || u.name === author);
+        if (matched && matched.avatar) {
+            authorAvatar = matched.avatar;
+        }
     }
 
     const catSlugs = {
@@ -220,7 +365,8 @@ function handleNewsSubmit(e) {
         categorySlug: catSlugs[category] || 'national',
         district,
         author,
-        authorAvatar: '',
+        authorAvatar,
+        authorId,
         image,
         excerpt,
         content: content.startsWith('<p>') ? content : `<p>${content}</p>`,
@@ -460,6 +606,40 @@ function editNews(id) {
     document.getElementById('newsDistrict').value = item.district || '';
     document.getElementById('newsAuthor').value = item.author || '';
     
+    if (document.getElementById('newsAuthorAvatar')) {
+        document.getElementById('newsAuthorAvatar').value = item.authorAvatar || '';
+    }
+    if (document.getElementById('newsAuthorId')) {
+        document.getElementById('newsAuthorId').value = item.authorId || '';
+    }
+    updateAuthorAvatarPreview(item.authorAvatar || '');
+
+    // Sync select dropdown for admin/subeditor
+    const currentUser = UserStore.getCurrentUser();
+    if (currentUser && currentUser.roleKey !== 'reporter' && currentUser.roleKey !== 'correspondent') {
+        const select = document.getElementById('newsAuthorSelect');
+        if (select) {
+            // Check if desk
+            const deskEntry = Object.entries(DESK_NAMES).find(([k, v]) => v === item.author);
+            if (deskEntry) {
+                select.value = deskEntry[0];
+            } else if (item.authorId) {
+                select.value = `user_${item.authorId}`;
+            } else {
+                // Check user by name
+                const userMatch = UserStore.getAll().find(u => u.name === item.author);
+                if (userMatch) {
+                    select.value = `user_${userMatch.id}`;
+                } else {
+                    select.value = 'custom';
+                }
+            }
+        }
+    } else {
+        // Normal reporter editing: keep locked to reporter profile
+        applyAuthorBylineRules(currentUser);
+    }
+
     // Set image and preview
     setFeaturedImage(item.image);
 
@@ -501,6 +681,9 @@ function resetNewsForm() {
     
     const formTitle = document.getElementById('formTitle');
     if (formTitle) formTitle.textContent = 'নতুন সংবাদ লিখুন';
+
+    const currentUser = UserStore.getCurrentUser();
+    applyAuthorBylineRules(currentUser);
 }
 
 // ==========================================
@@ -732,8 +915,22 @@ const DEFAULT_USERS = [
         roleKey: 'admin',
         pin: '2424',
         phone: '+8801711152711',
+        avatar: '',
         status: 'active',
         isMaster: true,
+        createdAt: '২০২৬-০১-০১'
+    },
+    {
+        id: 'usr-reporter',
+        name: 'রবিউল ইসলাম',
+        username: 'robi',
+        role: 'স্টাফ রিপোর্টার',
+        roleKey: 'reporter',
+        pin: '1234',
+        phone: '+8801812345678',
+        avatar: '',
+        status: 'active',
+        isMaster: false,
         createdAt: '২০২৬-০১-০১'
     }
 ];
@@ -747,6 +944,10 @@ class UserStore {
                 if (Array.isArray(parsed) && parsed.length > 0) {
                     // Purge legacy demo users
                     parsed = parsed.filter(u => u.id !== 'usr-2' && u.id !== 'usr-3');
+                    // Ensure usr-reporter exists so demo PIN 1234 works right away
+                    if (!parsed.some(u => u.id === 'usr-reporter')) {
+                        parsed.push(DEFAULT_USERS[1]);
+                    }
                     if (parsed.length > 0) return parsed;
                 }
             }
@@ -803,6 +1004,78 @@ if (typeof window !== 'undefined') {
     window.UserStore = UserStore;
 }
 
+// User Avatar Upload Helpers
+function handleUserAvatarFileSelect(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+        alert('অনুগ্রহ করে শুধুমাত্র ছবি ফাইল (JPG, PNG, WebP) নির্বাচন করুন!');
+        return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+        const img = new Image();
+        img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const maxDim = 256;
+            let width = img.width;
+            let height = img.height;
+
+            if (width > height) {
+                if (width > maxDim) {
+                    height = Math.round((height * maxDim) / width);
+                    width = maxDim;
+                }
+            } else {
+                if (height > maxDim) {
+                    width = Math.round((width * maxDim) / height);
+                    height = maxDim;
+                }
+            }
+
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+
+            const compressedData = canvas.toDataURL('image/jpeg', 0.82);
+            setUserModalAvatar(compressedData);
+        };
+        img.src = event.target.result;
+    };
+    reader.readAsDataURL(file);
+}
+
+function setUserModalAvatar(dataUrl) {
+    const dataInput = document.getElementById('editUserAvatarData');
+    const previewImg = document.getElementById('editUserAvatarPreviewImg');
+    const icon = document.getElementById('editUserAvatarIcon');
+    const btnRemove = document.getElementById('btnRemoveUserAvatar');
+
+    if (dataInput) dataInput.value = dataUrl || '';
+    if (previewImg && icon) {
+        if (dataUrl) {
+            previewImg.src = dataUrl;
+            previewImg.style.display = 'block';
+            icon.style.display = 'none';
+            if (btnRemove) btnRemove.style.display = 'inline-flex';
+        } else {
+            previewImg.src = '';
+            previewImg.style.display = 'none';
+            icon.style.display = 'block';
+            if (btnRemove) btnRemove.style.display = 'none';
+        }
+    }
+}
+
+function removeUserAvatar() {
+    setUserModalAvatar('');
+    const fileInput = document.getElementById('editUserAvatarFile');
+    if (fileInput) fileInput.value = '';
+}
+
 let userPinVisibility = {};
 
 function renderUserList() {
@@ -843,8 +1116,8 @@ function renderUserList() {
                         <tr>
                             <td>
                                 <div style="display: flex; align-items: center; gap: 10px;">
-                                    <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--bg-surface); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--primary);">
-                                        ${u.name.charAt(0)}
+                                    <div class="admin-user-avatar-circle" style="width: 36px; height: 36px; border-radius: 50%; background: var(--bg-surface); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--primary); overflow: hidden; flex-shrink: 0;">
+                                        ${u.avatar ? `<img src="${u.avatar}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` : u.name.charAt(0)}
                                     </div>
                                     <div>
                                         <div style="font-weight: 700;">${u.name}</div>
@@ -904,8 +1177,8 @@ function renderUserList() {
                     <div class="user-item-mobile">
                         <div class="user-mobile-top">
                             <div style="display: flex; gap: 10px; align-items: center;">
-                                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-surface); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--primary); font-size: 16px;">
-                                    ${u.name.charAt(0)}
+                                <div class="admin-user-avatar-circle" style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-surface); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--primary); font-size: 16px; overflow: hidden; flex-shrink: 0;">
+                                    ${u.avatar ? `<img src="${u.avatar}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">` : u.name.charAt(0)}
                                 </div>
                                 <div>
                                     <div style="font-weight: 800; font-size: 15px;">${u.name}</div>
@@ -987,12 +1260,14 @@ function openUserModal(userId = null) {
         document.getElementById('editUserPhone').value = u.phone || '';
         document.getElementById('editUserPin').value = u.pin || '';
         document.getElementById('editUserStatus').value = u.status || 'active';
+        setUserModalAvatar(u.avatar || '');
     } else {
         if (modalTitle) modalTitle.textContent = 'নতুন ইউজার / প্রতিনিধি যোগ করুন';
         if (form) form.reset();
         document.getElementById('editUserId').value = '';
         document.getElementById('editUserRole').value = 'reporter';
         document.getElementById('editUserStatus').value = 'active';
+        setUserModalAvatar('');
     }
 
     updateRolePermissionHint();
@@ -1013,6 +1288,7 @@ function handleUserSubmit(e) {
     const phone = document.getElementById('editUserPhone').value.trim();
     const pin = document.getElementById('editUserPin').value.trim();
     const status = document.getElementById('editUserStatus').value;
+    const avatar = document.getElementById('editUserAvatarData')?.value || '';
 
     const roleMap = {
         'admin': 'প্রধান সম্পাদক / অ্যাডমিন',
@@ -1042,15 +1318,24 @@ function handleUserSubmit(e) {
         roleKey,
         phone,
         pin,
+        avatar: avatar || (existingUser ? existingUser.avatar || '' : ''),
         status,
         isMaster,
         createdAt: existingUser ? existingUser.createdAt : new Date().toISOString().split('T')[0]
     };
 
     UserStore.save(userData);
+
+    // If currently logged-in user is updated, sync session
+    const currentUser = UserStore.getCurrentUser();
+    if (currentUser && currentUser.id === id) {
+        UserStore.setCurrentUser(userData);
+    }
+
     closeUserModal();
     renderUserList();
     updateCurrentUserUI();
+    populateAuthorOptions();
     alert('✅ ইউজার তথ্য সফলভাবে সংরক্ষিত হয়েছে!');
 }
 
@@ -1119,7 +1404,7 @@ function updateCurrentUserUI() {
 
     const nameEl = document.getElementById('adminCurrentUserName');
     const roleEl = document.getElementById('adminCurrentUserRole');
-    const iconEl = document.getElementById('adminCurrentUserIcon');
+    const badgeEl = document.getElementById('adminCurrentUserBadge');
     
     if (nameEl) nameEl.textContent = user.name;
     if (roleEl) {
@@ -1132,24 +1417,26 @@ function updateCurrentUserUI() {
             roleEl.style.background = '#16a34a';
         }
     }
-    if (iconEl) {
-        if (user.roleKey === 'admin') {
-            iconEl.className = 'fa-solid fa-user-shield';
-        } else if (user.roleKey === 'subeditor') {
-            iconEl.className = 'fa-solid fa-pen-nib';
-        } else {
-            iconEl.className = 'fa-solid fa-feather-pointed';
+
+    if (badgeEl) {
+        const avatarCircle = badgeEl.querySelector('.admin-user-avatar-circle');
+        if (avatarCircle) {
+            if (user.avatar) {
+                avatarCircle.innerHTML = `<img src="${user.avatar}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">`;
+            } else {
+                let iconClass = 'fa-solid fa-feather-pointed';
+                if (user.roleKey === 'admin') iconClass = 'fa-solid fa-user-shield';
+                else if (user.roleKey === 'subeditor') iconClass = 'fa-solid fa-pen-nib';
+                avatarCircle.innerHTML = `<i class="${iconClass}" id="adminCurrentUserIcon"></i>`;
+            }
         }
     }
 
     // Apply strict tab permissions
     applyUserPermissions(user);
 
-    // Auto-fill author in news form if empty or default
-    const authorInput = document.getElementById('newsAuthor');
-    if (authorInput && (!authorInput.value || authorInput.value === 'নিজস্ব প্রতিবেদক')) {
-        authorInput.value = user.name;
-    }
+    // Apply author/byline rules for this user
+    applyAuthorBylineRules(user);
 }
 
 function handlePinSubmit(e) {
