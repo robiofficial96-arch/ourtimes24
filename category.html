@@ -139,7 +139,7 @@
             <div class="search-input-wrapper">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" id="liveSearchInput" placeholder="সংবাদ অনুসন্ধান করুন..." oninput="handleLiveSearch(this.value)">
-                <button class="search-close-btn" onclick="closeSearchModal()">✕</button>
+                <button class="search-close-btn" onclick="closeSearchModal()" aria-label="বন্ধ করুন"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="search-results-list" id="liveSearchResults"></div>
         </div>
@@ -150,7 +150,7 @@
     <div class="offcanvas-drawer" id="offcanvasDrawer">
         <div class="drawer-header">
             <div class="logo-bangla" style="font-size: 24px;">আওয়ার টাইমস<span>২৪</span></div>
-            <button class="search-close-btn" onclick="closeOffcanvasMenu()">✕</button>
+            <button class="search-close-btn" onclick="closeOffcanvasMenu()" aria-label="বন্ধ করুন"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <ul class="drawer-nav-list">
             <li><a href="index.html" class="drawer-nav-link"><i class="fa-solid fa-house"></i> প্রচ্ছদ</a></li>

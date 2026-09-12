@@ -100,7 +100,7 @@ function renderEpaperPage(pageNum) {
             <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; border-top: 2px solid #111827; padding-top: 14px; margin-top: 18px;">
                 ${bottomItems.map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head">📌 ${escapeHtml(item.title)}</h3>
+                        <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-thumbtack" style="font-size: 13px; color: var(--primary); margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
                         <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 100)}</p>
                     </div>
                 `).join('')}
@@ -118,34 +118,22 @@ function renderEpaperPage(pageNum) {
                 <span>OURTIMES24 OPINION</span>
             </div>
 
-            <div style="display:grid; grid-template-columns: 1.8fr 1.2fr; gap:20px;">
+            <div style="display:grid; grid-template-columns: 2fr 1.2fr; gap:20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
                 
-                <!-- Main Editorial -->
                 <div class="epaper-story-block" onclick="openNewsClip('${editLead.id}')">
-                    <h1 class="epaper-story-headline epaper-lead-head">সম্পাদকীয়: ${escapeHtml(editLead.title)}</h1>
-                    <div style="font-style:italic; font-weight:700; color:#4b5563; margin-bottom:10px; font-size:14px;">${escapeHtml(editLead.subtitle || 'বস্তুনিষ্ঠ সাংবাদিকতায় সত্যের অনুসন্ধান')}</div>
-                    ${editLead.image && editLead.image !== 'logo.png' ? `<img src="${editLead.image}" style="width:100%; height:180px; object-fit:cover; margin-bottom:10px; border-radius:3px;" alt="">` : ''}
-                    <p class="epaper-story-body">
-                        ${truncateText(editLead.excerpt || editLead.content, 220)}
+                    <div style="font-size:13px; font-weight:800; color:#b91c1c; margin-bottom:4px; text-transform:uppercase;">[প্রধান সম্পাদকীয়]</div>
+                    <h2 class="epaper-story-headline epaper-lead-head" style="font-size: 26px;">${escapeHtml(editLead.title)}</h2>
+                    <p class="epaper-story-body" style="font-size:14.5px; line-height:1.7;">
+                        ${truncateText(editLead.content || editLead.excerpt, 480)}
                     </p>
                 </div>
 
-                <!-- Editor's Column -->
-                <div style="display:flex; flex-direction:column; gap:12px;">
-                    <div class="epaper-story-block" style="background:#fef2f2; border-left:3px solid #b91c1c;" onclick="openNewsClip('${editSub.id}')">
-                        <h2 class="epaper-story-headline epaper-sub-head">${escapeHtml(editSub.title)}</h2>
-                        <div style="font-weight:700; color:#b91c1c; font-size:13px; margin-bottom:6px;">— সৈয়দ হাফিজ মনির (সম্পাদক)</div>
-                        <p class="epaper-story-body">
-                            ${truncateText(editSub.excerpt || editSub.content, 140)}
-                        </p>
-                    </div>
-
-                    ${allNews[13] ? `
-                    <div class="epaper-story-block" onclick="openNewsClip('${allNews[13].id}')">
-                        <h3 class="epaper-story-headline epaper-col-head">${escapeHtml(allNews[13].title)}</h3>
-                        <p class="epaper-story-body">${truncateText(allNews[13].excerpt || allNews[13].content, 110)}</p>
-                    </div>
-                    ` : ''}
+                <div class="epaper-story-block" style="border-left: 1px solid #e2e8f0; padding-left: 16px;" onclick="openNewsClip('${editSub.id}')">
+                    <div style="font-size:12px; font-weight:800; color:#64748b; margin-bottom:4px;">[বিশেষ সম্পাদকীয় কলাম]</div>
+                    <h3 class="epaper-story-headline epaper-sub-head">${escapeHtml(editSub.title)}</h3>
+                    <p class="epaper-story-body">
+                        ${truncateText(editSub.content || editSub.excerpt, 260)}
+                    </p>
                 </div>
 
             </div>
@@ -154,7 +142,7 @@ function renderEpaperPage(pageNum) {
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; border-top:1px dashed #cbd5e1; padding-top:14px; margin-top:18px;">
                 ${opinions.map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head">🖋️ ${escapeHtml(item.title)}</h3>
+                        <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-pen-fancy" style="font-size: 13px; color: #b91c1c; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
                         <div style="font-size:12px; color:#64748b; font-weight:700; margin-bottom:4px;">${escapeHtml(item.author || 'আমাদের সময়২৪ ডেস্ক')}</div>
                         <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 95)}</p>
                     </div>
@@ -196,7 +184,7 @@ function renderEpaperPage(pageNum) {
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:14px; border-top:1px solid #111827; padding-top:14px; margin-top:16px;">
                 ${p3Items.slice(0, 4).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head">${item.district ? `📍 ${item.district}: ` : '📍 '}${escapeHtml(item.title)}</h3>
+                        <h3 class="epaper-story-headline epaper-col-head">${item.district ? `<i class="fa-solid fa-location-dot" style="font-size: 12px; color: #b91c1c; margin-right: 4px;"></i>${item.district}: ` : ''}${escapeHtml(item.title)}</h3>
                         <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 90)}</p>
                     </div>
                 `).join('')}
@@ -206,7 +194,7 @@ function renderEpaperPage(pageNum) {
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:14px; border-top:1px dashed #cbd5e1; padding-top:12px; margin-top:12px;">
                 ${p3Items.slice(4, 8).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head">${item.district ? `📍 ${item.district}: ` : '📍 '}${escapeHtml(item.title)}</h3>
+                        <h3 class="epaper-story-headline epaper-col-head">${item.district ? `<i class="fa-solid fa-location-dot" style="font-size: 12px; color: #b91c1c; margin-right: 4px;"></i>${item.district}: ` : ''}${escapeHtml(item.title)}</h3>
                         <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 90)}</p>
                     </div>
                 `).join('')}
@@ -247,7 +235,7 @@ function renderEpaperPage(pageNum) {
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:14px; border-top:1px solid #111827; padding-top:14px; margin-top:16px;">
                 ${p4Items.slice(0, 4).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head">🌐 ${escapeHtml(item.title)}</h3>
+                        <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-earth-americas" style="font-size: 13px; color: #0284c7; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
                         <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 90)}</p>
                     </div>
                 `).join('')}
@@ -257,7 +245,7 @@ function renderEpaperPage(pageNum) {
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:14px; border-top:1px dashed #cbd5e1; padding-top:12px; margin-top:12px;">
                 ${p4Items.slice(4, 8).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head">🌐 ${escapeHtml(item.title)}</h3>
+                        <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-earth-americas" style="font-size: 13px; color: #0284c7; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
                         <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 90)}</p>
                     </div>
                 `).join('')}
@@ -298,7 +286,7 @@ function renderEpaperPage(pageNum) {
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:14px; border-top:1px solid #111827; padding-top:14px; margin-top:16px;">
                 ${p5Items.slice(0, 4).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head">⚖️ ${escapeHtml(item.title)}</h3>
+                        <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-scale-balanced" style="font-size: 13px; color: #059669; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
                         <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 90)}</p>
                     </div>
                 `).join('')}
@@ -308,7 +296,7 @@ function renderEpaperPage(pageNum) {
             <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:14px; border-top:1px dashed #cbd5e1; padding-top:12px; margin-top:12px;">
                 ${p5Items.slice(4, 8).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head">⚖️ ${escapeHtml(item.title)}</h3>
+                        <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-scale-balanced" style="font-size: 13px; color: #059669; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
                         <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 90)}</p>
                     </div>
                 `).join('')}
@@ -397,7 +385,7 @@ window.addEventListener('click', (e) => {
 
 function copyClippingLink() {
     navigator.clipboard.writeText(window.location.href);
-    alert('✅ ই-পেপার কাটিং লিঙ্ক কপি করা হয়েছে!');
+    alert('ই-পেপার কাটিং লিঙ্ক কপি করা হয়েছে!');
 }
 
 function shareClippingToFB() {
@@ -405,15 +393,15 @@ function shareClippingToFB() {
 }
 
 function downloadClippingImage() {
-    alert('📸 পেপার কাটিং ডাউনলোড সম্পন্ন হয়েছে!');
+    alert('পেপার কাটিং ডাউনলোড সম্পন্ন হয়েছে!');
 }
 
 function downloadFullPage() {
-    alert(`📥 Ourtimes24 ই-পেপার পৃষ্ঠা ${currentEpaperPage} (PDF/Image) ডাউনলোড হচ্ছে!`);
+    alert(`Ourtimes24 ই-পেপার পৃষ্ঠা ${currentEpaperPage} (PDF/Image) ডাউনলোড হচ্ছে!`);
 }
 
 function changeEpaperDate(val) {
-    alert(`📅 ${val} তারিখের ই-পেপার লোড করা হয়েছে!`);
+    alert(`${val} তারিখের ই-পেপার লোড করা হয়েছে!`);
     renderEpaperPage(1);
 }
 

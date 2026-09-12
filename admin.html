@@ -181,7 +181,7 @@
                                 <!-- Admin / Sub-Editor Selection Dropdown -->
                                 <div id="authorSelectorRow" style="margin-bottom: 8px;">
                                     <select id="newsAuthorSelect" class="control-select" onchange="handleAuthorSelectChange(this.value)" style="font-weight: 600;">
-                                        <optgroup label="🏢 আওয়ার টাইমস২৪ অফিসিয়াল ডেস্ক (Direct Desk)">
+                                        <optgroup label="আওয়ার টাইমস২৪ অফিসিয়াল ডেস্ক (Direct Desk)">
                                             <option value="desk_ourtimes">আওয়ার টাইমস২৪ ডেস্ক</option>
                                             <option value="desk_online">অনলাইন ডেস্ক</option>
                                             <option value="desk_staff">স্টাফ রিপোর্টার</option>
@@ -192,10 +192,10 @@
                                             <option value="desk_biz">বাণিজ্য ডেস্ক</option>
                                             <option value="desk_intl">আন্তর্জাতিক ডেস্ক</option>
                                         </optgroup>
-                                        <optgroup label="👥 নিবন্ধিত সাংবাদিক ও প্রতিনিধি (User Accounts)" id="optgroupRegisteredUsers">
+                                        <optgroup label="নিবন্ধিত সাংবাদিক ও প্রতিনিধি (User Accounts)" id="optgroupRegisteredUsers">
                                             <!-- Dynamically populated from UserStore -->
                                         </optgroup>
-                                        <optgroup label="✍️ কাস্টম নাম">
+                                        <optgroup label="কাস্টম নাম (Custom Byline)">
                                             <option value="custom">অন্যান্য / কাস্টম নাম লিখুন...</option>
                                         </optgroup>
                                     </select>
@@ -285,8 +285,8 @@
                                 </div>
                             </div>
                             <textarea id="newsContent" class="control-textarea" rows="10" placeholder="খবরের পূর্ণ বিবরণ এখানে লিখুন... সংবাদের ভেতরে যেকোনো অনুচ্ছেদের মাঝে ছবি যোগ করতে উপরের 'সংবাদের মাঝে ছবি যোগ করুন' বাটনে চাপ দিন।" required></textarea>
-                            <small class="form-hint" style="margin-top: 5px; display: block; font-size: 12px; color: var(--text-muted);">
-                                💡 সংবাদের মাঝে যেখানে ছবি বসাতে চান সেখানে মাউসের কার্সার রেখে <strong>"সংবাদের মাঝে ছবি যোগ করুন"</strong> চাপুন।
+                            <small class="form-hint" style="margin-top: 5px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--text-muted);">
+                                <i class="fa-solid fa-circle-info text-primary"></i> <span>সংবাদের মাঝে যেখানে ছবি বসাতে চান সেখানে মাউসের কার্সার রেখে <strong>"সংবাদের মাঝে ছবি যোগ করুন"</strong> চাপুন।</span>
                             </small>
                         </div>
 
@@ -383,7 +383,7 @@
                             • <strong>২. হোমপেজ মিডল ব্যানার:</strong> মাপ <code>970 × 90 px</code> বা <code>728 × 90 px</code> — লিড সংবাদের নিচে (সারাদেশ সেকশনের আগে)।<br>
                             • <strong>৩. সাইডবার ব্যানার:</strong> মাপ <code>300 × 250 px</code> — হোমপেজ, ক্যাটাগরি ও সংবাদের বিস্তারিত পাতার সাইডবারে।<br>
                             • <strong>৪. ইন-আর্টিকেল ব্যানার:</strong> মাপ <code>728 × 90 px</code> বা <code>300 × 250 px</code> — সংবাদের মূল লেখার ভেতরে ২য় অনুচ্ছেদের পর।<br>
-                            🔒 <em>জিরো ব্ল্যাংক স্পেস পলিসি: কোনো বিজ্ঞাপন নিষ্ক্রিয় বা ছবি না থাকলে ওয়েবসাইটে কোনো ফাঁকা ফ্রেম থাকবে না।</em>
+                            <i class="fa-solid fa-shield-halved text-primary"></i> <em>জিরো ব্ল্যাংক স্পেস পলিসি: কোনো বিজ্ঞাপন নিষ্ক্রিয় বা ছবি না থাকলে ওয়েবসাইটে কোনো ফাঁকা ফ্রেম থাকবে না।</em>
                         </div>
                     </div>
 
@@ -838,6 +838,37 @@
             </div>
         </div>
     </div>
+
+    <!-- NEWS PUBLISH SUCCESS MODAL -->
+    <div id="publishSuccessModalOverlay" class="user-modal-overlay">
+        <div class="user-modal-box" style="max-width: 480px;">
+            <div class="publish-success-card">
+                <div class="publish-success-icon-wrap">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+                <h3 style="font-size: 20px; font-weight: 800; color: var(--text-main); margin-bottom: 8px;">
+                    সংবাদটি সফলভাবে প্রকাশিত হয়েছে!
+                </h3>
+                <p id="publishSuccessNewsTitle" style="font-size: 14px; color: var(--text-muted); line-height: 1.5; margin-bottom: 22px; max-height: 56px; overflow: hidden; font-weight: 600;">
+                    <!-- Headline inserted dynamically -->
+                </p>
+                <div style="display: flex; flex-direction: column; gap: 10px;">
+                    <a id="publishSuccessViewLink" href="#" target="_blank" class="btn-epaper-topbar" style="background: var(--primary); color: white; border: none; padding: 12px; font-weight: 800; border-radius: var(--radius-sm); text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                        <i class="fa-solid fa-arrow-up-right-from-square"></i> সরাসরি সংবাদটি দেখুন
+                    </a>
+                    <a id="publishSuccessPhotocardLink" href="#" target="_blank" class="tool-btn" style="padding: 11px; font-weight: 700; display: flex; align-items: center; justify-content: center; gap: 8px; color: #059669; border-color: #a7f3d0; background: #ecfdf5; text-decoration: none;">
+                        <i class="fa-solid fa-camera"></i> ফটো কার্ড তৈরি করুন
+                    </a>
+                    <button type="button" class="tool-btn" onclick="closePublishSuccessModal()" style="padding: 10px; font-weight: 600; color: var(--text-muted);">
+                        <i class="fa-solid fa-check"></i> ঠিক আছে
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- GLOBAL TOAST NOTIFICATION CONTAINER -->
+    <div id="adminToastContainer" class="admin-toast-container"></div>
 
     <!-- FOOTER -->
     <footer class="main-footer" style="margin-top: 40px; padding: 24px 0;">

@@ -440,7 +440,7 @@ function renderClassicTemplate(headline, category, date, showLogo, showWatermark
     // Date & Watermark Footer
     ctx.fillStyle = '#94a3b8';
     ctx.font = '600 20px "Hind Siliguri", sans-serif';
-    ctx.fillText(`🕒 ${date}`, 50, 1030);
+    ctx.fillText(`${date}`, 50, 1030);
 
     if (showWatermark) {
         ctx.textAlign = 'right';
@@ -502,7 +502,7 @@ function renderQuoteTemplate(headline, speaker, date, showLogo, showWatermark) {
     // Footer
     ctx.fillStyle = '#94a3b8';
     ctx.font = '600 20px "Hind Siliguri", sans-serif';
-    ctx.fillText(`📅 ${date}`, 60, 1030);
+    ctx.fillText(`${date}`, 60, 1030);
 
     if (showWatermark) {
         ctx.textAlign = 'right';
@@ -528,7 +528,7 @@ function renderBreakingTemplate(headline, category, date, showLogo, showWatermar
 
     ctx.fillStyle = '#ffffff';
     ctx.font = '900 36px "Anek Bangla", sans-serif';
-    ctx.fillText('⚡ ব্রেকিং নিউজ', 50, 68);
+    ctx.fillText('ব্রেকিং নিউজ', 50, 68);
 
     // Bengali Brand Logo
     if (showLogo) {
@@ -558,7 +558,7 @@ function renderBreakingTemplate(headline, category, date, showLogo, showWatermar
     // Footer
     ctx.fillStyle = '#ffffff';
     ctx.font = '600 20px "Hind Siliguri", sans-serif';
-    ctx.fillText(`🕒 ${date}`, 50, 1040);
+    ctx.fillText(`${date}`, 50, 1040);
 
     if (showWatermark) {
         ctx.textAlign = 'right';
@@ -585,7 +585,7 @@ function renderSportsTemplate(headline, category, date, showLogo, showWatermark)
 
     ctx.fillStyle = '#ffffff';
     ctx.font = '900 34px "Anek Bangla", sans-serif';
-    ctx.fillText('🏆 খেলাধুলা • SPORTS SPOTLIGHT', 50, 68);
+    ctx.fillText('খেলাধুলা • SPORTS SPOTLIGHT', 50, 68);
 
     // Bengali Brand Logo
     if (showLogo) {
@@ -613,12 +613,12 @@ function renderSportsTemplate(headline, category, date, showLogo, showWatermark)
     roundRect(ctx, 50, 880, 220, 48, 8, true, false);
     ctx.fillStyle = '#000000';
     ctx.font = '800 20px "Hind Siliguri", sans-serif';
-    ctx.fillText('★ বিশেষ প্রতিবেদন', 75, 912);
+    ctx.fillText('বিশেষ প্রতিবেদন', 75, 912);
 
     // Footer
     ctx.fillStyle = '#a7f3d0';
     ctx.font = '600 20px "Hind Siliguri", sans-serif';
-    ctx.fillText(`🕒 ${date}`, 50, 1030);
+    ctx.fillText(`${date}`, 50, 1030);
 
     if (showWatermark) {
         ctx.textAlign = 'right';
@@ -643,7 +643,7 @@ async function copyCanvasImageToClipboard() {
         canvas.toBlob(async (blob) => {
             const item = new ClipboardItem({ 'image/png': blob });
             await navigator.clipboard.write([item]);
-            alert('✅ ফটো কার্ডটি সরাসরি ক্লিপবোর্ডে কপি করা হয়েছে! (Ctrl+V দিয়ে ফেসবুকে পেস্ট করতে পারেন)');
+            alert('ফটো কার্ডটি সরাসরি ক্লিপবোর্ডে কপি করা হয়েছে! (Ctrl+V দিয়ে ফেসবুকে পেস্ট করতে পারেন)');
         });
     } catch (err) {
         alert('ক্লিপবোর্ড কপি সমর্থিত নয়। দয়া করে ডাউনলোড বাটনে ক্লিক করুন।');

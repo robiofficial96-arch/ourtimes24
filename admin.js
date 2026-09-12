@@ -9,6 +9,89 @@ const CLOUDINARY_CONFIG = {
 };
 
 // ==========================================
+// 0. PREMIUM NOTIFICATIONS & TOAST SYSTEM
+// ==========================================
+
+function showAdminToast(type, title, message, duration = 4000) {
+    const container = document.getElementById('adminToastContainer');
+    if (!container) return;
+
+    const iconMap = {
+        success: 'fa-solid fa-circle-check',
+        error: 'fa-solid fa-circle-xmark',
+        warning: 'fa-solid fa-triangle-exclamation',
+        info: 'fa-solid fa-circle-info'
+    };
+
+    const iconClass = iconMap[type] || iconMap.info;
+    const toast = document.createElement('div');
+    toast.className = `admin-toast-item toast-${type}`;
+    
+    toast.innerHTML = `
+        <div class="admin-toast-icon">
+            <i class="${iconClass}"></i>
+        </div>
+        <div class="admin-toast-content">
+            <div class="admin-toast-title">${title}</div>
+            <div class="admin-toast-message">${message}</div>
+        </div>
+        <button class="admin-toast-close" type="button" aria-label="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    `;
+
+    const closeBtn = toast.querySelector('.admin-toast-close');
+    const dismiss = () => {
+        if (toast.classList.contains('removing')) return;
+        toast.classList.add('removing');
+        setTimeout(() => {
+            if (toast.parentNode) toast.remove();
+        }, 300);
+    };
+
+    if (closeBtn) closeBtn.addEventListener('click', dismiss);
+    container.appendChild(toast);
+
+    if (duration > 0) {
+        setTimeout(dismiss, duration);
+    }
+}
+
+function showNewsPublishSuccessModal(newsItem) {
+    const modal = document.getElementById('publishSuccessModalOverlay');
+    if (!modal) return;
+
+    const titleEl = document.getElementById('publishSuccessNewsTitle');
+    const viewLink = document.getElementById('publishSuccessViewLink');
+    const photocardLink = document.getElementById('publishSuccessPhotocardLink');
+
+    if (titleEl && newsItem) {
+        titleEl.textContent = `"${newsItem.title}"`;
+    }
+    if (viewLink && newsItem) {
+        viewLink.href = `article.html?id=${encodeURIComponent(newsItem.id)}`;
+    }
+    if (photocardLink && newsItem) {
+        photocardLink.href = `photocard.html?newsId=${encodeURIComponent(newsItem.id)}`;
+    }
+
+    modal.style.display = 'flex';
+}
+
+function closePublishSuccessModal() {
+    const modal = document.getElementById('publishSuccessModalOverlay');
+    if (modal) {
+        modal.style.display = 'none';
+    }
+}
+
+if (typeof window !== 'undefined') {
+    window.showAdminToast = showAdminToast;
+    window.showNewsPublishSuccessModal = showNewsPublishSuccessModal;
+    window.closePublishSuccessModal = closePublishSuccessModal;
+}
+
+// ==========================================
 // 1. CLOUDINARY IMAGE UPLOAD & PREVIEW
 // ==========================================
 
@@ -21,7 +104,7 @@ function handleImageFileSelect(e) {
 
 function uploadToCloudinary(file) {
     if (!file.type.startsWith('image/')) {
-        alert('অনুগ্রহ করে শুধুমাত্র একটি ইমেজ ফাইল (JPG, PNG, WebP) সিলেক্ট করুন!');
+        showAdminToast('warning', 'অবৈধ ফাইল', 'অনুগ্রহ করে শুধুমাত্র একটি ইমেজ ফাইল (JPG, PNG, WebP) সিলেক্ট করুন!');
         return;
     }
 
@@ -54,7 +137,7 @@ function uploadToCloudinary(file) {
     })
     .catch(err => {
         console.error('Cloudinary Upload Error:', err);
-        alert('ছবি আপলোডে সমস্যা হয়েছে: ' + err.message);
+        showAdminToast('error', 'আপলোড ত্রুটি', 'ছবি আপলোডে সমস্যা হয়েছে: ' + err.message);
     })
     .finally(() => {
         if (promptEl) promptEl.style.display = 'block';
@@ -167,7 +250,7 @@ function uploadInArticleImageToCloudinary(e) {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-        alert('অনুগ্রহ করে শুধুমাত্র ইমেজ ফাইল (JPG, PNG, WebP) সিলেক্ট করুন!');
+        showAdminToast('warning', 'অবৈধ ফাইল', 'অনুগ্রহ করে শুধুমাত্র ইমেজ ফাইল (JPG, PNG, WebP) সিলেক্ট করুন!');
         return;
     }
 
@@ -193,13 +276,14 @@ function uploadInArticleImageToCloudinary(e) {
                 urlInput.value = data.secure_url;
                 previewInArticleImage(data.secure_url);
             }
+            showAdminToast('success', 'আপলোড সম্পন্ন', 'নিউজ বডির ছবিটি সফলভাবে আপলোড হয়েছে!');
         } else {
             throw new Error('Cloudinary থেকে লিঙ্ক পাওয়া যায়নি!');
         }
     })
     .catch(err => {
         console.error('In-Article Cloudinary Upload Error:', err);
-        alert('ছবি আপলোডে সমস্যা হয়েছে: ' + err.message);
+        showAdminToast('error', 'আপলোড ত্রুটি', 'ছবি আপলোডে সমস্যা হয়েছে: ' + err.message);
     })
     .finally(() => {
         if (progressEl) progressEl.style.display = 'none';
@@ -227,7 +311,7 @@ function insertInArticleImageToContent() {
     const textarea = document.getElementById('newsContent');
 
     if (!url) {
-        alert('অনুগ্রহ করে একটি ছবি নির্বাচন করে আপলোড করুন অথবা ছবির লিঙ্ক দিন!');
+        showAdminToast('warning', 'ছবি আবশ্যক', 'অনুগ্রহ করে একটি ছবি নির্বাচন করে আপলোড করুন অথবা ছবির লিঙ্ক দিন!');
         return;
     }
 
@@ -269,8 +353,17 @@ function insertQuoteBlock() {
     insertTextAtCursor(textarea, quoteHtml);
 }
 
+function insertHeadingBreak() {
+    const textarea = document.getElementById('newsContent');
+    insertTextAtCursor(textarea, '\n\n<h3>উপশিরোনাম এখানে লিখুন</h3>\n\n');
+}
+
+function insertQuoteBox() {
+    insertQuoteBlock();
+}
+
 // ==========================================
-// 2. TAB SWITCHING (WITH RBAC SECURITY GATE)
+// 2. NAVIGATION & TAB SWITCHING
 // ==========================================
 
 function switchAdminTab(tabId) {
@@ -280,12 +373,12 @@ function switchAdminTab(tabId) {
     // RBAC Security Guard: Normal reporters cannot open user manager, ads or ticker
     if (role === 'reporter' || role === 'correspondent') {
         if (tabId === 'tabAdSettings' || tabId === 'tabUserManager' || tabId === 'tabBreakingTicker') {
-            alert('⛔ আপনার পদবি অনুযায়ী এই সেকশনে প্রবেশের অনুমতি নেই। আপনি সংবাদ প্রকাশ, তালিকা ও ফটো কার্ড ব্যবহার করতে পারবেন।');
+            showAdminToast('error', 'অনুমতি নেই', 'আপনার পদবি অনুযায়ী এই সেকশনে প্রবেশের অনুমতি নেই। আপনি সংবাদ প্রকাশ, তালিকা ও ফটো কার্ড ব্যবহার করতে পারবেন।');
             tabId = 'tabCreateNews';
         }
     } else if (role === 'subeditor') {
         if (tabId === 'tabAdSettings' || tabId === 'tabUserManager') {
-            alert('⛔ সহ-সম্পাদক হিসেবে আপনি শুধুমাত্র সংবাদ ও ব্রেকিং নিউজ নিয়ন্ত্রণ করতে পারবেন।');
+            showAdminToast('warning', 'অনুমতি সীমাবদ্ধ', 'সহ-সম্পাদক হিসেবে আপনি শুধুমাত্র সংবাদ ও ব্রেকিং নিউজ নিয়ন্ত্রণ করতে পারবেন।');
             tabId = 'tabCreateNews';
         }
     }
@@ -426,7 +519,7 @@ function applyAuthorBylineRules(user) {
             badge.innerHTML = `<i class="fa-solid fa-lock"></i> একাউন্ট লকড (${user.role})`;
         }
         if (helpText) {
-            helpText.innerHTML = `🔒 আপনার প্রোফাইল (<strong>${user.name}</strong>) থেকে সংবাদটি সরাসরি আপনার নামে প্রকাশিত হবে। নাম পরিবর্তন করার অনুমতি নেই।`;
+            helpText.innerHTML = `<i class="fa-solid fa-shield-halved text-danger" style="margin-right: 4px;"></i> আপনার প্রোফাইল (<strong>${user.name}</strong>) থেকে সংবাদটি সরাসরি আপনার নামে প্রকাশিত হবে। নাম পরিবর্তন করার অনুমতি নেই।`;
         }
         updateAuthorAvatarPreview(user.avatar || '');
     } else {
@@ -443,89 +536,183 @@ function applyAuthorBylineRules(user) {
             }
         }
         if (badge) {
-            badge.style.display = 'inline-block';
-            badge.style.background = '#e0f2fe';
-            badge.style.color = '#0284c7';
-            badge.innerHTML = `<i class="fa-solid fa-unlock"></i> অ্যাডমিন কন্ট্রোল (ডেস্ক বা যেকোনো ইউজার)`;
+            badge.style.display = 'none';
         }
         if (helpText) {
-            helpText.innerHTML = `অ্যাডমিন হিসেবে আপনি সরাসরি আওয়ার টাইমস২৪ অফিসিয়াল ডেস্ক, যেকোনো নিবন্ধিত সাংবাদিক বা কাস্টম নাম দিতে পারেন।`;
+            helpText.innerHTML = `<i class="fa-solid fa-pen-nib text-primary" style="margin-right: 4px;"></i> সংবাদে প্রদর্শিত প্রতিবেদকের নাম ড্রপডাউন থেকে সিলেক্ট করতে পারেন অথবা নতুন নাম লিখতে পারেন।`;
         }
     }
 }
 
+function populateAuthorOptions() {
+    const select = document.getElementById('newsAuthorSelect');
+    if (!select) return;
+
+    const currentVal = select.value;
+    const users = UserStore.getActiveUsers();
+
+    // Group users by role
+    const subeditors = users.filter(u => u.roleKey === 'subeditor');
+    const reporters = users.filter(u => u.roleKey === 'reporter');
+    const correspondents = users.filter(u => u.roleKey === 'correspondent');
+
+    let html = `
+        <optgroup label="বার্তা বিভাগ ও সাধারণ বাইলাইন">
+            <option value="desk_ourtimes">আওয়ার টাইমস২৪ ডেস্ক</option>
+            <option value="special_rep">বিশেষ প্রতিনিধি</option>
+            <option value="own_rep">নিজস্ব প্রতিবেদক</option>
+            <option value="court_rep">আদালত প্রতিবেদক</option>
+            <option value="sports_rep">খেলাধুলা বিভাগ</option>
+        </optgroup>
+    `;
+
+    if (users.length > 0) {
+        html += `<optgroup label="নিবন্ধিত সাংবাদিক ও লেখকবৃন্দ">`;
+        users.forEach(u => {
+            html += `<option value="user_${u.id}">${u.name} (${u.role})</option>`;
+        });
+        html += `</optgroup>`;
+    }
+
+    html += `
+        <optgroup label="কাস্টম বাইলাইন">
+            <option value="custom">অন্যান্য / সরাসরি নাম লিখুন...</option>
+        </optgroup>
+    `;
+
+    select.innerHTML = html;
+    if (currentVal && select.querySelector(`option[value="${currentVal}"]`)) {
+        select.value = currentVal;
+    }
+}
+
+function handleAuthorSelectChange() {
+    const select = document.getElementById('newsAuthorSelect');
+    const input = document.getElementById('newsAuthor');
+    const avatarInput = document.getElementById('newsAuthorAvatar');
+    const idInput = document.getElementById('newsAuthorId');
+    if (!select || !input) return;
+
+    const val = select.value;
+
+    if (val === 'custom') {
+        input.value = '';
+        input.readOnly = false;
+        input.focus();
+        if (avatarInput) avatarInput.value = '';
+        if (idInput) idInput.value = '';
+        updateAuthorAvatarPreview('');
+    } else if (val.startsWith('user_')) {
+        const userId = val.replace('user_', '');
+        const user = UserStore.getById(userId);
+        if (user) {
+            input.value = user.name;
+            input.readOnly = false;
+            if (avatarInput) avatarInput.value = user.avatar || '';
+            if (idInput) idInput.value = user.id;
+            updateAuthorAvatarPreview(user.avatar || '');
+        }
+    } else {
+        const text = select.options[select.selectedIndex].text;
+        input.value = text;
+        input.readOnly = false;
+        if (avatarInput) avatarInput.value = '';
+        if (idInput) idInput.value = '';
+        updateAuthorAvatarPreview('');
+    }
+}
+
+function updateAuthorAvatarPreview(avatarUrl) {
+    const wrap = document.getElementById('authorAvatarPreviewWrap');
+    const img = document.getElementById('authorAvatarPreviewImg');
+    const note = document.getElementById('authorAvatarNote');
+    if (!wrap || !img) return;
+
+    if (avatarUrl) {
+        img.src = avatarUrl;
+        wrap.style.display = 'flex';
+        if (note) note.textContent = 'ব্যবহারকারীর ভেরিফায়েড ছবি যুক্ত হয়েছে';
+    } else {
+        img.src = '';
+        wrap.style.display = 'none';
+        if (note) note.textContent = '';
+    }
+}
+
 // ==========================================
-// 2.8 DYNAMIC CATEGORY STORE & CONTROLLER
+// 2.5 CATEGORY STORE & DYNAMIC CATEGORY MANAGER
 // ==========================================
 
 const DEFAULT_CATEGORIES = [
-    { name: 'জাতীয়', slug: 'national', isDefault: true },
-    { name: 'রাজনীতি', slug: 'politics', isDefault: true },
-    { name: 'আন্তর্জাতিক', slug: 'international', isDefault: true },
-    { name: 'অর্থ-বাণিজ্য', slug: 'economy', isDefault: true },
-    { name: 'খেলাধুলা', slug: 'sports', isDefault: true },
-    { name: 'বিনোদন', slug: 'entertainment', isDefault: true },
-    { name: 'প্রযুক্তি', slug: 'tech', isDefault: true },
-    { name: 'সারাদেশ', slug: 'saradesh', isDefault: true },
-    { name: 'মতামত', slug: 'opinion', isDefault: true }
+    { name: 'জাতীয়', slug: 'national' },
+    { name: 'রাজনীতি', slug: 'politics' },
+    { name: 'অর্থনীতি', slug: 'economy' },
+    { name: 'আন্তর্জাতিক', slug: 'international' },
+    { name: 'খেলা', slug: 'sports' },
+    { name: 'বিনোদন', slug: 'entertainment' },
+    { name: 'প্রবাস', slug: 'probash' },
+    { name: 'আইন-আদালত', slug: 'law' },
+    { name: 'সারাদেশ', slug: 'countrywide' }
 ];
 
-class CategoryStore {
-    static getAll() {
+const CategoryStore = {
+    getAll() {
         try {
-            const raw = localStorage.getItem('ourtimes_custom_categories_v1');
-            if (raw) {
-                const custom = JSON.parse(raw);
-                if (Array.isArray(custom)) {
-                    const combined = [...DEFAULT_CATEGORIES];
-                    custom.forEach(c => {
-                        if (!combined.some(d => d.name === c.name || d.slug === c.slug)) {
-                            combined.push(c);
-                        }
-                    });
-                    return combined;
+            const raw = localStorage.getItem('ourtimes_custom_categories');
+            const custom = raw ? JSON.parse(raw) : [];
+            const combined = [...DEFAULT_CATEGORIES];
+            custom.forEach(c => {
+                if (!combined.some(existing => existing.name === c.name || existing.slug === c.slug)) {
+                    combined.push(c);
                 }
-            }
-        } catch (e) {}
-        return DEFAULT_CATEGORIES;
-    }
-
-    static getCustomOnly() {
-        return this.getAll().filter(c => !c.isDefault);
-    }
-
-    static add(name, slug) {
-        name = (name || '').trim();
-        if (!name) return { success: false, message: 'বিভাগের নাম আবশ্যক!' };
-
-        if (!slug || !slug.trim()) {
-            slug = 'cat-' + Date.now().toString(36);
-        } else {
-            slug = slug.trim().toLowerCase().replace(/[^a-z0-9\-]/g, '-');
+            });
+            return combined;
+        } catch (e) {
+            return DEFAULT_CATEGORIES;
         }
+    },
+
+    getCustomOnly() {
+        try {
+            const raw = localStorage.getItem('ourtimes_custom_categories');
+            return raw ? JSON.parse(raw) : [];
+        } catch (e) {
+            return [];
+        }
+    },
+
+    add(name, slug) {
+        if (!name || !name.trim()) return { success: false, message: 'বিভাগের নাম আবশ্যক' };
+        name = name.trim();
+        slug = slug && slug.trim() ? slug.trim().toLowerCase().replace(/[^a-z0-9_-]/g, '-') : 'cat-' + Date.now();
 
         const all = this.getAll();
         if (all.some(c => c.name.toLowerCase() === name.toLowerCase())) {
-            return { success: false, message: 'এই নামের বিভাগ ইতিমধ্যে বিদ্যমান!' };
+            return { success: false, message: 'এই নামে ইতিমধ্যে একটি বিভাগ রয়েছে' };
+        }
+        if (all.some(c => c.slug.toLowerCase() === slug.toLowerCase())) {
+            slug = slug + '-' + Math.floor(Math.random() * 1000);
         }
 
         const custom = this.getCustomOnly();
-        const newCat = { name, slug, isDefault: false };
+        const newCat = { name, slug, isCustom: true };
         custom.push(newCat);
-        localStorage.setItem('ourtimes_custom_categories_v1', JSON.stringify(custom));
+        localStorage.setItem('ourtimes_custom_categories', JSON.stringify(custom));
         return { success: true, category: newCat };
-    }
+    },
 
-    static delete(slug) {
-        const custom = this.getCustomOnly().filter(c => c.slug !== slug);
-        localStorage.setItem('ourtimes_custom_categories_v1', JSON.stringify(custom));
-    }
+    delete(slug) {
+        const custom = this.getCustomOnly();
+        const filtered = custom.filter(c => c.slug !== slug);
+        localStorage.setItem('ourtimes_custom_categories', JSON.stringify(filtered));
+        return true;
+    },
 
-    static getSlugByName(name) {
+    getSlugByName(name) {
         const cat = this.getAll().find(c => c.name === name);
-        return cat ? cat.slug : 'national';
+        return cat ? cat.slug : 'general';
     }
-}
+};
 
 if (typeof window !== 'undefined') {
     window.CategoryStore = CategoryStore;
@@ -541,7 +728,7 @@ function populateCategorySelects(selectedName = null) {
         newsCatSelect.innerHTML = categories.map(c => `
             <option value="${c.name}">${c.name}</option>
         `).join('') + `
-            <option value="__add_new__" style="color:var(--primary); font-weight:700;">➕ নতুন বিভাগ যোগ করুন...</option>
+            <option value="__add_new__" style="color:var(--primary); font-weight:700;">+ নতুন বিভাগ যোগ করুন...</option>
         `;
         if (categories.some(c => c.name === currentVal)) {
             newsCatSelect.value = currentVal;
@@ -620,25 +807,26 @@ function handleCategorySubmit(e) {
     const slug = document.getElementById('newCategorySlug').value.trim();
 
     if (!name) {
-        alert('অনুগ্রহ করে বিভাগের নাম লিখুন!');
+        showAdminToast('warning', 'বিভাগ নাম আবশ্যক', 'অনুগ্রহ করে বিভাগের নাম লিখুন!');
         return;
     }
 
     const res = CategoryStore.add(name, slug);
     if (!res.success) {
-        alert('ত্রুটি: ' + res.message);
+        showAdminToast('error', 'ত্রুটি', res.message);
         return;
     }
 
     closeCategoryModal();
     populateCategorySelects(res.category.name);
-    alert(`✅ নতুন বিভাগ "${res.category.name}" সফলভাবে যুক্ত হয়েছে!`);
+    showAdminToast('success', 'নতুন বিভাগ যুক্ত', `নতুন বিভাগ "${res.category.name}" সফলভাবে যুক্ত হয়েছে!`);
 }
 
 function deleteCategoryConfirm(slug) {
     if (confirm('আপনি কি নিশ্চিত যে এই কাস্টম বিভাগটি মুছে ফেলতে চান?')) {
         CategoryStore.delete(slug);
         populateCategorySelects();
+        showAdminToast('info', 'মুছে ফেলা হয়েছে', 'কাস্টম বিভাগটি মুছে ফেলা হয়েছে।');
     }
 }
 
@@ -679,7 +867,7 @@ function handleNewsSubmit(e) {
     const isBreaking = document.getElementById('newsIsBreaking')?.checked || false;
 
     if (!image) {
-        alert('অনুগ্রহ করে সংবাদের একটি ফিচার্ড ছবি আপলোড করুন বা ছবির URL দিন!');
+        showAdminToast('warning', 'ফিচার্ড ছবি আবশ্যক', 'অনুগ্রহ করে সংবাদের একটি ফিচার্ড ছবি আপলোড করুন বা ছবির URL দিন!');
         return;
     }
 
@@ -730,7 +918,8 @@ function handleNewsSubmit(e) {
         }).catch(() => {});
     } catch (err) {}
 
-    alert('🎉 সংবাদটি সফলভাবে সংরক্ষিত ও প্রকাশিত হয়েছে!');
+    showNewsPublishSuccessModal(newsItem);
+    showAdminToast('success', 'প্রকাশিত হয়েছে', 'সংবাদটি সফলভাবে সংরক্ষিত ও প্রকাশিত হয়েছে!');
     resetNewsForm();
     switchAdminTab('tabManageNews');
 }
@@ -999,12 +1188,13 @@ function editNews(id) {
 function deleteNewsItem(id) {
     const user = UserStore.getCurrentUser();
     if (user && (user.roleKey === 'reporter' || user.roleKey === 'correspondent')) {
-        alert('⛔ রিপোর্টার বা প্রতিনিধিদের প্রকাশিত সংবাদ মুছে ফেলার অনুমতি নেই। যেকোনো পরিবর্তনের জন্য বার্তা বিভাগে যোগাযোগ করুন।');
+        showAdminToast('error', 'অনুমতি নেই', 'রিপোর্টার বা প্রতিনিধিদের প্রকাশিত সংবাদ মুছে ফেলার অনুমতি নেই। যেকোনো পরিবর্তনের জন্য বার্তা বিভাগে যোগাযোগ করুন।');
         return;
     }
     if (confirm('আপনি কি নিশ্চিত যে এই সংবাদটি মুছে ফেলতে চান?')) {
         NewsDB.deleteNews(id);
         renderNewsTable();
+        showAdminToast('info', 'মুছে ফেলা হয়েছে', 'সংবাদটি সফলভাবে মুছে ফেলা হয়েছে।');
     }
 }
 
@@ -1100,7 +1290,7 @@ function handleAdFileUpload(slot, input) {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-        alert('অনুগ্রহ করে শুধুমাত্র একটি ইমেজ ফাইল নির্বাচন করুন (JPG, PNG, WebP)!');
+        showAdminToast('warning', 'অবৈধ ফাইল', 'অনুগ্রহ করে শুধুমাত্র একটি ইমেজ ফাইল নির্বাচন করুন (JPG, PNG, WebP)!');
         return;
     }
 
@@ -1128,14 +1318,14 @@ function handleAdFileUpload(slot, input) {
         if (data && data.secure_url) {
             if (urlInput) urlInput.value = data.secure_url;
             previewAdImage(slot, data.secure_url);
-            alert('✅ ব্যানার ছবি সফলভাবে ক্লাউডিনারিতে আপলোড হয়েছে!');
+            showAdminToast('success', 'আপলোড সফল', 'ব্যানার ছবি সফলভাবে ক্লাউডিনারিতে আপলোড হয়েছে!');
         } else {
             throw new Error('কোনো ছবির URL পাওয়া যায়নি');
         }
     })
     .catch(err => {
         console.error('Ad Upload Error:', err);
-        alert('ছবি আপলোড করতে ব্যর্থ হয়েছে: ' + err.message);
+        showAdminToast('error', 'আপলোড ত্রুটি', 'ছবি আপলোড করতে ব্যর্থ হয়েছে: ' + err.message);
     })
     .finally(() => {
         if (label) {
@@ -1192,7 +1382,7 @@ function handleSaveAdConfig(e) {
     });
 
     NewsDB.setAdConfig(config);
-    alert('🎉 সকল বিজ্ঞাপন সেটিংস সফলভাবে সংরক্ষিত হয়েছে! মূল ওয়েবসাইটে সক্রিয় বিজ্ঞাপনগুলো প্রদর্শিত হবে।');
+    showAdminToast('success', 'সংরক্ষিত', 'সকল বিজ্ঞাপন সেটিংস সফলভাবে সংরক্ষিত হয়েছে! মূল ওয়েবসাইটে সক্রিয় বিজ্ঞাপনগুলো প্রদর্শিত হবে।');
 }
 
 // ==========================================
@@ -1307,7 +1497,7 @@ class UserStore {
         const users = this.getAll();
         const target = users.find(u => u.id === id);
         if (target && target.isMaster) {
-            alert('❌ মাস্টার অ্যাডমিন একাউন্ট মুছে ফেলা সম্ভব নয়!');
+            showAdminToast('error', 'অনুমতি নেই', 'মাস্টার অ্যাডমিন একাউন্ট মুছে ফেলা সম্ভব নয়!');
             return false;
         }
         const filtered = users.filter(u => u.id !== id);
@@ -1346,7 +1536,7 @@ function handleUserAvatarFileSelect(e) {
     if (!file) return;
 
     if (!file.type.startsWith('image/')) {
-        alert('অনুগ্রহ করে শুধুমাত্র ছবি ফাইল (JPG, PNG, WebP) নির্বাচন করুন!');
+        showAdminToast('warning', 'অবৈধ ফাইল', 'অনুগ্রহ করে শুধুমাত্র ছবি ফাইল (JPG, PNG, WebP) নির্বাচন করুন!');
         return;
     }
 
@@ -1457,7 +1647,7 @@ function renderUserList() {
                                     </div>
                                     <div>
                                         <div style="font-weight: 700;">${u.name}</div>
-                                        <div style="font-size: 12px; color: var(--text-muted);">@${u.username} ${u.isMaster ? '★ মাস্টার' : ''}</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);">@${u.username} ${u.isMaster ? '<i class="fa-solid fa-crown" style="color: #f59e0b; margin-left: 4px;" title="মাস্টার অ্যাডমিন"></i> মাস্টার' : ''}</div>
                                     </div>
                                 </div>
                             </td>
@@ -1477,7 +1667,7 @@ function renderUserList() {
                             </td>
                             <td>
                                 <span class="user-status-pill ${u.status === 'active' ? 'active' : 'inactive'}">
-                                    ${u.status === 'active' ? '● সক্রিয়' : '○ নিষ্ক্রিয়'}
+                                    ${u.status === 'active' ? '<i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 4px;"></i>সক্রিয়' : '<i class="fa-regular fa-circle" style="font-size: 8px; margin-right: 4px;"></i>নিষ্ক্রিয়'}
                                 </span>
                             </td>
                             <td style="text-align: right;">
@@ -1518,11 +1708,11 @@ function renderUserList() {
                                 </div>
                                 <div>
                                     <div style="font-weight: 800; font-size: 15px;">${u.name}</div>
-                                    <div style="font-size: 12px; color: var(--text-muted);">@${u.username} • <span class="user-role-badge ${u.roleKey || 'reporter'}">${u.role}</span></div>
+                                    <div style="font-size: 12px; color: var(--text-muted);">@${u.username} ${u.isMaster ? '<i class="fa-solid fa-crown" style="color: #f59e0b; margin-left: 2px;" title="মাস্টার অ্যাডমিন"></i> ' : ''}• <span class="user-role-badge ${u.roleKey || 'reporter'}">${u.role}</span></div>
                                 </div>
                             </div>
                             <span class="user-status-pill ${u.status === 'active' ? 'active' : 'inactive'}">
-                                ${u.status === 'active' ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
+                                ${u.status === 'active' ? '<i class="fa-solid fa-circle" style="font-size: 8px; margin-right: 4px;"></i>সক্রিয়' : '<i class="fa-regular fa-circle" style="font-size: 8px; margin-right: 4px;"></i>নিষ্ক্রিয়'}
                             </span>
                         </div>
                         <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; background: var(--bg-surface); padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-color);">
@@ -1634,12 +1824,12 @@ function handleUserSubmit(e) {
     };
 
     if (!name || !username || !pin) {
-        alert('অনুগ্রহ করে নাম, ইউজারনেম এবং গোপন পিন পূরণ করুন!');
+        showAdminToast('warning', 'ফর্ম ত্রুটি', 'অনুগ্রহ করে নাম, ইউজারনেম এবং গোপন পিন পূরণ করুন!');
         return;
     }
 
     if (pin.length < 4 || pin.length > 6) {
-        alert('গোপন পিন অবশ্যই ৪ থেকে ৬ সংখ্যার হতে হবে!');
+        showAdminToast('warning', 'পিন ত্রুটি', 'গোপন পিন অবশ্যই ৪ থেকে ৬ সংখ্যার হতে হবে!');
         return;
     }
 
@@ -1672,19 +1862,20 @@ function handleUserSubmit(e) {
     renderUserList();
     updateCurrentUserUI();
     populateAuthorOptions();
-    alert('✅ ইউজার তথ্য সফলভাবে সংরক্ষিত হয়েছে!');
+    showAdminToast('success', 'সংরক্ষিত', 'ইউজার তথ্য সফলভাবে সংরক্ষিত হয়েছে!');
 }
 
 function deleteUserConfirm(id) {
     const u = UserStore.getById(id);
     if (!u) return;
     if (u.isMaster) {
-        alert('মাস্টার অ্যাডমিন একাউন্ট মুছে ফেলা যাবে না!');
+        showAdminToast('error', 'অনুমতি নেই', 'মাস্টার অ্যাডমিন একাউন্ট মুছে ফেলা যাবে না!');
         return;
     }
     if (confirm(`আপনি কি নিশ্চিত যে "${u.name}"-এর একাউন্টটি মুছে ফেলতে চান?`)) {
         UserStore.delete(id);
         renderUserList();
+        showAdminToast('info', 'মুছে ফেলা হয়েছে', `"${u.name}"-এর একাউন্ট মুছে ফেলা হয়েছে।`);
     }
 }
 
@@ -1824,10 +2015,10 @@ function downloadNewsJs() {
 }
 
 function resetToDefaultData() {
-    if (confirm('⚠️ আপনি কি ব্রাউজার ক্যাশ রিসেট করে news_data.js-এর মূল ডেটায় ফিরে যেতে চান? (আপনার সাম্প্রতিক অসংরক্ষিত পরিবর্তন মুছে যেতে পারে)')) {
+    if (confirm('আপনি কি ব্রাউজার ক্যাশ রিসেট করে news_data.js-এর মূল ডেটায় ফিরে যেতে চান? (আপনার সাম্প্রতিক অসংরক্ষিত পরিবর্তন মুছে যেতে পারে)')) {
         localStorage.removeItem('ourtimes_news_v2');
-        alert('ক্যাশ সফলভাবে রিসেট হয়েছে!');
-        window.location.reload();
+        showAdminToast('success', 'ক্যাশ রিসেট', 'ক্যাশ সফলভাবে রিসেট হয়েছে!');
+        setTimeout(() => window.location.reload(), 800);
     }
 }
 
