@@ -59,7 +59,7 @@ class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
 
     def do_GET(self):
         parsed = urllib.parse.urlparse(self.path)
-        if parsed.path == '/article.html' or parsed.path == '/article.php':
+        if parsed.path in ('/article.html', '/share.php', '/article.php'):
             qs = urllib.parse.parse_qs(parsed.query)
             art_id = qs.get('id', [''])[0]
             

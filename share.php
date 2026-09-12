@@ -21,57 +21,74 @@ try {
     $authorName = 'আওয়ার টাইমস২৪ ডেস্ক';
     $category = 'জাতীয়';
 
+    $articles = [];
     $jsonPath = __DIR__ . '/news_data.json';
     if (file_exists($jsonPath)) {
         $rawJson = @file_get_contents($jsonPath);
         if ($rawJson) {
-            $articles = json_decode($rawJson, true);
-            if (is_array($articles)) {
-                $found = null;
-                if ($articleId !== '') {
-                    foreach ($articles as $art) {
-                        if (isset($art['id']) && (string)$art['id'] === (string)$articleId) {
-                            $found = $art;
-                            break;
-                        }
-                    }
-                }
-                if (!$found && count($articles) > 0) {
-                    $found = $articles[0];
-                }
-                if ($found) {
-                    if (!empty($found['title'])) {
-                        $pageTitle = htmlspecialchars(trim($found['title']), ENT_QUOTES, 'UTF-8');
-                    }
-                    $rawDesc = !empty($found['excerpt']) ? $found['excerpt'] : (!empty($found['content']) ? $found['content'] : '');
-                    $cleanDesc = trim(preg_replace('/\s+/', ' ', strip_tags($rawDesc)));
-                    if (function_exists('mb_strlen') && function_exists('mb_substr')) {
-                        if (mb_strlen($cleanDesc, 'UTF-8') > 175) {
-                            $cleanDesc = mb_substr($cleanDesc, 0, 170, 'UTF-8') . '...';
-                        }
-                    } else {
-                        if (strlen($cleanDesc) > 175) {
-                            $cleanDesc = substr($cleanDesc, 0, 170) . '...';
-                        }
-                    }
-                    if ($cleanDesc) {
-                        $pageDesc = htmlspecialchars($cleanDesc, ENT_QUOTES, 'UTF-8');
-                    }
-                    if (!empty($found['image'])) {
-                        $img = trim($found['image']);
-                        if (strpos($img, 'http://') === 0 || strpos($img, 'https://') === 0) {
-                            $pageImage = $img;
-                        } else {
-                            $pageImage = $baseUrl . '/' . ltrim($img, '/');
-                        }
-                    }
-                    if (!empty($found['author'])) $authorName = htmlspecialchars($found['author'], ENT_QUOTES, 'UTF-8');
-                    if (!empty($found['category'])) $category = htmlspecialchars($found['category'], ENT_QUOTES, 'UTF-8');
-                    if (!empty($found['date'])) $publishDate = htmlspecialchars($found['date'], ENT_QUOTES, 'UTF-8');
-                    if (!empty($found['id'])) $pageUrl = $baseUrl . '/article.html?id=' . urlencode($found['id']);
+            $decoded = json_decode($rawJson, true);
+            if (is_array($decoded)) {
+                $articles = $decoded;
+            }
+        }
+    }
+
+    // Fallback to news_data.js if json file was empty or failed
+    if (empty($articles)) {
+        $jsPath = __DIR__ . '/news_data.js';
+        if (file_exists($jsPath)) {
+            $rawJs = @file_get_contents($jsPath);
+            if ($rawJs && preg_match('/window\.RAW_NEWS_DATA\s*=\s*(\[.*?\])\s*;/s', $rawJs, $matches)) {
+                $decodedJs = json_decode($matches[1], true);
+                if (is_array($decodedJs)) {
+                    $articles = $decodedJs;
                 }
             }
         }
+    }
+
+    $found = null;
+    if ($articleId !== '') {
+        foreach ($articles as $art) {
+            if (isset($art['id']) && (string)$art['id'] === (string)$articleId) {
+                $found = $art;
+                break;
+            }
+        }
+    }
+    if (!$found && count($articles) > 0) {
+        $found = $articles[0];
+    }
+    if ($found) {
+        if (!empty($found['title'])) {
+            $pageTitle = htmlspecialchars(trim($found['title']), ENT_QUOTES, 'UTF-8');
+        }
+        $rawDesc = !empty($found['excerpt']) ? $found['excerpt'] : (!empty($found['content']) ? $found['content'] : '');
+        $cleanDesc = trim(preg_replace('/\s+/', ' ', strip_tags($rawDesc)));
+        if (function_exists('mb_strlen') && function_exists('mb_substr')) {
+            if (mb_strlen($cleanDesc, 'UTF-8') > 175) {
+                $cleanDesc = mb_substr($cleanDesc, 0, 170, 'UTF-8') . '...';
+            }
+        } else {
+            if (strlen($cleanDesc) > 175) {
+                $cleanDesc = substr($cleanDesc, 0, 170) . '...';
+            }
+        }
+        if ($cleanDesc) {
+            $pageDesc = htmlspecialchars($cleanDesc, ENT_QUOTES, 'UTF-8');
+        }
+        if (!empty($found['image'])) {
+            $img = trim($found['image']);
+            if (strpos($img, 'http://') === 0 || strpos($img, 'https://') === 0) {
+                $pageImage = $img;
+            } else {
+                $pageImage = $baseUrl . '/' . ltrim($img, '/');
+            }
+        }
+        if (!empty($found['author'])) $authorName = htmlspecialchars($found['author'], ENT_QUOTES, 'UTF-8');
+        if (!empty($found['category'])) $category = htmlspecialchars($found['category'], ENT_QUOTES, 'UTF-8');
+        if (!empty($found['date'])) $publishDate = htmlspecialchars($found['date'], ENT_QUOTES, 'UTF-8');
+        if (!empty($found['id'])) $pageUrl = $baseUrl . '/article.html?id=' . urlencode($found['id']);
     }
 
     if (!empty($_GET['title'])) $pageTitle = htmlspecialchars(trim($_GET['title']), ENT_QUOTES, 'UTF-8');
@@ -79,15 +96,13 @@ try {
         $paramImg = trim($_GET['img']);
         if (strpos($paramImg, 'http://') === 0 || strpos($paramImg, 'https://') === 0) {
             $pageImage = $paramImg;
+        } else {
+            $pageImage = $baseUrl . '/' . ltrim($paramImg, '/');
         }
     }
 
     $htmlPath = __DIR__ . '/article.html';
-    if (!file_exists($htmlPath)) {
-        echo "<!DOCTYPE html><html><head><title>{$pageTitle}</title></head><body><h1>{$pageTitle}</h1></body></html>";
-        exit;
-    }
-    $html = file_get_contents($htmlPath);
+    $html = file_exists($htmlPath) ? file_get_contents($htmlPath) : '';
 
     $metaTags = <<<HTML
     <!-- DYNAMIC SOCIAL SHARING METATAGS (SSR GENERATED) -->
@@ -119,12 +134,16 @@ try {
     <meta name="twitter:image" content="{$pageImage}">
 HTML;
 
-    // Safely remove existing default title and meta tags
-    $html = preg_replace('~<title[^>]*>.*?</title>~is', '', $html);
-    $html = preg_replace('~<meta\s+property=[\'"]og:[^\'"]*[\'"][^>]*>~is', '', $html);
-    $html = preg_replace('~<meta\s+name=[\'"]twitter:[^\'"]*[\'"][^>]*>~is', '', $html);
-    $html = preg_replace('~<meta\s+name=[\'"]description[\'"][^>]*>~is', '', $html);
-    $html = preg_replace('~<head>~i', "<head>\n" . $metaTags, $html, 1);
+    if ($html) {
+        // Safely remove existing default title and meta tags
+        $html = preg_replace('~<title[^>]*>.*?</title>~is', '', $html);
+        $html = preg_replace('~<meta\s+property=[\'"]og:[^\'"]*[\'"][^>]*>~is', '', $html);
+        $html = preg_replace('~<meta\s+name=[\'"]twitter:[^\'"]*[\'"][^>]*>~is', '', $html);
+        $html = preg_replace('~<meta\s+name=[\'"]description[\'"][^>]*>~is', '', $html);
+        $html = preg_replace('~<head>~i', "<head>\n" . $metaTags, $html, 1);
+    } else {
+        $html = "<!DOCTYPE html><html lang=\"bn\"><head><meta charset=\"UTF-8\">\n" . $metaTags . "\n</head><body><h1>{$pageTitle}</h1><p>{$pageDesc}</p></body></html>";
+    }
 
     header('Content-Type: text/html; charset=UTF-8');
     header('Cache-Control: public, max-age=300');
