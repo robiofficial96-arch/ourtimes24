@@ -2826,3 +2826,176 @@ button, input, select, textarea {
     }
 }
 
+/* ==========================================================================
+   22. USER & REPORTER MANAGEMENT STYLES
+   ========================================================================== */
+.user-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.user-stat-card {
+    background: var(--bg-surface-alt);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.user-stat-icon {
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+}
+
+.user-stat-icon.admin { background: #fee2e2; color: #dc2626; }
+.user-stat-icon.editor { background: #dbeafe; color: #2563eb; }
+.user-stat-icon.reporter { background: #dcfce7; color: #16a34a; }
+
+.user-stat-num {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.1;
+}
+
+.user-stat-label {
+    font-size: 13px;
+    color: var(--text-muted);
+}
+
+.user-role-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.user-role-badge.admin { background: #fee2e2; color: #991b1b; }
+.user-role-badge.subeditor { background: #dbeafe; color: #1e40af; }
+.user-role-badge.reporter { background: #dcfce7; color: #166534; }
+.user-role-badge.correspondent { background: #fef3c7; color: #92400e; }
+
+.user-status-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 11.5px;
+    font-weight: 700;
+}
+
+.user-status-pill.active { background: #dcfce7; color: #15803d; }
+.user-status-pill.inactive { background: #fee2e2; color: #b91c1c; }
+
+/* Desktop User Table */
+.user-table-desktop {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 14px;
+}
+
+.user-table-desktop th {
+    background: var(--bg-surface-alt);
+    padding: 12px 14px;
+    font-size: 13.5px;
+    font-weight: 700;
+    text-align: left;
+    border-bottom: 2px solid var(--border-color);
+    color: var(--text-muted);
+}
+
+.user-table-desktop td {
+    padding: 14px;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 14px;
+    color: var(--text-main);
+    vertical-align: middle;
+}
+
+.user-table-desktop tr:hover td {
+    background: var(--bg-surface-alt);
+}
+
+/* Mobile User Cards */
+.user-card-mobile {
+    display: none;
+}
+
+.user-item-mobile {
+    background: var(--bg-surface-alt);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 10px;
+}
+
+.user-mobile-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.user-mobile-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+    border-top: 1px solid var(--border-color);
+    padding-top: 10px;
+}
+
+/* User Modal Overlay */
+.user-modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.75);
+    backdrop-filter: blur(6px);
+    z-index: 99999;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.user-modal-box {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    width: 100%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow-y: auto;
+    padding: 24px;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+}
+
+@media (max-width: 768px) {
+    .user-stats-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .user-table-desktop {
+        display: none;
+    }
+    .user-card-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+}
+

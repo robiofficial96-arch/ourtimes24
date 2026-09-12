@@ -131,12 +131,12 @@ function setupDropzone() {
 // ==========================================
 
 function switchAdminTab(tabId) {
-    ['tabCreateNews', 'tabManageNews', 'tabAdSettings', 'tabBreakingTicker'].forEach(id => {
+    ['tabCreateNews', 'tabManageNews', 'tabAdSettings', 'tabBreakingTicker', 'tabUserManager'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = (id === tabId) ? 'block' : 'none';
     });
 
-    ['btnTabCreate', 'btnTabManage', 'btnTabAds', 'btnTabBreaking'].forEach(id => {
+    ['btnTabCreate', 'btnTabManage', 'btnTabAds', 'btnTabBreaking', 'btnTabUsers'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.classList.remove('active');
     });
@@ -153,6 +153,10 @@ function switchAdminTab(tabId) {
     if (tabId === 'tabBreakingTicker') {
         document.getElementById('btnTabBreaking')?.classList.add('active');
         renderBreakingManagerList();
+    }
+    if (tabId === 'tabUserManager') {
+        document.getElementById('btnTabUsers')?.classList.add('active');
+        renderUserList();
     }
 }
 
@@ -535,6 +539,355 @@ function toggleBreakingStatus(id, status) {
 // 6. ADMIN PIN AUTHENTICATION & EXPORT
 // ==========================================
 
+// ==========================================
+// 6. USER & REPORTER REPOSITORY & CONTROLLER
+// ==========================================
+
+const DEFAULT_USERS = [
+    {
+        id: 'usr-1',
+        name: 'সৈয়দ হাফিজ মনির',
+        username: 'admin',
+        role: 'প্রধান সম্পাদক / অ্যাডমিন',
+        roleKey: 'admin',
+        pin: '2424',
+        phone: '+8801711152711',
+        status: 'active',
+        isMaster: true,
+        createdAt: '২০২৬-০১-০১'
+    },
+    {
+        id: 'usr-2',
+        name: 'সহ-সম্পাদক (বার্তা)',
+        username: 'subeditor',
+        role: 'সহ-সম্পাদক',
+        roleKey: 'subeditor',
+        pin: '2026',
+        phone: '+8801745481785',
+        status: 'active',
+        isMaster: false,
+        createdAt: '২০২৬-০১-০১'
+    },
+    {
+        id: 'usr-3',
+        name: 'স্টাফ রিপোর্টার',
+        username: 'reporter',
+        role: 'স্টাফ রিপোর্টার',
+        roleKey: 'reporter',
+        pin: '1234',
+        phone: '+8801800000000',
+        status: 'active',
+        isMaster: false,
+        createdAt: '২০২৬-০১-০১'
+    }
+];
+
+class UserStore {
+    static getAll() {
+        try {
+            const raw = localStorage.getItem('ourtimes_users_v1');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+            }
+        } catch (e) {}
+        localStorage.setItem('ourtimes_users_v1', JSON.stringify(DEFAULT_USERS));
+        return DEFAULT_USERS;
+    }
+
+    static save(user) {
+        const users = this.getAll();
+        const index = users.findIndex(u => u.id === user.id);
+        if (index >= 0) {
+            users[index] = { ...users[index], ...user };
+        } else {
+            users.push(user);
+        }
+        localStorage.setItem('ourtimes_users_v1', JSON.stringify(users));
+    }
+
+    static delete(id) {
+        const users = this.getAll();
+        const target = users.find(u => u.id === id);
+        if (target && target.isMaster) {
+            alert('❌ মাস্টার অ্যাডমিন একাউন্ট মুছে ফেলা সম্ভব নয়!');
+            return false;
+        }
+        const filtered = users.filter(u => u.id !== id);
+        localStorage.setItem('ourtimes_users_v1', JSON.stringify(filtered));
+        return true;
+    }
+
+    static getById(id) {
+        return this.getAll().find(u => u.id === id);
+    }
+
+    static getByPin(pin) {
+        return this.getAll().find(u => String(u.pin) === String(pin) && u.status === 'active');
+    }
+
+    static getCurrentUser() {
+        try {
+            const raw = sessionStorage.getItem('ourtimes_admin_user');
+            if (raw) return JSON.parse(raw);
+        } catch (e) {}
+        return this.getAll()[0];
+    }
+
+    static setCurrentUser(user) {
+        sessionStorage.setItem('ourtimes_admin_user', JSON.stringify(user));
+    }
+}
+
+let userPinVisibility = {};
+
+function renderUserList() {
+    const users = UserStore.getAll();
+    const container = document.getElementById('adminUserListContainer');
+    if (!container) return;
+
+    // Stats
+    const totalCount = users.length;
+    const adminCount = users.filter(u => u.roleKey === 'admin').length;
+    const reporterCount = users.filter(u => u.roleKey !== 'admin').length;
+
+    const totalEl = document.getElementById('userTotalCount');
+    const adminEl = document.getElementById('userAdminCount');
+    const reporterEl = document.getElementById('userReporterCount');
+    if (totalEl) totalEl.textContent = totalCount;
+    if (adminEl) adminEl.textContent = adminCount;
+    if (reporterEl) reporterEl.textContent = reporterCount;
+
+    // Desktop Table
+    const desktopTable = `
+        <table class="user-table-desktop">
+            <thead>
+                <tr>
+                    <th>ইউজার / প্রতিনিধি</th>
+                    <th>ভূমিকা (Role)</th>
+                    <th>ফোন নম্বর</th>
+                    <th>লগইন পিন</th>
+                    <th>স্ট্যাটাস</th>
+                    <th style="text-align: right;">অ্যাকশন</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${users.map(u => {
+                    const isVisible = !!userPinVisibility[u.id];
+                    const pinDisplay = isVisible ? u.pin : '••••';
+                    return `
+                        <tr>
+                            <td>
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--bg-surface); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--primary);">
+                                        ${u.name.charAt(0)}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 700;">${u.name}</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);">@${u.username} ${u.isMaster ? '★ মাস্টার' : ''}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="user-role-badge ${u.roleKey || 'reporter'}">${u.role}</span>
+                            </td>
+                            <td>
+                                <span style="font-size: 13px; font-family: monospace;">${u.phone || '—'}</span>
+                            </td>
+                            <td>
+                                <div style="display: inline-flex; align-items: center; gap: 6px; background: var(--bg-surface); padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border-color); font-family: monospace; font-weight: 700; letter-spacing: 2px;">
+                                    <span>${pinDisplay}</span>
+                                    <button type="button" onclick="toggleUserPinVisibility('${u.id}')" style="background: none; border: none; cursor: pointer; color: var(--text-muted); font-size: 12px; padding: 0 2px;" title="পিন দেখুন/লুকান">
+                                        <i class="fa-solid ${isVisible ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                                    </button>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="user-status-pill ${u.status === 'active' ? 'active' : 'inactive'}">
+                                    ${u.status === 'active' ? '● সক্রিয়' : '○ নিষ্ক্রিয়'}
+                                </span>
+                            </td>
+                            <td style="text-align: right;">
+                                <div style="display: inline-flex; gap: 6px;">
+                                    <button type="button" class="tool-btn" style="padding: 6px 10px; font-size: 12px;" onclick="openUserModal('${u.id}')" title="সম্পাদনা">
+                                        <i class="fa-solid fa-pen-to-square"></i>
+                                    </button>
+                                    ${!u.isMaster ? `
+                                        <button type="button" class="tool-btn" style="padding: 6px 10px; font-size: 12px; color: #dc2626;" onclick="deleteUserConfirm('${u.id}')" title="মুছুন">
+                                            <i class="fa-solid fa-trash"></i>
+                                        </button>
+                                    ` : `
+                                        <button type="button" class="tool-btn" style="padding: 6px 10px; font-size: 12px; opacity: 0.3; cursor: not-allowed;" title="মাস্টার অ্যাডমিন মোছা যাবে না">
+                                            <i class="fa-solid fa-lock"></i>
+                                        </button>
+                                    `}
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('')}
+            </tbody>
+        </table>
+    `;
+
+    // Mobile Cards
+    const mobileCards = `
+        <div class="user-card-mobile">
+            ${users.map(u => {
+                const isVisible = !!userPinVisibility[u.id];
+                const pinDisplay = isVisible ? u.pin : '••••';
+                return `
+                    <div class="user-item-mobile">
+                        <div class="user-mobile-top">
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-surface); border: 1px solid var(--border-color); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--primary); font-size: 16px;">
+                                    ${u.name.charAt(0)}
+                                </div>
+                                <div>
+                                    <div style="font-weight: 800; font-size: 15px;">${u.name}</div>
+                                    <div style="font-size: 12px; color: var(--text-muted);">@${u.username} • <span class="user-role-badge ${u.roleKey || 'reporter'}">${u.role}</span></div>
+                                </div>
+                            </div>
+                            <span class="user-status-pill ${u.status === 'active' ? 'active' : 'inactive'}">
+                                ${u.status === 'active' ? 'সক্রিয়' : 'নিষ্ক্রিয়'}
+                            </span>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 13px; background: var(--bg-surface); padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-color);">
+                            <span>ফোন: <strong>${u.phone || '—'}</strong></span>
+                            <div style="display: flex; align-items: center; gap: 6px; font-family: monospace; font-weight: 700;">
+                                <span>পিন: ${pinDisplay}</span>
+                                <button type="button" onclick="toggleUserPinVisibility('${u.id}')" style="background: none; border: none; cursor: pointer; color: var(--text-muted);">
+                                    <i class="fa-solid ${isVisible ? 'fa-eye-slash' : 'fa-eye'}"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="user-mobile-actions">
+                            <button type="button" class="tool-btn" style="padding: 8px;" onclick="openUserModal('${u.id}')">
+                                <i class="fa-solid fa-pen-to-square"></i> সম্পাদনা
+                            </button>
+                            ${!u.isMaster ? `
+                                <button type="button" class="tool-btn" style="padding: 8px; color: #dc2626;" onclick="deleteUserConfirm('${u.id}')">
+                                    <i class="fa-solid fa-trash"></i> মুছুন
+                                </button>
+                            ` : `
+                                <button type="button" class="tool-btn" style="padding: 8px; opacity: 0.4; cursor: not-allowed;" title="মাস্টার অ্যাডমিন">
+                                    <i class="fa-solid fa-lock"></i> সুরক্ষিত
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('')}
+        </div>
+    `;
+
+    container.innerHTML = desktopTable + mobileCards;
+}
+
+function toggleUserPinVisibility(id) {
+    userPinVisibility[id] = !userPinVisibility[id];
+    renderUserList();
+}
+
+function openUserModal(userId = null) {
+    const modal = document.getElementById('userModalOverlay');
+    const form = document.getElementById('userForm');
+    const modalTitle = document.getElementById('userModalTitle');
+    if (!modal) return;
+
+    if (userId) {
+        const u = UserStore.getById(userId);
+        if (!u) return;
+        if (modalTitle) modalTitle.textContent = 'ইউজার তথ্য সম্পাদনা করুন';
+        document.getElementById('editUserId').value = u.id;
+        document.getElementById('editUserName').value = u.name;
+        document.getElementById('editUserUsername').value = u.username;
+        document.getElementById('editUserRole').value = u.roleKey || 'reporter';
+        document.getElementById('editUserPhone').value = u.phone || '';
+        document.getElementById('editUserPin').value = u.pin || '';
+        document.getElementById('editUserStatus').value = u.status || 'active';
+    } else {
+        if (modalTitle) modalTitle.textContent = 'নতুন ইউজার / প্রতিনিধি যোগ করুন';
+        if (form) form.reset();
+        document.getElementById('editUserId').value = '';
+        document.getElementById('editUserStatus').value = 'active';
+    }
+
+    modal.style.display = 'flex';
+}
+
+function closeUserModal() {
+    const modal = document.getElementById('userModalOverlay');
+    if (modal) modal.style.display = 'none';
+}
+
+function handleUserSubmit(e) {
+    e.preventDefault();
+    const id = document.getElementById('editUserId').value || `usr-${Date.now()}`;
+    const name = document.getElementById('editUserName').value.trim();
+    const username = document.getElementById('editUserUsername').value.trim().toLowerCase();
+    const roleKey = document.getElementById('editUserRole').value;
+    const phone = document.getElementById('editUserPhone').value.trim();
+    const pin = document.getElementById('editUserPin').value.trim();
+    const status = document.getElementById('editUserStatus').value;
+
+    const roleMap = {
+        'admin': 'প্রধান সম্পাদক / অ্যাডমিন',
+        'subeditor': 'সহ-সম্পাদক',
+        'reporter': 'স্টাফ রিপোর্টার',
+        'correspondent': 'জেলা প্রতিনিধি'
+    };
+
+    if (!name || !username || !pin) {
+        alert('অনুগ্রহ করে নাম, ইউজারনেম এবং গোপন পিন পূরণ করুন!');
+        return;
+    }
+
+    if (pin.length < 4 || pin.length > 6) {
+        alert('গোপন পিন অবশ্যই ৪ থেকে ৬ সংখ্যার হতে হবে!');
+        return;
+    }
+
+    const existingUser = UserStore.getById(id);
+    const isMaster = existingUser ? !!existingUser.isMaster : false;
+
+    const userData = {
+        id,
+        name,
+        username,
+        role: roleMap[roleKey] || 'স্টাফ রিপোর্টার',
+        roleKey,
+        phone,
+        pin,
+        status,
+        isMaster,
+        createdAt: existingUser ? existingUser.createdAt : new Date().toISOString().split('T')[0]
+    };
+
+    UserStore.save(userData);
+    closeUserModal();
+    renderUserList();
+    updateCurrentUserUI();
+    alert('✅ ইউজার তথ্য সফলভাবে সংরক্ষিত হয়েছে!');
+}
+
+function deleteUserConfirm(id) {
+    const u = UserStore.getById(id);
+    if (!u) return;
+    if (u.isMaster) {
+        alert('মাস্টার অ্যাডমিন একাউন্ট মুছে ফেলা যাবে না!');
+        return;
+    }
+    if (confirm(`আপনি কি নিশ্চিত যে "${u.name}"-এর একাউন্টটি মুছে ফেলতে চান?`)) {
+        UserStore.delete(id);
+        renderUserList();
+    }
+}
+
+// ==========================================
+// 7. ADMIN AUTHENTICATION & EXPORT
+// ==========================================
+
 const ADMIN_MASTER_PIN = '2424';
 
 function checkAdminAuth() {
@@ -542,6 +895,7 @@ function checkAdminAuth() {
     const overlay = document.getElementById('adminPinOverlay');
     if (isAuth === 'true') {
         if (overlay) overlay.style.display = 'none';
+        updateCurrentUserUI();
     } else {
         if (overlay) overlay.style.display = 'flex';
         const pinInput = document.getElementById('adminPinInput');
@@ -549,14 +903,35 @@ function checkAdminAuth() {
     }
 }
 
+function updateCurrentUserUI() {
+    const user = UserStore.getCurrentUser();
+    const nameEl = document.getElementById('adminCurrentUserName');
+    const roleEl = document.getElementById('adminCurrentUserRole');
+    if (nameEl && user) nameEl.textContent = user.name;
+    if (roleEl && user) roleEl.textContent = user.role;
+
+    // Auto-fill author in news form if empty or default
+    const authorInput = document.getElementById('newsAuthor');
+    if (authorInput && (!authorInput.value || authorInput.value === 'নিজস্ব প্রতিবেদক')) {
+        authorInput.value = user.name;
+    }
+}
+
 function handlePinSubmit(e) {
     e.preventDefault();
     const pin = document.getElementById('adminPinInput')?.value.trim();
     const err = document.getElementById('pinError');
-    if (pin === ADMIN_MASTER_PIN) {
+
+    // Check against registered users or fallback master pin
+    const matchedUser = UserStore.getByPin(pin);
+    if (pin === ADMIN_MASTER_PIN || matchedUser) {
         sessionStorage.setItem('ourtimes_admin_auth', 'true');
+        const activeUser = matchedUser || UserStore.getAll()[0];
+        UserStore.setCurrentUser(activeUser);
         const overlay = document.getElementById('adminPinOverlay');
         if (overlay) overlay.style.display = 'none';
+        updateCurrentUserUI();
+        if (err) err.style.display = 'none';
     } else {
         if (err) err.style.display = 'block';
     }
@@ -565,6 +940,7 @@ function handlePinSubmit(e) {
 function adminLogout() {
     if (confirm('আপনি কি নিশ্চিত যে অ্যাডমিন প্যানেল থেকে লগআউট করতে চান?')) {
         sessionStorage.removeItem('ourtimes_admin_auth');
+        sessionStorage.removeItem('ourtimes_admin_user');
         window.location.reload();
     }
 }
@@ -597,6 +973,7 @@ function resetToDefaultData() {
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    UserStore.getAll(); // seed default users
     checkAdminAuth();
     setupDropzone();
     renderNewsTable();
