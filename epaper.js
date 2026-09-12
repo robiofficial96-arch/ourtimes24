@@ -72,7 +72,7 @@ function renderEpaperPage(pageNum) {
                 <div class="epaper-story-block" style="grid-column: 1 / 3;" onclick="openNewsClip('${lead.id}')">
                     <h1 class="epaper-story-headline epaper-lead-head">${escapeHtml(lead.title)}</h1>
                     <div style="font-size:14.5px; font-weight:700; color:#b91c1c; margin-bottom:8px;">${escapeHtml(lead.subtitle || (lead.category + ' | ' + (lead.district || 'ঢাকা')))}</div>
-                    <img src="${lead.image || 'logo.png'}" style="width:100%; height:260px; object-fit:cover; margin-bottom:10px; border-radius:3px; border:1px solid #e5e7eb;" alt="${escapeHtml(lead.title)}">
+                    ${lead.image && lead.image !== 'logo.png' ? `<img src="${lead.image}" style="width:100%; height:260px; object-fit:cover; margin-bottom:10px; border-radius:3px; border:1px solid #e5e7eb;" alt="${escapeHtml(lead.title)}">` : ''}
                     <p class="epaper-story-body">
                         ${truncateText(lead.excerpt || lead.content, 260)}
                     </p>
@@ -124,7 +124,7 @@ function renderEpaperPage(pageNum) {
                 <div class="epaper-story-block" onclick="openNewsClip('${editLead.id}')">
                     <h1 class="epaper-story-headline epaper-lead-head">সম্পাদকীয়: ${escapeHtml(editLead.title)}</h1>
                     <div style="font-style:italic; font-weight:700; color:#4b5563; margin-bottom:10px; font-size:14px;">${escapeHtml(editLead.subtitle || 'বস্তুনিষ্ঠ সাংবাদিকতায় সত্যের অনুসন্ধান')}</div>
-                    <img src="${editLead.image || 'logo.png'}" style="width:100%; height:180px; object-fit:cover; margin-bottom:10px; border-radius:3px;" alt="">
+                    ${editLead.image && editLead.image !== 'logo.png' ? `<img src="${editLead.image}" style="width:100%; height:180px; object-fit:cover; margin-bottom:10px; border-radius:3px;" alt="">` : ''}
                     <p class="epaper-story-body">
                         ${truncateText(editLead.excerpt || editLead.content, 220)}
                     </p>
@@ -177,7 +177,7 @@ function renderEpaperPage(pageNum) {
             <div style="display:grid; grid-template-columns: 1.5fr 1.5fr; gap:20px;">
                 <div class="epaper-story-block" onclick="openNewsClip('${p3Lead1.id}')">
                     <h2 class="epaper-story-headline epaper-sub-head">${p3Lead1.district ? `[${p3Lead1.district}] ` : ''}${escapeHtml(p3Lead1.title)}</h2>
-                    <img src="${p3Lead1.image || 'logo.png'}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">
+                    ${p3Lead1.image && p3Lead1.image !== 'logo.png' ? `<img src="${p3Lead1.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
                     <p class="epaper-story-body">
                         ${truncateText(p3Lead1.excerpt || p3Lead1.content, 160)}
                     </p>
@@ -185,7 +185,7 @@ function renderEpaperPage(pageNum) {
 
                 <div class="epaper-story-block" onclick="openNewsClip('${p3Lead2.id}')">
                     <h2 class="epaper-story-headline epaper-sub-head">${p3Lead2.district ? `[${p3Lead2.district}] ` : ''}${escapeHtml(p3Lead2.title)}</h2>
-                    <img src="${p3Lead2.image || 'logo.png'}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">
+                    ${p3Lead2.image && p3Lead2.image !== 'logo.png' ? `<img src="${p3Lead2.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
                     <p class="epaper-story-body">
                         ${truncateText(p3Lead2.excerpt || p3Lead2.content, 160)}
                     </p>
@@ -229,7 +229,7 @@ function renderEpaperPage(pageNum) {
             <div style="display:grid; grid-template-columns: 1.5fr 1.5fr; gap:20px;">
                 <div class="epaper-story-block" onclick="openNewsClip('${p4Lead1.id}')">
                     <h2 class="epaper-story-headline epaper-sub-head">${escapeHtml(p4Lead1.title)}</h2>
-                    <img src="${p4Lead1.image || 'logo.png'}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">
+                    ${p4Lead1.image && p4Lead1.image !== 'logo.png' ? `<img src="${p4Lead1.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
                     <p class="epaper-story-body">
                         ${truncateText(p4Lead1.excerpt || p4Lead1.content, 160)}
                     </p>
@@ -237,7 +237,7 @@ function renderEpaperPage(pageNum) {
 
                 <div class="epaper-story-block" onclick="openNewsClip('${p4Lead2.id}')">
                     <h2 class="epaper-story-headline epaper-sub-head">${escapeHtml(p4Lead2.title)}</h2>
-                    <img src="${p4Lead2.image || 'logo.png'}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">
+                    ${p4Lead2.image && p4Lead2.image !== 'logo.png' ? `<img src="${p4Lead2.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
                     <p class="epaper-story-body">
                         ${truncateText(p4Lead2.excerpt || p4Lead2.content, 160)}
                     </p>
@@ -280,7 +280,7 @@ function renderEpaperPage(pageNum) {
             <div style="display:grid; grid-template-columns: 1.5fr 1.5fr; gap:20px;">
                 <div class="epaper-story-block" onclick="openNewsClip('${p5Lead1.id}')">
                     <h2 class="epaper-story-headline epaper-sub-head">${p5Lead1.category ? `[${p5Lead1.category}] ` : ''}${escapeHtml(p5Lead1.title)}</h2>
-                    <img src="${p5Lead1.image || 'logo.png'}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">
+                    ${p5Lead1.image && p5Lead1.image !== 'logo.png' ? `<img src="${p5Lead1.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
                     <p class="epaper-story-body">
                         ${truncateText(p5Lead1.excerpt || p5Lead1.content, 160)}
                     </p>
@@ -288,7 +288,7 @@ function renderEpaperPage(pageNum) {
 
                 <div class="epaper-story-block" onclick="openNewsClip('${p5Lead2.id}')">
                     <h2 class="epaper-story-headline epaper-sub-head">${p5Lead2.category ? `[${p5Lead2.category}] ` : ''}${escapeHtml(p5Lead2.title)}</h2>
-                    <img src="${p5Lead2.image || 'logo.png'}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">
+                    ${p5Lead2.image && p5Lead2.image !== 'logo.png' ? `<img src="${p5Lead2.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
                     <p class="epaper-story-body">
                         ${truncateText(p5Lead2.excerpt || p5Lead2.content, 160)}
                     </p>

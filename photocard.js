@@ -9,14 +9,59 @@ let currentTemplate = 'classic';
 let activeImage = new Image();
 let imageLoaded = false;
 
-// Load Brand Logo for Canvas
-let brandLogoImg = new Image();
-let logoLoaded = false;
-brandLogoImg.onload = () => {
-    logoLoaded = true;
-    renderCanvas();
-};
-brandLogoImg.src = 'logo.png';
+// Dedicated Bengali Brand Typography Vector Drawer for Canvas
+function drawBanglaBrandLogo(context, x, y, options = {}) {
+    context.save();
+    const fontSize = options.fontSize || 36;
+    const fontPrimaryColor = options.fontPrimaryColor || '#ffffff';
+    const numColor = options.numColor || '#ef4444';
+    const showTagline = options.showTagline !== false;
+    const align = options.align || 'left';
+
+    context.textAlign = 'left';
+    context.textBaseline = 'middle';
+    
+    // Measure Bengali logo text
+    context.font = `900 ${fontSize}px "Anek Bangla", "Hind Siliguri", sans-serif`;
+    const textMain = 'আওয়ার টাইমস';
+    const textNum = '২৪';
+    const wMain = context.measureText(textMain).width;
+    const wNum = context.measureText(textNum).width;
+    const spacing = Math.round(fontSize * 0.1);
+    const totalW = wMain + spacing + wNum;
+
+    let startX = x;
+    if (align === 'right') {
+        startX = x - totalW;
+    } else if (align === 'center') {
+        startX = x - (totalW / 2);
+    }
+
+    // Main text: আওয়ার টাইমস
+    context.fillStyle = fontPrimaryColor;
+    context.fillText(textMain, startX, y);
+
+    // Number text: ২৪
+    context.fillStyle = numColor;
+    context.fillText(textNum, startX + wMain + spacing, y);
+
+    // Red dot accent
+    const dotRadius = Math.max(2, Math.round(fontSize * 0.08));
+    context.beginPath();
+    context.arc(startX + totalW + (dotRadius * 1.6), y + (fontSize * 0.18), dotRadius, 0, Math.PI * 2);
+    context.fillStyle = numColor;
+    context.fill();
+
+    // Optional Tagline below
+    if (showTagline) {
+        const taglineFontSize = Math.max(12, Math.round(fontSize * 0.35));
+        context.font = `600 ${taglineFontSize}px "Hind Siliguri", sans-serif`;
+        context.fillStyle = options.taglineColor || (fontPrimaryColor === '#ffffff' ? '#cbd5e1' : '#64748b');
+        const taglineText = options.taglineText || 'সত্য ও বস্তুনিষ্ঠ সংবাদ';
+        context.fillText(taglineText, startX, y + (fontSize * 0.62));
+    }
+    context.restore();
+}
 
 // Pan & Zoom state
 let imageX = 0;
@@ -48,14 +93,17 @@ function initDefaultPhotoCardData() {
             if (catEl && defaultArt.category) {
                 catEl.value = defaultArt.category;
             }
-            if (defaultArt.image) {
+            if (defaultArt.image && defaultArt.image !== 'logo.png') {
                 activeImage.src = defaultArt.image;
                 return;
             }
         }
     }
     if (!activeImage.src) {
-        activeImage.src = 'logo.png';
+        const withImg = (typeof NewsDB !== 'undefined' && NewsDB.getAllNews)
+            ? NewsDB.getAllNews().find(a => a.image && a.image !== 'logo.png')
+            : null;
+        activeImage.src = withImg ? withImg.image : 'uploads/0000.webp';
     }
 }
 
@@ -340,15 +388,15 @@ function renderClassicTemplate(headline, category, date, showLogo, showWatermark
     ctx.fillStyle = '#b91c1c';
     ctx.fillRect(0, 1066, 1080, 14);
 
-    // Logo & Branding
-    if (showLogo && logoLoaded) {
-        ctx.drawImage(brandLogoImg, 50, 26, 240, 64);
-    } else if (showLogo) {
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '800 38px "Plus Jakarta Sans", sans-serif';
-        ctx.fillText('OURTIMES', 50, 68);
-        ctx.fillStyle = '#b91c1c';
-        ctx.fillText('24', 256, 68);
+    // Bengali Brand Logo
+    if (showLogo) {
+        drawBanglaBrandLogo(ctx, 50, 48, {
+            fontSize: 34,
+            fontPrimaryColor: '#ffffff',
+            numColor: '#ef4444',
+            showTagline: true,
+            taglineColor: '#cbd5e1'
+        });
     }
 
     // Category Pill Badge Top Right
@@ -396,8 +444,15 @@ function renderQuoteTemplate(headline, speaker, date, showLogo, showWatermark) {
     ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
     ctx.fillRect(0, 0, 1080, 110);
 
-    if (showLogo && logoLoaded) {
-        ctx.drawImage(brandLogoImg, 50, 24, 240, 64);
+    // Bengali Brand Logo
+    if (showLogo) {
+        drawBanglaBrandLogo(ctx, 60, 48, {
+            fontSize: 34,
+            fontPrimaryColor: '#ffffff',
+            numColor: '#f59e0b',
+            showTagline: true,
+            taglineColor: '#94a3b8'
+        });
     }
 
     // Gold Quote Icon
@@ -454,8 +509,17 @@ function renderBreakingTemplate(headline, category, date, showLogo, showWatermar
     ctx.font = '900 36px "Anek Bangla", sans-serif';
     ctx.fillText('⚡ ব্রেকিং নিউজ', 50, 68);
 
-    if (showLogo && logoLoaded) {
-        ctx.drawImage(brandLogoImg, 780, 22, 250, 64);
+    // Bengali Brand Logo
+    if (showLogo) {
+        drawBanglaBrandLogo(ctx, 1030, 48, {
+            fontSize: 32,
+            fontPrimaryColor: '#ffffff',
+            numColor: '#fee2e2',
+            showTagline: true,
+            taglineColor: '#fee2e2',
+            align: 'right',
+            taglineText: 'সবার আগে সব খবর'
+        });
     }
 
     // Center Headline Box with White Card
@@ -502,8 +566,17 @@ function renderSportsTemplate(headline, category, date, showLogo, showWatermark)
     ctx.font = '900 34px "Anek Bangla", sans-serif';
     ctx.fillText('🏆 খেলাধুলা • SPORTS SPOTLIGHT', 50, 68);
 
-    if (showLogo && logoLoaded) {
-        ctx.drawImage(brandLogoImg, 780, 22, 250, 64);
+    // Bengali Brand Logo
+    if (showLogo) {
+        drawBanglaBrandLogo(ctx, 1030, 48, {
+            fontSize: 32,
+            fontPrimaryColor: '#ffffff',
+            numColor: '#fef08a',
+            showTagline: true,
+            taglineColor: '#d1fae5',
+            align: 'right',
+            taglineText: 'সবার আগে সব খবর'
+        });
     }
 
     // Headline
@@ -555,3 +628,11 @@ async function copyCanvasImageToClipboard() {
         alert('ক্লিপবোর্ড কপি সমর্থিত নয়। দয়া করে ডাউনলোড বাটনে ক্লিক করুন।');
     }
 }
+
+// Ensure web fonts are rendered properly on canvas
+if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => {
+        renderCanvas();
+    });
+}
+
