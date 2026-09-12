@@ -133,8 +133,13 @@
 
                         <div class="admin-form-row-3">
                             <div class="control-group">
-                                <label class="control-label">বিভাগ / ক্যাটাগরি *</label>
-                                <select id="newsCategory" class="control-select" required>
+                                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+                                    <label class="control-label" style="margin-bottom: 0;">বিভাগ / ক্যাটাগরি *</label>
+                                    <button type="button" class="tool-btn" style="padding: 2px 8px; font-size: 11.5px; border-radius: 4px; font-weight: 700; color: var(--primary);" onclick="openCategoryModal()" title="নতুন ক্যাটাগরি যোগ করুন">
+                                        <i class="fa-solid fa-plus"></i> নতুন বিভাগ
+                                    </button>
+                                </div>
+                                <select id="newsCategory" class="control-select" required onchange="handleCategorySelectChange(this.value)">
                                     <option value="জাতীয়">জাতীয়</option>
                                     <option value="রাজনীতি">রাজনীতি</option>
                                     <option value="আন্তর্জাতিক">আন্তর্জাতিক</option>
@@ -700,6 +705,54 @@
                     </button>
                 </div>
             </form>
+        </div>
+    </div>
+
+    <!-- CATEGORY MANAGEMENT MODAL -->
+    <div id="categoryModalOverlay" class="user-modal-overlay">
+        <div class="user-modal-box" style="max-width: 480px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                <h3 style="font-size: 18px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-tags text-primary"></i> নতুন বিভাগ / ক্যাটাগরি যোগ করুন
+                </h3>
+                <button type="button" onclick="closeCategoryModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <form id="categoryForm" onsubmit="handleCategorySubmit(event)">
+                <div class="control-group" style="margin-bottom: 14px;">
+                    <label class="control-label">বিভাগের নাম (বাংলায়) *</label>
+                    <input type="text" id="newCategoryName" class="control-input" placeholder="যেমন: লাইফস্টাইল, স্বাস্থ্য, প্রবাস, শিক্ষা" required>
+                </div>
+
+                <div class="control-group" style="margin-bottom: 16px;">
+                    <label class="control-label">ক্যাটাগরি আইডি / স্ল্যাগ (ইংরেজি URL)</label>
+                    <input type="text" id="newCategorySlug" class="control-input" placeholder="যেমন: lifestyle / health (খালি রাখলে অটো হবে)">
+                    <small style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px; display: block;">
+                        ইংরেজি ছোট অক্ষরে ইউআরএল (যেমন: category.html?cat=lifestyle)
+                    </small>
+                </div>
+
+                <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                    <button type="button" class="tool-btn" onclick="closeCategoryModal()" style="padding: 8px 16px;">
+                        বাতিল
+                    </button>
+                    <button type="submit" class="btn-epaper-topbar" style="background: var(--primary); color: white; border: none; padding: 8px 20px; font-weight: 800; border-radius: var(--radius-sm); cursor: pointer;">
+                        <i class="fa-solid fa-check"></i> বিভাগ যোগ করুন
+                    </button>
+                </div>
+            </form>
+
+            <!-- Custom Category List Section -->
+            <div style="margin-top: 20px; border-top: 1px dashed var(--border-color); padding-top: 14px;">
+                <div style="font-size: 13px; font-weight: 700; color: var(--text-main); margin-bottom: 8px;">
+                    আপনার তৈরি করা কাস্টম বিভাগসমূহ:
+                </div>
+                <div id="customCategoryListContainer" style="display: flex; flex-wrap: wrap; gap: 6px;">
+                    <!-- Dynamically populated chips -->
+                </div>
+            </div>
         </div>
     </div>
 

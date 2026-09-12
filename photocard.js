@@ -147,6 +147,27 @@ function loadImageFromUrl(url) {
 window.addEventListener('DOMContentLoaded', () => {
     initCardDate();
 
+    // Load custom categories from CategoryStore/localStorage if present
+    try {
+        const raw = localStorage.getItem('ourtimes_custom_categories_v1');
+        if (raw) {
+            const custom = JSON.parse(raw);
+            if (Array.isArray(custom)) {
+                const catSelect = document.getElementById('cardCategory');
+                if (catSelect) {
+                    custom.forEach(c => {
+                        if (!Array.from(catSelect.options).some(opt => opt.value === c.name)) {
+                            const opt = document.createElement('option');
+                            opt.value = c.name;
+                            opt.textContent = c.name;
+                            catSelect.appendChild(opt);
+                        }
+                    });
+                }
+            }
+        }
+    } catch(e) {}
+
     const params = new URLSearchParams(window.location.search);
     const titleParam = params.get('title');
     const catParam = params.get('cat');

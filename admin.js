@@ -312,6 +312,194 @@ function applyAuthorBylineRules(user) {
 }
 
 // ==========================================
+// 2.8 DYNAMIC CATEGORY STORE & CONTROLLER
+// ==========================================
+
+const DEFAULT_CATEGORIES = [
+    { name: 'জাতীয়', slug: 'national', isDefault: true },
+    { name: 'রাজনীতি', slug: 'politics', isDefault: true },
+    { name: 'আন্তর্জাতিক', slug: 'international', isDefault: true },
+    { name: 'অর্থ-বাণিজ্য', slug: 'economy', isDefault: true },
+    { name: 'খেলাধুলা', slug: 'sports', isDefault: true },
+    { name: 'বিনোদন', slug: 'entertainment', isDefault: true },
+    { name: 'প্রযুক্তি', slug: 'tech', isDefault: true },
+    { name: 'সারাদেশ', slug: 'saradesh', isDefault: true },
+    { name: 'মতামত', slug: 'opinion', isDefault: true }
+];
+
+class CategoryStore {
+    static getAll() {
+        try {
+            const raw = localStorage.getItem('ourtimes_custom_categories_v1');
+            if (raw) {
+                const custom = JSON.parse(raw);
+                if (Array.isArray(custom)) {
+                    const combined = [...DEFAULT_CATEGORIES];
+                    custom.forEach(c => {
+                        if (!combined.some(d => d.name === c.name || d.slug === c.slug)) {
+                            combined.push(c);
+                        }
+                    });
+                    return combined;
+                }
+            }
+        } catch (e) {}
+        return DEFAULT_CATEGORIES;
+    }
+
+    static getCustomOnly() {
+        return this.getAll().filter(c => !c.isDefault);
+    }
+
+    static add(name, slug) {
+        name = (name || '').trim();
+        if (!name) return { success: false, message: 'বিভাগের নাম আবশ্যক!' };
+
+        if (!slug || !slug.trim()) {
+            slug = 'cat-' + Date.now().toString(36);
+        } else {
+            slug = slug.trim().toLowerCase().replace(/[^a-z0-9\-]/g, '-');
+        }
+
+        const all = this.getAll();
+        if (all.some(c => c.name.toLowerCase() === name.toLowerCase())) {
+            return { success: false, message: 'এই নামের বিভাগ ইতিমধ্যে বিদ্যমান!' };
+        }
+
+        const custom = this.getCustomOnly();
+        const newCat = { name, slug, isDefault: false };
+        custom.push(newCat);
+        localStorage.setItem('ourtimes_custom_categories_v1', JSON.stringify(custom));
+        return { success: true, category: newCat };
+    }
+
+    static delete(slug) {
+        const custom = this.getCustomOnly().filter(c => c.slug !== slug);
+        localStorage.setItem('ourtimes_custom_categories_v1', JSON.stringify(custom));
+    }
+
+    static getSlugByName(name) {
+        const cat = this.getAll().find(c => c.name === name);
+        return cat ? cat.slug : 'national';
+    }
+}
+
+if (typeof window !== 'undefined') {
+    window.CategoryStore = CategoryStore;
+}
+
+function populateCategorySelects(selectedName = null) {
+    const categories = CategoryStore.getAll();
+
+    // 1. News Form Category Select
+    const newsCatSelect = document.getElementById('newsCategory');
+    if (newsCatSelect) {
+        const currentVal = selectedName || newsCatSelect.value || 'জাতীয়';
+        newsCatSelect.innerHTML = categories.map(c => `
+            <option value="${c.name}">${c.name}</option>
+        `).join('') + `
+            <option value="__add_new__" style="color:var(--primary); font-weight:700;">➕ নতুন বিভাগ যোগ করুন...</option>
+        `;
+        if (categories.some(c => c.name === currentVal)) {
+            newsCatSelect.value = currentVal;
+        } else {
+            newsCatSelect.value = categories[0].name;
+        }
+    }
+
+    // 2. Admin News List Filter
+    const filterCatSelect = document.getElementById('adminCategoryFilter');
+    if (filterCatSelect) {
+        const currentFilter = filterCatSelect.value || 'all';
+        filterCatSelect.innerHTML = `
+            <option value="all">সকল বিভাগ</option>
+            ${categories.map(c => `<option value="${c.name}">${c.name}</option>`).join('')}
+        `;
+        if (currentFilter) filterCatSelect.value = currentFilter;
+    }
+
+    // 3. Render Custom Categories in Modal
+    renderCategoryModalList();
+}
+
+function handleCategorySelectChange(val) {
+    if (val === '__add_new__') {
+        openCategoryModal();
+        const newsCatSelect = document.getElementById('newsCategory');
+        if (newsCatSelect) newsCatSelect.value = 'জাতীয়';
+    }
+}
+
+function openCategoryModal() {
+    const modal = document.getElementById('categoryModalOverlay');
+    if (modal) {
+        modal.style.display = 'flex';
+        renderCategoryModalList();
+        const input = document.getElementById('newCategoryName');
+        if (input) {
+            input.value = '';
+            setTimeout(() => input.focus(), 80);
+        }
+        const slugInput = document.getElementById('newCategorySlug');
+        if (slugInput) slugInput.value = '';
+    }
+}
+
+function closeCategoryModal() {
+    const modal = document.getElementById('categoryModalOverlay');
+    if (modal) modal.style.display = 'none';
+}
+
+function renderCategoryModalList() {
+    const container = document.getElementById('customCategoryListContainer');
+    if (!container) return;
+
+    const custom = CategoryStore.getCustomOnly();
+    if (custom.length === 0) {
+        container.innerHTML = `<span style="font-size:12px; color:var(--text-muted);">এখনো কোনো কাস্টম বিভাগ তৈরি করা হয়নি।</span>`;
+        return;
+    }
+
+    container.innerHTML = custom.map(c => `
+        <span style="display:inline-flex; align-items:center; gap:6px; background:var(--bg-surface-alt); border:1px solid var(--border-color); padding:4px 10px; border-radius:16px; font-size:12.5px; font-weight:600;">
+            <span>${c.name}</span>
+            <small style="color:var(--text-muted); font-size:11px;">(${c.slug})</small>
+            <button type="button" onclick="deleteCategoryConfirm('${c.slug}')" style="background:none; border:none; color:#dc2626; cursor:pointer; padding:0 2px;" title="বিভাগ মুছুন">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </span>
+    `).join('');
+}
+
+function handleCategorySubmit(e) {
+    e.preventDefault();
+    const name = document.getElementById('newCategoryName').value.trim();
+    const slug = document.getElementById('newCategorySlug').value.trim();
+
+    if (!name) {
+        alert('অনুগ্রহ করে বিভাগের নাম লিখুন!');
+        return;
+    }
+
+    const res = CategoryStore.add(name, slug);
+    if (!res.success) {
+        alert('ত্রুটি: ' + res.message);
+        return;
+    }
+
+    closeCategoryModal();
+    populateCategorySelects(res.category.name);
+    alert(`✅ নতুন বিভাগ "${res.category.name}" সফলভাবে যুক্ত হয়েছে!`);
+}
+
+function deleteCategoryConfirm(slug) {
+    if (confirm('আপনি কি নিশ্চিত যে এই কাস্টম বিভাগটি মুছে ফেলতে চান?')) {
+        CategoryStore.delete(slug);
+        populateCategorySelects();
+    }
+}
+
+// ==========================================
 // 3. NEWS SUBMIT & MANAGEMENT
 // ==========================================
 
@@ -345,24 +533,14 @@ function handleNewsSubmit(e) {
         }
     }
 
-    const catSlugs = {
-        'জাতীয়': 'national',
-        'রাজনীতি': 'politics',
-        'আন্তর্জাতিক': 'international',
-        'অর্থ-বাণিজ্য': 'economy',
-        'খেলাধুলা': 'sports',
-        'বিনোদন': 'entertainment',
-        'প্রযুক্তি': 'tech',
-        'সারাদেশ': 'saradesh',
-        'মতামত': 'opinion'
-    };
+    const categorySlug = CategoryStore.getSlugByName(category);
 
     const newsItem = {
         id,
         title,
         subtitle,
         category,
-        categorySlug: catSlugs[category] || 'national',
+        categorySlug,
         district,
         author,
         authorAvatar,
@@ -1501,6 +1679,7 @@ function resetToDefaultData() {
 
 document.addEventListener('DOMContentLoaded', () => {
     UserStore.getAll(); // seed default users
+    populateCategorySelects();
     checkAdminAuth();
     setupDropzone();
     renderNewsTable();
