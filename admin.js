@@ -127,6 +127,149 @@ function setupDropzone() {
 }
 
 // ==========================================
+// 1.5 IN-ARTICLE RICH MEDIA & IMAGE INSERTION
+// ==========================================
+
+function insertTextAtCursor(textarea, textToInsert) {
+    if (!textarea) return;
+    const startPos = textarea.selectionStart || 0;
+    const endPos = textarea.selectionEnd || 0;
+    const currentText = textarea.value;
+
+    textarea.value = currentText.substring(0, startPos) + textToInsert + currentText.substring(endPos, currentText.length);
+    textarea.focus();
+    textarea.selectionStart = startPos + textToInsert.length;
+    textarea.selectionEnd = startPos + textToInsert.length;
+}
+
+function openInsertImageModal() {
+    const modal = document.getElementById('insertImageModalOverlay');
+    if (modal) {
+        modal.style.display = 'flex';
+        const urlInput = document.getElementById('inArticleImageUrl');
+        const captionInput = document.getElementById('inArticleImageCaption');
+        const fileInput = document.getElementById('inArticleImageFile');
+        const previewBox = document.getElementById('inArticleImagePreviewBox');
+        if (urlInput) urlInput.value = '';
+        if (captionInput) captionInput.value = '';
+        if (fileInput) fileInput.value = '';
+        if (previewBox) previewBox.style.display = 'none';
+    }
+}
+
+function closeInsertImageModal() {
+    const modal = document.getElementById('insertImageModalOverlay');
+    if (modal) modal.style.display = 'none';
+}
+
+function uploadInArticleImageToCloudinary(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+        alert('অনুগ্রহ করে শুধুমাত্র ইমেজ ফাইল (JPG, PNG, WebP) সিলেক্ট করুন!');
+        return;
+    }
+
+    const progressEl = document.getElementById('inArticleUploadProgress');
+    if (progressEl) progressEl.style.display = 'block';
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_CONFIG.uploadPreset);
+
+    fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => {
+        if (!res.ok) throw new Error(`সার্ভার এরর: ${res.status}`);
+        return res.json();
+    })
+    .then(data => {
+        if (data && data.secure_url) {
+            const urlInput = document.getElementById('inArticleImageUrl');
+            if (urlInput) {
+                urlInput.value = data.secure_url;
+                previewInArticleImage(data.secure_url);
+            }
+        } else {
+            throw new Error('Cloudinary থেকে লিঙ্ক পাওয়া যায়নি!');
+        }
+    })
+    .catch(err => {
+        console.error('In-Article Cloudinary Upload Error:', err);
+        alert('ছবি আপলোডে সমস্যা হয়েছে: ' + err.message);
+    })
+    .finally(() => {
+        if (progressEl) progressEl.style.display = 'none';
+    });
+}
+
+function previewInArticleImage(url) {
+    const box = document.getElementById('inArticleImagePreviewBox');
+    const img = document.getElementById('inArticleImagePreviewImg');
+    if (box && img) {
+        if (url && (url.startsWith('http://') || url.startsWith('https://'))) {
+            img.src = url;
+            box.style.display = 'block';
+        } else {
+            img.src = '';
+            box.style.display = 'none';
+        }
+    }
+}
+
+function insertInArticleImageToContent() {
+    const url = document.getElementById('inArticleImageUrl')?.value.trim();
+    const caption = document.getElementById('inArticleImageCaption')?.value.trim();
+    const align = document.getElementById('inArticleImageAlign')?.value || 'center';
+    const textarea = document.getElementById('newsContent');
+
+    if (!url) {
+        alert('অনুগ্রহ করে একটি ছবি নির্বাচন করে আপলোড করুন অথবা ছবির লিঙ্ক দিন!');
+        return;
+    }
+
+    let figureHtml = '';
+    if (align === 'left') {
+        figureHtml = `\n<figure class="in-article-image-box" style="float: left; margin: 12px 18px 16px 0; max-width: 320px; text-align: center;">\n    <img src="${url}" alt="${caption || 'সংবাদের ছবি'}" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: block;">\n    ${caption ? `<figcaption style="font-size: 12.5px; color: #64748b; margin-top: 6px; font-style: italic;">${caption}</figcaption>` : ''}\n</figure>\n`;
+    } else if (align === 'right') {
+        figureHtml = `\n<figure class="in-article-image-box" style="float: right; margin: 12px 0 16px 18px; max-width: 320px; text-align: center;">\n    <img src="${url}" alt="${caption || 'সংবাদের ছবি'}" style="width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: block;">\n    ${caption ? `<figcaption style="font-size: 12.5px; color: #64748b; margin-top: 6px; font-style: italic;">${caption}</figcaption>` : ''}\n</figure>\n`;
+    } else {
+        figureHtml = `\n<figure class="in-article-image-box" style="margin: 24px auto; text-align: center; max-width: 100%;">\n    <img src="${url}" alt="${caption || 'সংবাদের ছবি'}" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); display: block; margin: 0 auto;">\n    ${caption ? `<figcaption style="font-size: 13px; color: #64748b; margin-top: 8px; font-style: italic; text-align: center;">${caption}</figcaption>` : ''}\n</figure>\n`;
+    }
+
+    insertTextAtCursor(textarea, figureHtml);
+    closeInsertImageModal();
+}
+
+function insertParagraphBreak() {
+    const textarea = document.getElementById('newsContent');
+    insertTextAtCursor(textarea, '\n\n');
+}
+
+function insertBoldText() {
+    const textarea = document.getElementById('newsContent');
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const sel = textarea.value.substring(start, end) || 'গুরুত্বপূর্ণ লেখা';
+    const boldText = `<b>${sel}</b>`;
+    insertTextAtCursor(textarea, boldText);
+}
+
+function insertQuoteBlock() {
+    const textarea = document.getElementById('newsContent');
+    if (!textarea) return;
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const sel = textarea.value.substring(start, end) || 'এখানে বিশেষ বক্তব্য বা উক্তি লিখুন...';
+    const quoteHtml = `\n<blockquote style="border-left: 4px solid var(--primary); padding: 10px 16px; margin: 18px 0; background: var(--bg-surface-alt); font-style: italic; border-radius: 0 6px 6px 0;">\n    "${sel}"\n</blockquote>\n`;
+    insertTextAtCursor(textarea, quoteHtml);
+}
+
+// ==========================================
 // 2. TAB SWITCHING (WITH RBAC SECURITY GATE)
 // ==========================================
 
@@ -516,7 +659,22 @@ function handleNewsSubmit(e) {
     const authorId = document.getElementById('newsAuthorId')?.value || '';
     const image = document.getElementById('newsImage').value.trim();
     const excerpt = document.getElementById('newsExcerpt').value.trim() || (title + ' - বিস্তারিত পড়ুন।');
-    const content = document.getElementById('newsContent').value.trim() || `<p>${excerpt}</p>`;
+    const rawContent = document.getElementById('newsContent').value.trim() || `<p>${excerpt}</p>`;
+    let finalContent = rawContent;
+    if (!finalContent.includes('<p>')) {
+        finalContent = finalContent
+            .split(/\n\s*\n/)
+            .map(block => {
+                block = block.trim();
+                if (!block) return '';
+                if (block.startsWith('<figure') || block.startsWith('<blockquote') || block.startsWith('<div')) {
+                    return block;
+                }
+                return `<p>${block.replace(/\n/g, '<br>')}</p>`;
+            })
+            .filter(Boolean)
+            .join('\n');
+    }
     const isLead = document.getElementById('newsIsLead')?.checked || false;
     const isBreaking = document.getElementById('newsIsBreaking')?.checked || false;
 
@@ -547,7 +705,7 @@ function handleNewsSubmit(e) {
         authorId,
         image,
         excerpt,
-        content: content.startsWith('<p>') ? content : `<p>${content}</p>`,
+        content: finalContent || `<p>${excerpt}</p>`,
         isLead,
         isBreaking,
         date: new Date().toLocaleDateString('bn-BD', { day: 'numeric', month: 'long', year: 'numeric' }),

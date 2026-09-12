@@ -3394,4 +3394,26 @@ button, input, select, textarea {
     box-shadow: 0 1px 4px rgba(0,0,0,0.1);
 }
 
+/* In-Article Embedded Images & Figures */
+.in-article-image-box {
+    box-sizing: border-box;
+    display: block;
+    clear: both;
+}
+.in-article-image-box img {
+    max-width: 100%;
+    height: auto;
+    display: block;
+}
+.in-article-image-box figcaption {
+    line-height: 1.5;
+}
+@media (max-width: 640px) {
+    .in-article-image-box {
+        float: none !important;
+        max-width: 100% !important;
+        margin: 20px 0 !important;
+    }
+}
+
 

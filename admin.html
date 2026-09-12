@@ -264,8 +264,30 @@
                         </div>
 
                         <div class="control-group">
-                            <label class="control-label">সংবাদের বিস্তারিত বিবরণ (Content)</label>
-                            <textarea id="newsContent" class="control-textarea" rows="8" placeholder="খবরের পূর্ণ বিবরণ এখানে লিখুন..." required></textarea>
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+                                <label class="control-label" style="margin-bottom: 0;">
+                                    <i class="fa-solid fa-file-lines text-primary"></i> সংবাদের বিস্তারিত বিবরণ (Content) *
+                                </label>
+                                <!-- In-Article Tools -->
+                                <div style="display: flex; gap: 6px; flex-wrap: wrap; align-items: center;">
+                                    <button type="button" class="tool-btn" onclick="openInsertImageModal()" style="padding: 5px 12px; font-size: 12.5px; font-weight: 700; color: #0284c7; background: #e0f2fe; border-color: #bae6fd;" title="সংবাদের ভেতরে যেকোনো স্থানে ছবি বসান">
+                                        <i class="fa-solid fa-image"></i> সংবাদের মাঝে ছবি যোগ করুন
+                                    </button>
+                                    <button type="button" class="tool-btn" onclick="insertParagraphBreak()" style="padding: 5px 10px; font-size: 12px;" title="নতুন প্যারাগ্রাফ তৈরি">
+                                        <i class="fa-solid fa-paragraph"></i> প্যারা
+                                    </button>
+                                    <button type="button" class="tool-btn" onclick="insertBoldText()" style="padding: 5px 10px; font-size: 12px; font-weight: 800;" title="বোল্ড / মোটা লেখা">
+                                        <i class="fa-solid fa-bold"></i> বোল্ড
+                                    </button>
+                                    <button type="button" class="tool-btn" onclick="insertQuoteBlock()" style="padding: 5px 10px; font-size: 12px;" title="উদ্ধৃতি / বিশেষ বক্তব্য">
+                                        <i class="fa-solid fa-quote-left"></i> কোট
+                                    </button>
+                                </div>
+                            </div>
+                            <textarea id="newsContent" class="control-textarea" rows="10" placeholder="খবরের পূর্ণ বিবরণ এখানে লিখুন... সংবাদের ভেতরে যেকোনো অনুচ্ছেদের মাঝে ছবি যোগ করতে উপরের 'সংবাদের মাঝে ছবি যোগ করুন' বাটনে চাপ দিন।" required></textarea>
+                            <small class="form-hint" style="margin-top: 5px; display: block; font-size: 12px; color: var(--text-muted);">
+                                💡 সংবাদের মাঝে যেখানে ছবি বসাতে চান সেখানে মাউসের কার্সার রেখে <strong>"সংবাদের মাঝে ছবি যোগ করুন"</strong> চাপুন।
+                            </small>
                         </div>
 
                         <div class="admin-toggle-tiles">
@@ -752,6 +774,67 @@
                 <div id="customCategoryListContainer" style="display: flex; flex-wrap: wrap; gap: 6px;">
                     <!-- Dynamically populated chips -->
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- IN-ARTICLE IMAGE INSERTION MODAL -->
+    <div id="insertImageModalOverlay" class="user-modal-overlay">
+        <div class="user-modal-box" style="max-width: 520px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 12px;">
+                <h3 style="font-size: 18px; font-weight: 800; color: var(--text-main); display: flex; align-items: center; gap: 8px;">
+                    <i class="fa-solid fa-image text-primary"></i> সংবাদের মাঝে ছবি যোগ করুন
+                </h3>
+                <button type="button" onclick="closeInsertImageModal()" style="background: none; border: none; font-size: 18px; cursor: pointer; color: var(--text-muted);">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <!-- Upload option -->
+            <div style="margin-bottom: 16px;">
+                <label class="control-label">১. কম্পিউটার বা মোবাইল থেকে ছবি আপলোড করুন</label>
+                <div style="border: 2px dashed var(--border-color); padding: 18px; border-radius: 8px; text-align: center; background: var(--bg-surface-alt);">
+                    <input type="file" id="inArticleImageFile" accept="image/*" style="display:none;" onchange="uploadInArticleImageToCloudinary(event)">
+                    <button type="button" class="tool-btn" onclick="document.getElementById('inArticleImageFile').click()" style="padding: 8px 18px; font-weight: 700; color: var(--primary);">
+                        <i class="fa-solid fa-cloud-arrow-up"></i> ছবি নির্বাচন করুন (Cloudinary)
+                    </button>
+                    <div id="inArticleUploadProgress" style="display:none; margin-top:10px; font-size:12.5px; color:var(--primary); font-weight:700;">
+                        <i class="fa-solid fa-spinner fa-spin"></i> ক্লাউডে আপলোড হচ্ছে, অপেক্ষা করুন...
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group" style="margin-bottom: 14px;">
+                <label class="control-label">২. অথবা সরাসরি ছবির লিঙ্ক (Direct Image URL)</label>
+                <input type="url" id="inArticleImageUrl" class="control-input" placeholder="https://res.cloudinary.com/... বা যেকোনো ছবির লিংক" oninput="previewInArticleImage(this.value)">
+            </div>
+
+            <!-- Image preview -->
+            <div id="inArticleImagePreviewBox" style="display:none; margin-bottom:14px; text-align:center; background:var(--bg-surface-alt); padding:10px; border-radius:6px; border:1px solid var(--border-color);">
+                <img id="inArticleImagePreviewImg" src="" style="max-height:160px; max-width:100%; object-fit:contain; border-radius:4px;" alt="">
+            </div>
+
+            <div class="control-group" style="margin-bottom: 14px;">
+                <label class="control-label">ছবির ক্যাপশন / বিবরণ (ঐচ্ছিক)</label>
+                <input type="text" id="inArticleImageCaption" class="control-input" placeholder="যেমন: ফাইল ছবি / ঘটনার সময়কার চিত্র">
+            </div>
+
+            <div class="control-group" style="margin-bottom: 18px;">
+                <label class="control-label">ছবি প্রদর্শনের বিন্যাস (Alignment)</label>
+                <select id="inArticleImageAlign" class="control-select">
+                    <option value="center">মাঝখানে বড় (Full Width / Center)</option>
+                    <option value="left">বামে ছোট (Left Float - লেখার সাথে)</option>
+                    <option value="right">ডানে ছোট (Right Float - লেখার সাথে)</option>
+                </select>
+            </div>
+
+            <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                <button type="button" class="tool-btn" onclick="closeInsertImageModal()" style="padding: 8px 16px;">
+                    বাতিল
+                </button>
+                <button type="button" onclick="insertInArticleImageToContent()" class="btn-epaper-topbar" style="background: var(--primary); color: white; border: none; padding: 8px 20px; font-weight: 800; border-radius: var(--radius-sm); cursor: pointer;">
+                    <i class="fa-solid fa-plus"></i> সংবাদের মাঝে বসান
+                </button>
             </div>
         </div>
     </div>
