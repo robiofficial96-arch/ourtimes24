@@ -1,6 +1,6 @@
 /**
  * OURTIMES24 - ULTRA-PREMIUM DIGITAL NEWSROOM CORE ENGINE (2026)
- * Comprehensive 90+ News Dataset across all categories
+ * Real Published Articles Repository (324 Posts) + Live Search + Division Filter
  */
 
 const CATEGORIES = [
@@ -72,7 +72,9 @@ if (typeof window !== 'undefined') {
     window.NewsDB = NewsDB;
 }
 
-// Bangla Date & Live Digital Clock
+// ==========================================
+// 1. BANGLA LIVE DATE & DIGITAL CLOCK
+// ==========================================
 function initBanglaClock() {
     const banglaDigits = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
     const days = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
@@ -105,32 +107,34 @@ function initBanglaClock() {
     setInterval(update, 1000);
 }
 
-// Breaking News Ticker Loader
+// ==========================================
+// 2. BREAKING NEWS TICKER
+// ==========================================
 function renderBreakingTicker() {
-    const breakingNews = NewsDB.getAllNews().filter(n => n.isBreaking);
+    const all = NewsDB.getAllNews();
+    const breakingNews = all.filter(n => n.isBreaking);
+    const displayList = breakingNews.length > 0 ? breakingNews : all.slice(0, 5);
     const tickerContainer = document.getElementById('breakingTickerText');
     if (!tickerContainer) return;
 
-    if (breakingNews.length === 0) {
-        tickerContainer.innerHTML = `<span>সর্বশেষ খবরের জন্য Ourtimes24-এর সাথেই থাকুন।</span>`;
-        return;
-    }
-
-    tickerContainer.innerHTML = breakingNews.map(n => `
-        <a href="article.html?id=${n.id}" style="margin-right: 36px; color: inherit; display: inline-flex; align-items: center; gap: 6px;">
-            <span style="color:var(--primary); font-weight:800;">[${n.category}]</span> ${n.title}
+    tickerContainer.innerHTML = displayList.map(n => `
+        <a href="article.html?id=${n.id}" style="margin-right: 40px; color: inherit; display: inline-flex; align-items: center; gap: 8px;">
+            <span style="color:var(--primary); font-weight:800;">[${n.category}]</span>
+            <span>${n.title}</span>
         </a>
     `).join('');
 }
 
-// Homepage Feeds Renderer
+// ==========================================
+// 3. HOMEPAGE FEEDS RENDERER
+// ==========================================
 function renderHomepage() {
     const all = NewsDB.getAllNews();
     if (all.length === 0) return;
 
-    // 1. Prothom Alo Style Flat Hero Block (Main Lead + Sub-leads List with Divider Lines)
+    // 1. Prothom Alo / International Style Flat Hero Block
     const lead = all.find(n => n.isLead) || all[0];
-    const subLeads = all.filter(n => n.id !== lead.id).slice(0, 6);
+    const subLeads = all.filter(n => n.id !== lead.id).slice(0, 3);
     const unifiedContainer = document.getElementById('unifiedLeadCard');
 
     if (unifiedContainer) {
@@ -146,13 +150,18 @@ function renderHomepage() {
                         <a href="article.html?id=${lead.id}">${lead.title}</a>
                     </h1>
                     <p class="lead-excerpt">${lead.excerpt}</p>
+                    <div class="lead-meta">
+                        <span><i class="fa-regular fa-user"></i> ${lead.author || 'স্টাফ রিপোর্টার'}</span>
+                        <span>•</span>
+                        <span><i class="fa-regular fa-clock"></i> ${lead.date || 'আজ'}</span>
+                    </div>
                 </div>
             </div>
 
-            <!-- Sub-leads Vertical List View with Natural Text Wrapping Under Image -->
+            <!-- Sub-leads 3 Cards Grid -->
             <div class="sublead-flat-list">
                 ${subLeads.map(n => {
-                    const cleanExcerpt = n.excerpt && n.excerpt.length > 130 ? n.excerpt.substring(0, 125).trim() + '...' : (n.excerpt || '');
+                    const cleanExcerpt = n.excerpt && n.excerpt.length > 110 ? n.excerpt.substring(0, 105).trim() + '...' : (n.excerpt || '');
                     return `
                         <a href="article.html?id=${n.id}" class="sublead-list-row">
                             <div class="sublead-row-img">
@@ -167,10 +176,10 @@ function renderHomepage() {
         `;
     }
 
-    // 3. Tabbed Sidebar: Latest & Most Read (Luxury Layout with Badges, Images, Meta)
+    // 2. Tabbed Sidebar: Latest & Most Read (Ranked List)
     const latestList = document.getElementById('latestNewsList');
     const mostReadList = document.getElementById('mostReadNewsList');
-    const rankDigits = ['১', '২', '৩', '৪', '৫', '৬', '৭'];
+    const rankDigits = ['১', '২', '৩', '৪', '৫', '৬'];
     const timeLabels = ['৫ মিনিট আগে', '১৫ মিনিট আগে', '৩০ মিনিট আগে', '১ ঘণ্টা আগে', '২ ঘণ্টা আগে', '৩ ঘণ্টা আগে'];
 
     if (latestList) {
@@ -179,14 +188,12 @@ function renderHomepage() {
                 <a href="article.html?id=${n.id}" class="ranked-item-link">
                     <div class="rank-thumb-wrapper">
                         <span class="rank-badge-overlay">${rankDigits[i] || (i + 1)}</span>
-                        <div class="rank-img-box">
-                            <img src="${n.image}" alt="${n.title}">
-                        </div>
+                        <img src="${n.image}" alt="${n.title}">
                     </div>
                     <div class="rank-content">
                         <h4 class="rank-title">${n.title}</h4>
                         <div class="rank-meta">
-                            <span class="rank-time"><i class="fa-regular fa-clock"></i> ${timeLabels[i] || '১ ঘণ্টা আগে'}</span>
+                            <span><i class="fa-regular fa-clock"></i> ${timeLabels[i] || '১ ঘণ্টা আগে'}</span>
                         </div>
                     </div>
                 </a>
@@ -201,14 +208,12 @@ function renderHomepage() {
                 <a href="article.html?id=${n.id}" class="ranked-item-link">
                     <div class="rank-thumb-wrapper">
                         <span class="rank-badge-overlay rank-fire">${rankDigits[i] || (i + 1)}</span>
-                        <div class="rank-img-box">
-                            <img src="${n.image}" alt="${n.title}">
-                        </div>
+                        <img src="${n.image}" alt="${n.title}">
                     </div>
                     <div class="rank-content">
                         <h4 class="rank-title">${n.title}</h4>
                         <div class="rank-meta">
-                            <span class="rank-cat">${n.category}</span>
+                            <span style="color:var(--primary); font-weight:700;">${n.category}</span>
                             <span>•</span>
                             <span>জনপ্রিয়</span>
                         </div>
@@ -218,13 +223,15 @@ function renderHomepage() {
         `).join('');
     }
 
-    // 4. Category Grids (4 items each, Image Clickable)
+    // 3. Category Grids
     renderCategoryGrid('nationalGrid', 'জাতীয়', 4);
     renderCategoryGrid('politicsGrid', 'রাজনীতি', 4);
     renderCategoryGrid('sportsGrid', 'খেলাধুলা', 4);
-    renderCategoryGrid('techGrid', 'প্রযুক্তি', 4);
 }
 
+// ==========================================
+// 4. SMART CATEGORY GRID RENDERER
+// ==========================================
 function renderCategoryGrid(containerId, categoryName, limit = 4) {
     const container = document.getElementById(containerId);
     if (!container) return;
@@ -247,7 +254,7 @@ function renderCategoryGrid(containerId, categoryName, limit = 4) {
     const targetList = categoryMap[categoryName] || [categoryName];
     let news = all.filter(n => targetList.includes(n.category) || targetList.includes(n.categorySlug));
 
-    // If section has fewer items than limit, supplement from latest news so no section is ever empty
+    // Supplement from latest news if fewer items so no section is ever empty
     if (news.length < limit) {
         const existingIds = new Set(news.map(n => n.id));
         const filler = all.filter(n => !existingIds.has(n.id));
@@ -259,7 +266,7 @@ function renderCategoryGrid(containerId, categoryName, limit = 4) {
         <div class="news-card-std">
             <a href="article.html?id=${n.id}" class="news-card-img">
                 <img src="${n.image}" alt="${n.title}">
-                <span class="category-tag" style="top:10px; left:10px; font-size:11px; padding:2px 8px;">${n.category}</span>
+                <span class="category-tag">${n.category}</span>
             </a>
             <div class="news-card-body">
                 <h3 class="news-card-title">
@@ -270,53 +277,186 @@ function renderCategoryGrid(containerId, categoryName, limit = 4) {
     `).join('');
 }
 
-if (typeof window !== 'undefined') {
-    window.renderHomepage = renderHomepage;
-    window.renderCategoryGrid = renderCategoryGrid;
+// ==========================================
+// 5. SARADESH INTERACTIVE DIVISION HUB
+// ==========================================
+function renderSaradeshGrid(selectedDivision = 'all') {
+    const container = document.getElementById('saradeshGridContainer');
+    if (!container) return;
+
+    const all = NewsDB.getAllNews();
+    const saradeshAliases = ['saradesh', 'সারাদেশ', 'দেশজুড়ে', 'দেশজুড়ে'];
+    let news = all.filter(n => saradeshAliases.includes(n.categorySlug) || saradeshAliases.includes(n.category));
+
+    if (selectedDivision !== 'all') {
+        const filteredByDiv = news.filter(n => (n.district && n.district.includes(selectedDivision)) || n.title.includes(selectedDivision) || (n.excerpt && n.excerpt.includes(selectedDivision)));
+        if (filteredByDiv.length > 0) {
+            news = filteredByDiv;
+        }
+    }
+
+    if (news.length === 0) {
+        news = all.slice(6, 12);
+    }
+
+    const lead = news[0];
+    const subItems = news.slice(1, 5);
+
+    container.innerHTML = `
+        <div class="saradesh-split-container">
+            <!-- Left Side: Big District Lead News -->
+            <div class="saradesh-left-lead">
+                <a href="article.html?id=${lead.id}" class="saradesh-left-img-box">
+                    <img src="${lead.image}" alt="${lead.title}">
+                </a>
+                <span class="category-tag-inline"><i class="fa-solid fa-location-dot"></i> ${lead.district || 'জেলা সংবাদ'}</span>
+                <h2 class="saradesh-left-title">
+                    <a href="article.html?id=${lead.id}">${lead.title}</a>
+                </h2>
+                <p class="saradesh-left-excerpt">${lead.excerpt || ''}</p>
+                <div class="saradesh-left-meta">
+                    <span><i class="fa-regular fa-user"></i> ${lead.author || 'জেলা প্রতিনিধি'}</span>
+                    <span>•</span>
+                    <span><i class="fa-regular fa-clock"></i> ${lead.date || 'আজ'}</span>
+                </div>
+            </div>
+
+            <!-- Right Side: 2x2 District Grid -->
+            <div class="saradesh-right-grid">
+                ${subItems.map(n => `
+                    <div class="news-card-std">
+                        <a href="article.html?id=${n.id}" class="news-card-img">
+                            <img src="${n.image}" alt="${n.title}">
+                            <span class="category-tag">${n.district || n.category}</span>
+                        </a>
+                        <div class="news-card-body">
+                            <h4 class="news-card-title"><a href="article.html?id=${n.id}">${n.title}</a></h4>
+                        </div>
+                    </div>
+                `).join('')}
+            </div>
+        </div>
+    `;
 }
 
-// Single Article Page Engine
+function filterSaradeshByDivision(divisionName, btnElement) {
+    if (btnElement) {
+        const parent = btnElement.parentElement;
+        if (parent) {
+            parent.querySelectorAll('.div-chip').forEach(b => b.classList.remove('active'));
+        }
+        btnElement.classList.add('active');
+    }
+    renderSaradeshGrid(divisionName);
+}
+
+// ==========================================
+// 6. INSTANT LIVE SEARCH ENGINE
+// ==========================================
+function handleLiveSearch(query) {
+    const container = document.getElementById('liveSearchResults');
+    if (!container) return;
+
+    const q = (query || '').trim().toLowerCase();
+    if (!q) {
+        container.innerHTML = `
+            <div style="padding: 24px; text-align: center; color: var(--text-muted);">
+                <i class="fa-solid fa-keyboard" style="font-size: 28px; margin-bottom: 8px; opacity: 0.6;"></i>
+                <div>খুঁজতে কিওয়ার্ড লিখুন...</div>
+            </div>
+        `;
+        return;
+    }
+
+    const all = NewsDB.getAllNews();
+    const results = all.filter(n => {
+        return (n.title && n.title.toLowerCase().includes(q)) ||
+               (n.category && n.category.toLowerCase().includes(q)) ||
+               (n.district && n.district.toLowerCase().includes(q)) ||
+               (n.excerpt && n.excerpt.toLowerCase().includes(q));
+    }).slice(0, 15);
+
+    if (results.length === 0) {
+        container.innerHTML = `
+            <div style="padding: 24px; text-align: center; color: var(--text-muted);">
+                <i class="fa-solid fa-magnifying-glass-chart" style="font-size: 28px; margin-bottom: 8px; opacity: 0.6;"></i>
+                <div>"<strong>${q}</strong>" সম্পর্কিত কোনো সংবাদ পাওয়া যায়নি।</div>
+            </div>
+        `;
+        return;
+    }
+
+    container.innerHTML = results.map(n => `
+        <a href="article.html?id=${n.id}" class="search-result-item">
+            <img src="${n.image}" alt="${n.title}" class="search-result-thumb">
+            <div>
+                <div class="search-result-title">${n.title}</div>
+                <div class="search-result-meta">
+                    <span style="color:var(--primary); font-weight:700;">[${n.category}]</span>
+                    <span>${n.date || 'আজ'}</span>
+                    ${n.district ? `<span>• ${n.district}</span>` : ''}
+                </div>
+            </div>
+        </a>
+    `).join('');
+}
+
+// ==========================================
+// 7. SINGLE ARTICLE PAGE ENGINE
+// ==========================================
 function renderSingleArticle() {
     const params = new URLSearchParams(window.location.search);
-    const id = params.get('id') || 'nat-1';
+    const id = params.get('id') || 'news-1522';
     const article = NewsDB.getNewsById(id) || NewsDB.getAllNews()[0];
 
     if (!article) {
-        document.getElementById('articleContainer').innerHTML = `
-            <h2>সংবাদটি পাওয়া যায়নি!</h2>
-            <p><a href="index.html" class="text-primary">হোমপেজে ফিরে যান</a></p>
-        `;
+        const cont = document.getElementById('articleContainer');
+        if (cont) {
+            cont.innerHTML = `
+                <h2>সংবাদটি পাওয়া যায়নি!</h2>
+                <p><a href="index.html" class="text-primary">হোমপেজে ফিরে যান</a></p>
+            `;
+        }
         return;
     }
 
     document.title = `${article.title} - Ourtimes24`;
 
-    document.getElementById('artCategory').textContent = article.category;
-    document.getElementById('artHeadline').textContent = article.title;
-    document.getElementById('artSubtitle').textContent = article.subtitle || '';
-    document.getElementById('artAuthor').textContent = article.author;
-    document.getElementById('artDate').textContent = `${article.date}`;
-    document.getElementById('artImage').src = article.image;
-    document.getElementById('artCaption').textContent = `${article.title} — ছবি: Ourtimes24`;
-    document.getElementById('artBody').innerHTML = article.content || `<p>${article.excerpt}</p>`;
+    const elCat = document.getElementById('artCategory');
+    const elHead = document.getElementById('artHeadline');
+    const elSub = document.getElementById('artSubtitle');
+    const elAuth = document.getElementById('artAuthor');
+    const elDate = document.getElementById('artDate');
+    const elImg = document.getElementById('artImage');
+    const elCap = document.getElementById('artCaption');
+    const elBody = document.getElementById('artBody');
 
-    // Quick Photo Card Studio Link
-    const quickPhotoCardBtn = document.getElementById('btnMakePhotoCard');
-    if (quickPhotoCardBtn) {
-        quickPhotoCardBtn.href = `photocard.html?title=${encodeURIComponent(article.title)}&cat=${encodeURIComponent(article.category)}&img=${encodeURIComponent(article.image)}`;
-    }
+    if (elCat) elCat.textContent = article.category;
+    if (elHead) elHead.textContent = article.title;
+    if (elSub) elSub.textContent = article.subtitle || '';
+    if (elAuth) elAuth.textContent = article.author || 'স্টাফ রিপোর্টার';
+    if (elDate) elDate.textContent = `${article.date || 'আজ'}`;
+    if (elImg) elImg.src = article.image;
+    if (elCap) elCap.textContent = `${article.title} — ছবি: Ourtimes24`;
+    if (elBody) elBody.innerHTML = article.content || `<p>${article.excerpt}</p>`;
 
-    // Related News (3 items)
-    const related = NewsDB.getAllNews().filter(n => n.id !== article.id && n.category === article.category).slice(0, 3);
-    const relatedContainer = document.getElementById('relatedNewsGrid');
-    if (relatedContainer) {
-        relatedContainer.innerHTML = related.map(n => `
+    // Render 4 Related Articles
+    const relatedList = document.getElementById('relatedNewsGrid');
+    if (relatedList) {
+        const related = NewsDB.getAllNews()
+            .filter(n => String(n.id) !== String(article.id) && (n.category === article.category || n.categorySlug === article.categorySlug))
+            .slice(0, 4);
+
+        relatedList.innerHTML = related.map(n => `
             <div class="news-card-std">
                 <a href="article.html?id=${n.id}" class="news-card-img">
                     <img src="${n.image}" alt="${n.title}">
+                    <span class="category-tag">${n.category}</span>
                 </a>
                 <div class="news-card-body">
-                    <h4 class="news-card-title"><a href="article.html?id=${n.id}">${n.title}</a></h4>
+                    <h3 class="news-card-title">
+                        <a href="article.html?id=${n.id}">${n.title}</a>
+                    </h3>
                 </div>
             </div>
         `).join('');
@@ -373,7 +513,7 @@ function adjustFontSize(delta) {
     bodyContent.style.fontSize = `${newSize}px`;
 }
 
-// Theme Toggle & Switch Sync
+// Theme Toggle
 function updateThemeUI(theme) {
     const icons = document.querySelectorAll('.theme-switch-icon, #themeIcon');
     icons.forEach(icon => {
@@ -389,7 +529,7 @@ function toggleTheme() {
     updateThemeUI(next);
 }
 
-// Offcanvas Drawer Menu Control
+// Offcanvas Drawer Menu
 function toggleOffcanvasMenu() {
     const drawer = document.getElementById('offcanvasDrawer');
     const backdrop = document.getElementById('offcanvasBackdrop');
@@ -413,26 +553,7 @@ function closeOffcanvasMenu() {
     document.body.style.overflow = '';
 }
 
-// Share Menu & Platform Handlers
-function toggleShareMenu(e) {
-    if (e) e.stopPropagation();
-    
-    // If native web share is available on mobile devices, use it directly
-    if (navigator.share && window.innerWidth <= 768) {
-        navigator.share({
-            title: document.title,
-            text: document.title,
-            url: window.location.href
-        }).catch(() => {});
-        return;
-    }
-
-    const popover = document.getElementById('sharePopover');
-    if (popover) {
-        popover.classList.toggle('active');
-    }
-}
-
+// Share Functions
 function shareToPlatform(platform) {
     const url = encodeURIComponent(window.location.href);
     const title = encodeURIComponent(document.title);
@@ -450,21 +571,20 @@ function shareToPlatform(platform) {
             prompt('লিঙ্কটি কপি করুন:', window.location.href);
         });
     }
-
-    const popover = document.getElementById('sharePopover');
-    if (popover) popover.classList.remove('active');
 }
 
-// Close share popover when clicking anywhere else
-document.addEventListener('click', (e) => {
-    const popover = document.getElementById('sharePopover');
-    const shareBtn = document.getElementById('btnShareArticle');
-    if (popover && popover.classList.contains('active')) {
-        if (!popover.contains(e.target) && e.target !== shareBtn && !shareBtn?.contains(e.target)) {
-            popover.classList.remove('active');
-        }
-    }
-});
+// Expose Global Helper Functions
+if (typeof window !== 'undefined') {
+    window.renderHomepage = renderHomepage;
+    window.renderCategoryGrid = renderCategoryGrid;
+    window.renderSaradeshGrid = renderSaradeshGrid;
+    window.filterSaradeshByDivision = filterSaradeshByDivision;
+    window.handleLiveSearch = handleLiveSearch;
+    window.renderSingleArticle = renderSingleArticle;
+    window.toggleTheme = toggleTheme;
+    window.toggleOffcanvasMenu = toggleOffcanvasMenu;
+    window.closeOffcanvasMenu = closeOffcanvasMenu;
+}
 
 // Initialize on Load
 document.addEventListener('DOMContentLoaded', () => {

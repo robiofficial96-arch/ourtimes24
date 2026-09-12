@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>আওয়ার টাইমস২৪ - সত্য ও বস্তুনিষ্ঠ সংবাদের সার্বক্ষণিক ঠিকানা</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="style.css?v=20260831_v7">
+    <link rel="stylesheet" href="style.css?v=20260912_v5">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
@@ -13,32 +13,71 @@
     <!-- Reading Progress Bar -->
     <div id="readingProgressBar"></div>
 
-    <!-- CLEAN TOP HEADER BAR: COMPACT LOGO ON LEFT & E-PAPER/HAMBURGER ON RIGHT -->
-    <header class="top-header-bar">
-        <div class="container top-header-inner">
-            
-            <!-- Bangla Brand Logo with Luxury Tagline Directly Underneath -->
-            <a href="index.html" class="top-brand-logo">
-                <div class="top-logo-bn">আওয়ার টাইমস<span>২৪</span></div>
-                <div class="top-logo-tagline-bottom">
-                    <span class="tag-bar"></span> সত্য ও বস্তুনিষ্ঠ সংবাদের সার্বক্ষণিক ঠিকানা
+    <!-- 1. TOP UTILITY BAR (DESKTOP) -->
+    <div class="top-utility-bar">
+        <div class="container top-utility-inner">
+            <div class="utility-left">
+                <div class="live-date">
+                    <i class="fa-regular fa-calendar-days"></i>
+                    <span id="liveBanglaDate">শনিবার, ১২ সেপ্টেম্বর ২০২৬</span>
                 </div>
-            </a>
+                <div class="utility-location">
+                    <i class="fa-solid fa-location-dot"></i>
+                    <span>ঢাকা</span>
+                </div>
+            </div>
+            <div class="utility-right">
+                <a href="epaper.html" class="btn-utility-epaper">
+                    <i class="fa-regular fa-newspaper"></i> ডিজিটাল ই-পেপার
+                </a>
+                <div class="social-pill-links">
+                    <a href="https://facebook.com" target="_blank" class="social-pill-link" title="ফেসবুক"><i class="fa-brands fa-facebook-f"></i></a>
+                    <a href="https://youtube.com" target="_blank" class="social-pill-link" title="ইউটিউব"><i class="fa-brands fa-youtube"></i></a>
+                    <a href="https://twitter.com" target="_blank" class="social-pill-link" title="টুইটার"><i class="fa-brands fa-x-twitter"></i></a>
+                </div>
+                <button class="theme-toggle-btn" onclick="toggleTheme()" title="ডার্ক / লাইট মোড">
+                    <i class="fa-solid fa-moon theme-switch-icon" id="themeIcon"></i>
+                </button>
+            </div>
+        </div>
+    </div>
 
-            <!-- Right Controls: E-Paper Button -->
-            <a href="epaper.html" class="top-epaper-btn" title="ডিজিটাল ই-পেপার পড়ুন">
-                <i class="fa-regular fa-newspaper"></i> ই-পেপার
-            </a>
+    <!-- 2. MAIN BRAND HEADER -->
+    <header class="main-brand-header">
+        <div class="container brand-header-grid">
+            <div class="brand-left-block">
+                <button class="btn-mobile-drawer" onclick="toggleOffcanvasMenu()" title="মেনু খুলুন">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
+                <a href="index.html" class="brand-logo-wrap">
+                    <div class="logo-bangla">আওয়ার টাইমস<span>২৪</span></div>
+                    <div class="logo-tagline">
+                        <span class="logo-tagline-bar"></span>
+                        <span>সত্য ও বস্তুনিষ্ঠ সংবাদের সার্বক্ষণিক ঠিকানা</span>
+                    </div>
+                </a>
+            </div>
 
+            <div class="brand-right-actions">
+                <button class="search-trigger-btn" onclick="openSearchModal()">
+                    <span style="display:flex; align-items:center; gap:8px;">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <span>সংবাদ খুঁজুন...</span>
+                    </span>
+                    <kbd>Ctrl K</kbd>
+                </button>
+                <a href="photocard.html" class="btn-photocard-quick" title="সোশ্যাল ফটো কার্ড স্টুডিও">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> ফটো কার্ড
+                </a>
+            </div>
         </div>
     </header>
 
-    <!-- STICKY NAVBAR (SCROLLABLE CATEGORIES) -->
-    <div class="main-nav-wrapper">
+    <!-- 3. STICKY NAVBAR (CATEGORIES) -->
+    <nav class="main-nav-wrapper">
         <div class="container nav-container-sticky-row">
-            
             <ul class="nav-menu-scrollable">
-                <li class="nav-item"><a href="index.html" class="nav-link active"><i class="fa-solid fa-house" style="font-size:14px; margin-right:4px;"></i> প্রচ্ছদ</a></li>
+                <li class="nav-item"><a href="index.html" class="nav-link active"><i class="fa-solid fa-house" style="font-size:13px; margin-right:4px;"></i> প্রচ্ছদ</a></li>
                 <li class="nav-item"><a href="category.html?cat=national" class="nav-link">জাতীয়</a></li>
                 <li class="nav-item"><a href="category.html?cat=politics" class="nav-link">রাজনীতি</a></li>
                 <li class="nav-item"><a href="category.html?cat=international" class="nav-link">আন্তর্জাতিক</a></li>
@@ -49,16 +88,15 @@
                 <li class="nav-item"><a href="category.html?cat=saradesh" class="nav-link">সারাদেশ</a></li>
                 <li class="nav-item"><a href="category.html?cat=opinion" class="nav-link">মতামত</a></li>
             </ul>
-
         </div>
-    </div>
+    </nav>
 
-    <!-- BREAKING NEWS TICKER (SEAMLESS, SHAPE-FREE, NO ICON) -->
-    <div class="breaking-ticker">
-        <div class="container">
+    <!-- 4. BREAKING NEWS TICKER -->
+    <div class="container">
+        <div class="breaking-ticker">
             <div class="ticker-inner">
-                <div class="ticker-label">
-                    ব্রেকিং নিউজ:
+                <div class="ticker-badge">
+                    <i class="fa-solid fa-bolt"></i> ব্রেকিং
                 </div>
                 <div class="ticker-content">
                     <div class="ticker-text" id="breakingTickerText">
@@ -69,19 +107,18 @@
         </div>
     </div>
 
-    <!-- MAIN HOMEPAGE CONTENT -->
+    <!-- 5. MAIN CONTENT CONTAINER -->
     <main class="container">
 
-        <!-- 1. HERO LEAD & SUB-LEAD PROTHOM ALO STYLE FLAT SECTION -->
+        <!-- 5.1 HERO EDITORIAL SECTION -->
         <section class="hero-news-section">
             <div class="hero-grid">
-                
                 <!-- Left: Flat Unified Main Lead & Sub-leads List -->
                 <div class="flat-hero-block" id="unifiedLeadCard">
-                    <!-- Populated by app.js -->
+                    <!-- Populated dynamically by app.js -->
                 </div>
 
-                <!-- Right: Flat Tabbed Sidebar with Divider Lines -->
+                <!-- Right: Ranked Latest & Most Read Tabs -->
                 <div class="flat-sidebar-block">
                     <div class="sidebar-tabs">
                         <button class="tab-btn active" data-tab="tabLatest"><i class="fa-regular fa-clock"></i> সর্বশেষ</button>
@@ -89,39 +126,50 @@
                     </div>
                     <div class="tab-panel active" id="tabLatest">
                         <ul class="ranked-news-list" id="latestNewsList">
-                            <!-- Populated by app.js -->
+                            <!-- Populated dynamically by app.js -->
                         </ul>
                     </div>
                     <div class="tab-panel" id="tabMostRead">
                         <ul class="ranked-news-list" id="mostReadNewsList">
-                            <!-- Populated by app.js -->
+                            <!-- Populated dynamically by app.js -->
                         </ul>
                     </div>
                 </div>
-
             </div>
         </section>
 
-        <!-- 2. SARADESH SECTION (DESKTOP: LEFT BIG LEAD + RIGHT 2x2 GRID | MOBILE: TOP BIG LEAD + BOTTOM GRID) -->
-        <section style="margin: 36px 0;" id="saradeshSection">
+        <!-- 5.2 SARADESH (DISTRICT NEWS) INTERACTIVE HUB -->
+        <section class="saradesh-wrapper" id="saradeshSection">
             <div class="section-header">
                 <div class="section-title">
-                    <i class="fa-solid fa-location-dot text-primary"></i> সারাদেশের সংবাদ
+                    সারাদেশের সংবাদ
                 </div>
-                <a href="category.html?cat=saradesh" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="category.html?cat=saradesh" class="section-link">সব খবর <i class="fa-solid fa-arrow-right"></i></a>
             </div>
 
-            <!-- Dynamic Saradesh Split Grid (Desktop: Left Big + Right Grid | Phone: Top Big + Bottom Grid) -->
+            <!-- Division Quick Filter Chips -->
+            <div class="division-filter-bar">
+                <button class="div-chip active" onclick="filterSaradeshByDivision('all', this)">সকল জেলা</button>
+                <button class="div-chip" onclick="filterSaradeshByDivision('ঢাকা', this)">ঢাকা</button>
+                <button class="div-chip" onclick="filterSaradeshByDivision('বরিশাল', this)">বরিশাল</button>
+                <button class="div-chip" onclick="filterSaradeshByDivision('চট্টগ্রাম', this)">চট্টগ্রাম</button>
+                <button class="div-chip" onclick="filterSaradeshByDivision('খুলনা', this)">খুলনা</button>
+                <button class="div-chip" onclick="filterSaradeshByDivision('রাজশাহী', this)">রাজশাহী</button>
+                <button class="div-chip" onclick="filterSaradeshByDivision('সিলেট', this)">সিলেট</button>
+                <button class="div-chip" onclick="filterSaradeshByDivision('রংপুর', this)">রংপুর</button>
+                <button class="div-chip" onclick="filterSaradeshByDivision('ময়মনসিংহ', this)">ময়মনসিংহ</button>
+            </div>
+
             <div id="saradeshGridContainer">
                 <!-- Loaded dynamically by app.js -->
             </div>
         </section>
 
-        <!-- 3. NATIONAL CATEGORY GRID -->
-        <section style="margin: 32px 0;">
+        <!-- 5.3 NATIONAL SECTION -->
+        <section style="margin: 36px 0;">
             <div class="section-header">
                 <div class="section-title">
-                    <i class="fa-solid fa-flag text-primary"></i> জাতীয় সংবাদ
+                    জাতীয় সংবাদ
                 </div>
                 <a href="category.html?cat=national" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
             </div>
@@ -130,11 +178,11 @@
             </div>
         </section>
 
-        <!-- 4. POLITICS CATEGORY GRID -->
-        <section style="margin: 32px 0;">
+        <!-- 5.4 POLITICS SECTION -->
+        <section style="margin: 36px 0;">
             <div class="section-header">
                 <div class="section-title">
-                    <i class="fa-solid fa-landmark text-primary"></i> রাজনীতি
+                    রাজনীতি
                 </div>
                 <a href="category.html?cat=politics" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
             </div>
@@ -143,17 +191,17 @@
             </div>
         </section>
 
-        <!-- 5. INTERNATIONAL & ECONOMY DUAL GRID -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0;">
+        <!-- 5.5 INTERNATIONAL & ECONOMY DUAL GRID -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 36px 0;" class="dual-grid-section">
             <!-- International -->
             <section>
                 <div class="section-header">
                     <div class="section-title">
-                        <i class="fa-solid fa-earth-americas text-primary"></i> আন্তর্জাতিক
+                        আন্তর্জাতিক
                     </div>
                     <a href="category.html?cat=international" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
-                <div class="news-grid-2" id="internationalGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                <div class="news-grid-2" id="internationalGrid">
                     <!-- Populated dynamically -->
                 </div>
             </section>
@@ -161,21 +209,21 @@
             <section>
                 <div class="section-header">
                     <div class="section-title">
-                        <i class="fa-solid fa-chart-line text-primary"></i> অর্থ-বাণিজ্য
+                        অর্থ-বাণিজ্য
                     </div>
                     <a href="category.html?cat=economy" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
-                <div class="news-grid-2" id="economyGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                <div class="news-grid-2" id="economyGrid">
                     <!-- Populated dynamically -->
                 </div>
             </section>
         </div>
 
-        <!-- 6. SPORTS CATEGORY GRID -->
-        <section style="margin: 32px 0;">
+        <!-- 5.6 SPORTS SECTION -->
+        <section style="margin: 36px 0;">
             <div class="section-header">
                 <div class="section-title">
-                    <i class="fa-solid fa-trophy text-primary"></i> খেলাধুলা
+                    খেলাধুলা
                 </div>
                 <a href="category.html?cat=sports" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
             </div>
@@ -184,56 +232,58 @@
             </div>
         </section>
 
-        <!-- 7. MULTIMEDIA & VIDEO SECTION (DARK THEMED) -->
+        <!-- 5.7 MULTIMEDIA & VIDEO THEATER (DARK THEMED) -->
         <section class="multimedia-section">
-            <div class="container">
-                <div class="section-header">
-                    <div class="section-title" style="color:white;">
-                        <i class="fa-solid fa-circle-play text-primary"></i> ভিডিও ও মাল্টিমিডিয়া গ্যালারি
-                    </div>
+            <div class="section-header">
+                <div class="section-title">
+                    ভিডিও ও মাল্টিমিডিয়া গ্যালারি
                 </div>
-                <div class="multimedia-grid">
-                    <div class="video-card-main" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1', 'এক নজরে মেগা যোগাযোগ প্রকল্পের অগ্রগতি ও আধুনিক চিত্র')">
-                        <img src="https://images.unsplash.com/photo-1579208575657-c595a05383b7?w=1000&auto=format&fit=crop&q=80" alt="Video">
-                        <div class="play-icon-badge"><i class="fa-solid fa-play"></i></div>
-                        <div class="video-overlay-title">এক নজরে মেগা যোগাযোগ প্রকল্পের অগ্রগতি ও আধুনিক চিত্র</div>
-                    </div>
-                    <div class="video-card-main" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1', 'এশিয়া কাপ জয়ের মুহূর্তে লাল-সবুজের উল্লাস')">
-                        <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=600&auto=format&fit=crop&q=80" alt="Video">
-                        <div class="play-icon-badge"><i class="fa-solid fa-play"></i></div>
-                        <div class="video-overlay-title">এশিয়া কাপ জয়ের মুহূর্তে লাল-সবুজের উল্লাস</div>
-                    </div>
-                    <div class="video-card-main" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1', 'কৃত্রিম বুদ্ধিমত্তার নতুন যুগে বাংলাদেশি তরুণরা')">
-                        <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80" alt="Video">
-                        <div class="play-icon-badge"><i class="fa-solid fa-play"></i></div>
-                        <div class="video-overlay-title">কৃত্রিম বুদ্ধিমত্তার নতুন যুগে বাংলাদেশি তরুণরা</div>
-                    </div>
+            </div>
+            <div class="multimedia-grid">
+                <div class="video-card-main" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1', 'এক নজরে মেগা যোগাযোগ প্রকল্পের অগ্রগতি ও আধুনিক চিত্র')">
+                    <img src="https://images.unsplash.com/photo-1579208575657-c595a05383b7?w=1000&auto=format&fit=crop&q=80" alt="Video">
+                    <div class="play-icon-badge"><i class="fa-solid fa-play"></i></div>
+                    <div class="video-overlay-title">এক নজরে মেগা যোগাযোগ প্রকল্পের অগ্রগতি ও আধুনিক চিত্র</div>
+                </div>
+                <div class="video-card-main" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1', 'এশিয়া কাপ জয়ের মুহূর্তে লাল-সবুজের উল্লাস')">
+                    <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=600&auto=format&fit=crop&q=80" alt="Video">
+                    <div class="play-icon-badge"><i class="fa-solid fa-play"></i></div>
+                    <div class="video-overlay-title">এশিয়া কাপ জয়ের মুহূর্তে লাল-সবুজের উল্লাস</div>
+                </div>
+                <div class="video-card-main" onclick="openVideoModal('https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1', 'কৃত্রিম বুদ্ধিমত্তার নতুন যুগে বাংলাদেশি তরুণরা')">
+                    <img src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?w=600&auto=format&fit=crop&q=80" alt="Video">
+                    <div class="play-icon-badge"><i class="fa-solid fa-play"></i></div>
+                    <div class="video-overlay-title">কৃত্রিম বুদ্ধিমত্তার নতুন যুগে বাংলাদেশি তরুণরা</div>
                 </div>
             </div>
         </section>
 
-        <!-- Video Player Modal -->
-        <div id="videoModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:99999; align-items:center; justify-content:center; padding:16px;" onclick="if(event.target===this)closeVideoModal()">
-            <div style="position:relative; width:100%; max-width:820px; background:#0f172a; border-radius:10px; overflow:hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
-                <button onclick="closeVideoModal()" style="position:absolute; top:12px; right:14px; background:rgba(255,255,255,0.2); color:white; border:none; font-size:18px; width:34px; height:34px; border-radius:50%; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center;">✕</button>
-                <div style="position:relative; padding-bottom:56.25%; height:0;">
-                    <iframe id="videoIframe" src="" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                </div>
-                <div id="videoModalTitle" style="padding:16px 20px; color:white; font-size:16px; font-weight:700;"></div>
+        <!-- 5.8 PHOTO CARD STUDIO PROMO BANNER -->
+        <section class="photocard-promo-card">
+            <div>
+                <span class="promo-badge"><i class="fa-solid fa-sparkles"></i> নতুন ফিচার</span>
+                <h3>সোশ্যাল ফটো কার্ড স্টুডিও</h3>
+                <p>যেকোনো খবর বা বিবৃতি ফেসবুক ও সোশ্যাল মিডিয়ায় শেয়ার করতে আকর্ষণীয় ফটো কার্ড তৈরি করুন মাত্র ১ ক্লিকে!</p>
+                <a href="photocard.html" class="btn-promo-action">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i> ফটো কার্ড তৈরি করুন
+                </a>
             </div>
-        </div>
+            <div class="promo-visual">
+                <img src="logo-circle.png" alt="Ourtimes24 Studio">
+            </div>
+        </section>
 
-        <!-- 8. TECH & ENTERTAINMENT DUAL GRID -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 32px 0;">
+        <!-- 5.9 TECH & ENTERTAINMENT DUAL GRID -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 36px 0;" class="dual-grid-section">
             <!-- Tech -->
             <section>
                 <div class="section-header">
                     <div class="section-title">
-                        <i class="fa-solid fa-microchip text-primary"></i> বিজ্ঞান ও প্রযুক্তি
+                        বিজ্ঞান ও প্রযুক্তি
                     </div>
                     <a href="category.html?cat=tech" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
-                <div class="news-grid-2" id="techGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                <div class="news-grid-2" id="techGrid">
                     <!-- Populated dynamically -->
                 </div>
             </section>
@@ -241,21 +291,21 @@
             <section>
                 <div class="section-header">
                     <div class="section-title">
-                        <i class="fa-solid fa-film text-primary"></i> বিনোদন
+                        বিনোদন ও লাইফস্টাইল
                     </div>
                     <a href="category.html?cat=entertainment" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
                 </div>
-                <div class="news-grid-2" id="entertainmentGrid" style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+                <div class="news-grid-2" id="entertainmentGrid">
                     <!-- Populated dynamically -->
                 </div>
             </section>
         </div>
 
-        <!-- 9. OPINION & EDITORIAL SECTION -->
+        <!-- 5.10 OPINION SECTION -->
         <section style="margin: 36px 0;">
             <div class="section-header">
                 <div class="section-title">
-                    <i class="fa-solid fa-pen-fancy text-primary"></i> মতামত ও সম্পাদকীয়
+                    মতামত ও সম্পাদকীয়
                 </div>
                 <a href="category.html?cat=opinion" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
             </div>
@@ -266,75 +316,133 @@
 
     </main>
 
-    <!-- MAIN FOOTER WITH OFFICIAL CREDENTIALS -->
+    <!-- 6. VIDEO PLAYER POPUP MODAL -->
+    <div id="videoModal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.88); z-index:999999; align-items:center; justify-content:center; padding:16px;" onclick="if(event.target===this)closeVideoModal()">
+        <div style="position:relative; width:100%; max-width:820px; background:#0f172a; border-radius:12px; overflow:hidden; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5);">
+            <button onclick="closeVideoModal()" style="position:absolute; top:12px; right:14px; background:rgba(255,255,255,0.2); color:white; border:none; font-size:18px; width:34px; height:34px; border-radius:50%; cursor:pointer; z-index:10; display:flex; align-items:center; justify-content:center;">✕</button>
+            <div style="position:relative; padding-bottom:56.25%; height:0;">
+                <iframe id="videoIframe" src="" style="position:absolute; top:0; left:0; width:100%; height:100%; border:0;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+            <div id="videoModalTitle" style="padding:16px 20px; color:white; font-size:16px; font-weight:700;"></div>
+        </div>
+    </div>
+
+    <!-- 7. INSTANT LIVE SEARCH MODAL -->
+    <div id="searchModal" class="search-modal-overlay" onclick="if(event.target===this)closeSearchModal()">
+        <div class="search-modal-box">
+            <div class="search-input-wrapper">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="liveSearchInput" placeholder="সংবাদ অনুসন্ধান করুন (যেমন: ঢাকা, লকডাউন, নির্বাচন)..." oninput="handleLiveSearch(this.value)">
+                <button class="search-close-btn" onclick="closeSearchModal()">✕</button>
+            </div>
+            <div class="search-results-list" id="liveSearchResults">
+                <div style="padding: 24px; text-align: center; color: var(--text-muted);">
+                    <i class="fa-solid fa-keyboard" style="font-size: 28px; margin-bottom: 8px; opacity: 0.6;"></i>
+                    <div>খুঁজতে কিওয়ার্ড লিখুন...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. OFFCANVAS MOBILE DRAWER -->
+    <div class="offcanvas-backdrop" id="offcanvasBackdrop" onclick="closeOffcanvasMenu()"></div>
+    <div class="offcanvas-drawer" id="offcanvasDrawer">
+        <div class="drawer-header">
+            <div class="logo-bangla" style="font-size: 24px;">আওয়ার টাইমস<span>২৪</span></div>
+            <button class="search-close-btn" onclick="closeOffcanvasMenu()">✕</button>
+        </div>
+        <ul class="drawer-nav-list">
+            <li><a href="index.html" class="drawer-nav-link"><i class="fa-solid fa-house"></i> প্রচ্ছদ</a></li>
+            <li><a href="category.html?cat=national" class="drawer-nav-link"><i class="fa-solid fa-flag"></i> জাতীয়</a></li>
+            <li><a href="category.html?cat=politics" class="drawer-nav-link"><i class="fa-solid fa-landmark"></i> রাজনীতি</a></li>
+            <li><a href="category.html?cat=international" class="drawer-nav-link"><i class="fa-solid fa-earth-americas"></i> আন্তর্জাতিক</a></li>
+            <li><a href="category.html?cat=economy" class="drawer-nav-link"><i class="fa-solid fa-chart-line"></i> অর্থ-বাণিজ্য</a></li>
+            <li><a href="category.html?cat=sports" class="drawer-nav-link"><i class="fa-solid fa-trophy"></i> খেলাধুলা</a></li>
+            <li><a href="category.html?cat=entertainment" class="drawer-nav-link"><i class="fa-solid fa-film"></i> বিনোদন</a></li>
+            <li><a href="category.html?cat=tech" class="drawer-nav-link"><i class="fa-solid fa-microchip"></i> প্রযুক্তি</a></li>
+            <li><a href="category.html?cat=saradesh" class="drawer-nav-link"><i class="fa-solid fa-location-dot"></i> সারাদেশ</a></li>
+            <li><a href="category.html?cat=opinion" class="drawer-nav-link"><i class="fa-solid fa-pen-fancy"></i> মতামত</a></li>
+            <li style="margin-top: 14px; border-top: 1px solid var(--border-color); padding-top: 14px;">
+                <a href="epaper.html" class="drawer-nav-link" style="color: var(--primary);"><i class="fa-regular fa-newspaper"></i> ডিজিটাল ই-পেপার</a>
+            </li>
+            <li>
+                <a href="photocard.html" class="drawer-nav-link" style="color: #059669;"><i class="fa-solid fa-wand-magic-sparkles"></i> ফটো কার্ড স্টুডিও</a>
+            </li>
+            <li>
+                <a href="admin.html" class="drawer-nav-link" style="color: var(--text-muted);"><i class="fa-solid fa-shield-halved"></i> অ্যাডমিন নিউজরুম</a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- 9. MOBILE APP BOTTOM NAVIGATION BAR -->
+    <nav class="mobile-bottom-nav">
+        <a href="index.html" class="bottom-nav-item active">
+            <i class="fa-solid fa-house"></i>
+            <span>হোম</span>
+        </a>
+        <button class="bottom-nav-item" onclick="toggleOffcanvasMenu()">
+            <i class="fa-solid fa-layer-group"></i>
+            <span>বিভাগ</span>
+        </button>
+        <a href="epaper.html" class="bottom-nav-item">
+            <i class="fa-regular fa-newspaper"></i>
+            <span>ই-পেপার</span>
+        </a>
+        <a href="photocard.html" class="bottom-nav-item">
+            <i class="fa-solid fa-wand-magic-sparkles"></i>
+            <span>ফটোকার্ড</span>
+        </a>
+        <button class="bottom-nav-item" onclick="openSearchModal()">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <span>অনুসন্ধান</span>
+        </button>
+    </nav>
+
+    <!-- 10. MAIN FOOTER -->
     <footer class="main-footer">
         <div class="container">
             <div class="footer-grid">
                 <div class="footer-brand">
-                    <div class="top-logo-bn" style="color:white; font-size:30px; margin-bottom:4px;">আওয়ার টাইমস<span>২৪</span></div>
-                    <p>সত্য ও বস্তুনিষ্ঠ সাংবাদিকতায় অবিচল। আধুনিক ও নিরপেক্ষ তথ্যপ্রবাহ নিশ্চিত করতে প্রতিজ্ঞাবদ্ধ।</p>
-                    <div style="margin-top: 14px; line-height: 1.8; font-size: 14px; color: #cbd5e1;">
+                    <h2>আওয়ার টাইমস<span>২৪</span></h2>
+                    <p>সত্য ও বস্তুনিষ্ঠ সাংবাদিকতায় অবিচল। আধুনিক ও নিরপেক্ষ তথ্যপ্রবাহ নিশ্চিত করতে প্রতিজ্ঞাবদ্ধ বাংলাদেশের অগ্রণী ডিজিটাল সংবাদমাধ্যম।</p>
+                    <div style="font-size: 14px; color: #94a3b8; line-height: 1.8;">
                         <div><strong>সম্পাদক:</strong> সৈয়দ হাফিজ মনির</div>
                         <div><strong>নির্বাহী সম্পাদক:</strong> শেখ মনির</div>
                         <div><strong>প্রধান প্রতিবেদক:</strong> রবিউল ইসলাম</div>
                     </div>
-                    <div class="footer-social-row">
-                        <a href="#" class="footer-social-btn" title="ফেসবুক"><i class="fa-brands fa-facebook-f"></i></a>
-                        <a href="#" class="footer-social-btn" title="ইউটিউব"><i class="fa-brands fa-youtube"></i></a>
-                        <a href="#" class="footer-social-btn" title="এক্স"><i class="fa-brands fa-x-twitter"></i></a>
-                        <a href="#" class="footer-social-btn" title="ইনস্টাগ্রাম"><i class="fa-brands fa-instagram"></i></a>
-                        <a href="#" class="footer-social-btn" title="হোয়াটসঅ্যাপ"><i class="fa-brands fa-whatsapp"></i></a>
-                    </div>
                 </div>
-                <div class="footer-col">
-                    <h4>অন্যান্য পাতা</h4>
+                <div>
+                    <h3 class="footer-col-title">জরুরি বিভাগসমূহ</h3>
                     <ul class="footer-links">
-                        <li><a href="epaper.html" style="color:var(--primary); font-weight:700;">ডিজিটাল ই-পেপার</a></li>
-                        <li><a href="#">বিজ্ঞাপন মূল্য তালিকা</a></li>
-                        <li><a href="#">গোপনীয়তা নীতি</a></li>
-                        <li><a href="#">যোগাযোগ</a></li>
+                        <li><a href="category.html?cat=national">জাতীয় সংবাদ</a></li>
+                        <li><a href="category.html?cat=politics">রাজনীতি</a></li>
+                        <li><a href="category.html?cat=saradesh">সারাদেশের সংবাদ</a></li>
+                        <li><a href="category.html?cat=international">আন্তর্জাতিক</a></li>
+                        <li><a href="category.html?cat=economy">অর্থ-বাণিজ্য</a></li>
+                        <li><a href="category.html?cat=sports">খেলাধুলা</a></li>
                     </ul>
                 </div>
-                <div class="footer-col">
-                    <h4>বার্তা ও বাণিজ্যিক কার্যালয়</h4>
-                    <div class="footer-contact-block">
-                        <div class="footer-contact-item">
-                            <span class="footer-contact-icon"><i class="fa-solid fa-location-dot"></i></span>
-                            <div class="footer-contact-text">
-                                আওয়ার টাইমস মিডিয়ার পক্ষে <strong>সৈয়দ হাফিজ মনির</strong> কর্তৃক গাউসেপাক ভবন, লেভেল-৬ (৭ম তলা), ২৮জি/১ টয়েনবি সার্কুলার রোড, মতিঝিল, ঢাকা-১০০০ থেকে প্রকাশিত।
-                            </div>
-                        </div>
-                        <div class="footer-contact-item">
-                            <span class="footer-contact-icon"><i class="fa-solid fa-mobile-screen-button"></i></span>
-                            <div class="footer-contact-text">
-                                <strong>মোবাইল:</strong> <a href="tel:+8801711152711">+8801711152711</a>
-                            </div>
-                        </div>
-                        <div class="footer-contact-item">
-                            <span class="footer-contact-icon"><i class="fa-solid fa-phone"></i></span>
-                            <div class="footer-contact-text">
-                                <strong>অফিস ফোন:</strong> <a href="tel:+8801745481785">+8801745481785</a>
-                            </div>
-                        </div>
-                        <div class="footer-contact-item">
-                            <span class="footer-contact-icon"><i class="fa-solid fa-envelope"></i></span>
-                            <div class="footer-contact-text">
-                                <strong>ইমেইল:</strong> <a href="mailto:news.ourtimes24@gmail.com">news.ourtimes24@gmail.com</a>
-                            </div>
-                        </div>
-                    </div>
+                <div>
+                    <h3 class="footer-col-title">যোগাযোগ ও নিউজরুম</h3>
+                    <ul class="footer-links">
+                        <li><i class="fa-solid fa-location-dot" style="color:var(--primary); margin-right:6px;"></i> ঢাকা, বাংলাদেশ</li>
+                        <li><i class="fa-solid fa-phone" style="color:var(--primary); margin-right:6px;"></i> +৮৮০১৭৮৯২০০২৬</li>
+                        <li><i class="fa-solid fa-envelope" style="color:var(--primary); margin-right:6px;"></i> news.ourtimes24@gmail.com</li>
+                        <li style="margin-top:10px;"><a href="admin.html" style="color:#ef4444;"><i class="fa-solid fa-lock"></i> নিউজরুম অ্যাডমিন প্যানেল</a></li>
+                    </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <div>© ২০২৬ Ourtimes24.com | সর্বস্বত্ব সংরক্ষিত।</div>
+                <div>© ২০২৬ Ourtimes24.com | সর্বস্বত্ব সংরক্ষিত। ডিজিটাল নিউজরুম ইঞ্জিন v2.0</div>
             </div>
         </div>
     </footer>
 
     <!-- Scripts -->
-    <script src="news_data.js?v=20260912_v4"></script>
-    <script src="app.js?v=20260912_v4"></script>
+    <script src="news_data.js?v=20260912_v5"></script>
+    <script src="app.js?v=20260912_v5"></script>
     <script>
+        // Video Popup Modal Controls
         function openVideoModal(url, title) {
             const modal = document.getElementById('videoModal');
             const iframe = document.getElementById('videoIframe');
@@ -351,69 +459,47 @@
             if (modal) modal.style.display = 'none';
         }
 
+        // Live Search Modal Controls
+        function openSearchModal() {
+            const modal = document.getElementById('searchModal');
+            if (modal) {
+                modal.style.display = 'flex';
+                const input = document.getElementById('liveSearchInput');
+                if (input) {
+                    input.value = '';
+                    setTimeout(() => input.focus(), 80);
+                }
+            }
+        }
+
+        function closeSearchModal() {
+            const modal = document.getElementById('searchModal');
+            if (modal) modal.style.display = 'none';
+        }
+
+        // Keyboard Shortcut Ctrl+K
+        document.addEventListener('keydown', (e) => {
+            if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+                e.preventDefault();
+                openSearchModal();
+            } else if (e.key === 'Escape') {
+                closeSearchModal();
+                closeVideoModal();
+            }
+        });
+
+        // Initialize Homepage Rendering on DOM Ready
         document.addEventListener('DOMContentLoaded', () => {
             renderHomepage();
             renderSaradeshGrid();
 
-            // Populate Additional Dual Grids
+            // Populate Dual Grids
             renderCategoryGrid('internationalGrid', 'আন্তর্জাতিক', 2);
             renderCategoryGrid('economyGrid', 'অর্থ-বাণিজ্য', 2);
+            renderCategoryGrid('techGrid', 'প্রযুক্তি', 2);
             renderCategoryGrid('entertainmentGrid', 'বিনোদন', 2);
             renderCategoryGrid('opinionGrid', 'মতামত', 4);
         });
-
-        function renderSaradeshGrid() {
-            const container = document.getElementById('saradeshGridContainer');
-            if (!container) return;
-
-            const all = NewsDB.getAllNews();
-            const saradeshAliases = ['saradesh', 'সারাদেশ', 'দেশজুড়ে', 'দেশজুড়ে'];
-            let news = all.filter(n => saradeshAliases.includes(n.categorySlug) || saradeshAliases.includes(n.category));
-            if (news.length === 0) {
-                news = all.slice(6, 12);
-            }
-            if (news.length === 0) return;
-
-            const lead = news[0];
-            const subItems = news.slice(1, 5);
-
-            container.innerHTML = `
-                <div class="saradesh-split-container">
-                    <!-- Left Side on Desktop / Top on Mobile: Big Lead News -->
-                    <div class="saradesh-left-lead">
-                        <a href="article.html?id=${lead.id}" class="saradesh-left-img-box">
-                            <img src="${lead.image}" alt="${lead.title}">
-                        </a>
-                        <h2 class="saradesh-left-title">
-                            <a href="article.html?id=${lead.id}">${lead.title}</a>
-                        </h2>
-                        <p class="saradesh-left-excerpt">${lead.excerpt || ''}</p>
-                        <div class="saradesh-left-meta">
-                            <span><i class="fa-regular fa-user"></i> ${lead.author || 'প্রতিনিধি'}</span>
-                            <span>•</span>
-                            <span><i class="fa-regular fa-clock"></i> ${lead.date || 'আজ'}</span>
-                        </div>
-                    </div>
-
-                    <!-- Right Side on Desktop (2x2 Grid) / Bottom on Mobile (Grid) -->
-                    <div class="saradesh-right-grid">
-                        ${subItems.map(n => `
-                            <div class="news-card-std">
-                                <a href="article.html?id=${n.id}" class="news-card-img">
-                                    <img src="${n.image}" alt="${n.title}">
-                                </a>
-                                <div class="news-card-body">
-                                    <h4 class="news-card-title"><a href="article.html?id=${n.id}">${n.title}</a></h4>
-                                    <div class="saradesh-card-meta" style="margin-top: 6px;">
-                                        <span><i class="fa-regular fa-clock"></i> ${n.date || 'আজ'}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
     </script>
 </body>
 </html>
