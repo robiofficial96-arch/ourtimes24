@@ -15,11 +15,6 @@ const CATEGORIES = [
     { slug: 'opinion', name: 'মতামত' }
 ];
 
-// RAW_NEWS_DATA is provided by news_data.js (324 Real Published Articles)
-if (typeof RAW_NEWS_DATA === 'undefined') {
-    var RAW_NEWS_DATA = [];
-}
-
 // Data Repository Manager
 class NewsRepository {
     constructor() {
@@ -39,7 +34,8 @@ class NewsRepository {
                 return custom;
             }
         } catch (e) {}
-        return (typeof RAW_NEWS_DATA !== 'undefined' && RAW_NEWS_DATA.length > 0) ? RAW_NEWS_DATA : [];
+        const raw = (typeof window !== 'undefined' && window.RAW_NEWS_DATA) ? window.RAW_NEWS_DATA : (typeof RAW_NEWS_DATA !== 'undefined' ? RAW_NEWS_DATA : []);
+        return raw && raw.length > 0 ? raw : [];
     }
 
     getNewsById(id) {
@@ -72,6 +68,9 @@ class NewsRepository {
 }
 
 const NewsDB = new NewsRepository();
+if (typeof window !== 'undefined') {
+    window.NewsDB = NewsDB;
+}
 
 // Bangla Date & Live Digital Clock
 function initBanglaClock() {
@@ -249,6 +248,11 @@ function renderCategoryGrid(containerId, categoryName, limit = 4) {
             </div>
         </div>
     `).join('');
+}
+
+if (typeof window !== 'undefined') {
+    window.renderHomepage = renderHomepage;
+    window.renderCategoryGrid = renderCategoryGrid;
 }
 
 // Single Article Page Engine

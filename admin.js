@@ -441,7 +441,7 @@ function adminLogout() {
 
 function downloadNewsJs() {
     const all = NewsDB.getAllNews();
-    const jsContent = `/**\n * OURTIMES24 - REAL ARCHIVE & PUBLISHED NEWS DATASET\n * Total Articles: ${all.length}\n * Generated: ${new Date().toISOString()}\n */\n\nconst RAW_NEWS_DATA = ` + JSON.stringify(all, null, 2) + `;\n`;
+    const jsContent = `/**\n * OURTIMES24 - REAL ARCHIVE & PUBLISHED NEWS DATASET\n * Total Articles: ${all.length}\n * Generated: ${new Date().toISOString()}\n */\n\nwindow.RAW_NEWS_DATA = ` + JSON.stringify(all, null, 2) + `;\n`;
     
     const blob = new Blob([jsContent], { type: 'application/javascript;charset=utf-8' });
     const url = URL.createObjectURL(blob);

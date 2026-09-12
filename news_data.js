@@ -2,7 +2,7 @@
  * OURTIMES24 - REAL PUBLISHED ARTICLES ARCHIVE (324 Posts)
  */
 
-const RAW_NEWS_DATA = [
+window.RAW_NEWS_DATA = [
   {
     "id": "news-1522",
     "title": "বরিশাল মহানগর ছাত্রলীগ সভাপতি জসীম উদ্দিনের  বিরুদ্ধে ধর্ষণের অভিযোগ",
