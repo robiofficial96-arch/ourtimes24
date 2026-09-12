@@ -6,7 +6,7 @@
     <title id="pageTitle">সংবাদ বিস্তারিত - আওয়ার টাইমস২৪</title>
     <meta name="description" id="metaDescription" content="সত্য ও বস্তুনিষ্ঠ সংবাদের সার্বক্ষণিক ঠিকানা - আওয়ার টাইমস২৪। দেশ ও বিদেশের সর্বশেষ তাজা খবর।">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="style.css?v=20260912_v8">
+    <link rel="stylesheet" href="style.css?v=20260912_v10">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- OPEN GRAPH FOR SOCIAL MEDIA SHARING (FACEBOOK, WHATSAPP, LINKEDIN) -->
@@ -302,16 +302,14 @@
                         <div><strong>প্রধান প্রতিবেদক:</strong> রবিউল ইসলাম</div>
                     </div>
                 </div>
-                <div>
-                    <h3 class="footer-col-title">জরুরি বিভাগসমূহ</h3>
-                    <ul class="footer-links">
-                        <li><a href="category.html?cat=national">জাতীয় সংবাদ</a></li>
-                        <li><a href="category.html?cat=politics">রাজনীতি</a></li>
-                        <li><a href="category.html?cat=saradesh">সারাদেশের সংবাদ</a></li>
-                        <li><a href="category.html?cat=international">আন্তর্জাতিক</a></li>
-                        <li><a href="category.html?cat=economy">অর্থ-বাণিজ্য</a></li>
-                        <li><a href="category.html?cat=sports">খেলাধুলা</a></li>
+                <div class="footer-latest-col">
+                    <h3 class="footer-col-title"><i class="fa-solid fa-clock-rotate-left"></i> সর্বশেষ সংবাদ</h3>
+                    <ul class="footer-latest-list" id="footerLatestNewsList">
+                        <!-- Populated dynamically by app.js -->
                     </ul>
+                    <div style="margin-top: 14px;">
+                        <a href="category?cat=all" class="footer-view-all-link">সকল সংবাদ একসাথে দেখুন <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
                 </div>
                 <div>
                     <h3 class="footer-col-title">বার্তা ও বাণিজ্যিক কার্যালয়</h3>
@@ -350,8 +348,8 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="news_data.js?v=20260912_v8"></script>
-    <script src="app.js?v=20260912_v8"></script>
+    <script src="news_data.js?v=20260912_v10"></script>
+    <script src="app.js?v=20260912_v10"></script>
     <script>
         function openSearchModal() {
             const modal = document.getElementById('searchModal');

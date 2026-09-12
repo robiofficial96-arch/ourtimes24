@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>আওয়ার টাইমস২৪ - সত্য ও বস্তুনিষ্ঠ সংবাদের সার্বক্ষণিক ঠিকানা</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="style.css?v=20260912_v8">
+    <link rel="stylesheet" href="style.css?v=20260912_v10">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
@@ -197,76 +197,70 @@
             </div>
         </section>
 
-        <!-- 5.5 INTERNATIONAL & ECONOMY DUAL GRID -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 36px 0;" class="dual-grid-section">
-            <!-- International -->
-            <section>
-                <div class="section-header">
-                    <div class="section-title">
-                        আন্তর্জাতিক
-                    </div>
-                    <a href="category.html?cat=international" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
+        <!-- 5.5 INTERNATIONAL SECTION -->
+        <section style="margin: 36px 0;">
+            <div class="section-header">
+                <div class="section-title">
+                    আন্তর্জাতিক
                 </div>
-                <div class="news-grid-2" id="internationalGrid">
-                    <!-- Populated dynamically -->
-                </div>
-            </section>
-            <!-- Economy -->
-            <section>
-                <div class="section-header">
-                    <div class="section-title">
-                        অর্থ-বাণিজ্য
-                    </div>
-                    <a href="category.html?cat=economy" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-                <div class="news-grid-2" id="economyGrid">
-                    <!-- Populated dynamically -->
-                </div>
-            </section>
-        </div>
+                <a href="category?cat=international" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="news-grid-4" id="internationalGrid">
+                <!-- Populated dynamically -->
+            </div>
+        </section>
 
-        <!-- 5.6 SPORTS SECTION -->
+        <!-- 5.6 ECONOMY SECTION -->
+        <section style="margin: 36px 0;">
+            <div class="section-header">
+                <div class="section-title">
+                    অর্থ-বাণিজ্য
+                </div>
+                <a href="category?cat=economy" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="news-grid-4" id="economyGrid">
+                <!-- Populated dynamically -->
+            </div>
+        </section>
+
+        <!-- 5.7 SPORTS SECTION -->
         <section style="margin: 36px 0;">
             <div class="section-header">
                 <div class="section-title">
                     খেলাধুলা
                 </div>
-                <a href="category.html?cat=sports" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
+                <a href="category?cat=sports" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
             </div>
             <div class="news-grid-4" id="sportsGrid">
                 <!-- Populated by app.js -->
             </div>
         </section>
 
+        <!-- 5.8 SCIENCE & TECH SECTION (বিজ্ঞান ও প্রযুক্তি) -->
+        <section style="margin: 36px 0;">
+            <div class="section-header">
+                <div class="section-title">
+                    বিজ্ঞান ও প্রযুক্তি
+                </div>
+                <a href="category?cat=tech" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="news-grid-4" id="techGrid">
+                <!-- Populated dynamically -->
+            </div>
+        </section>
 
-
-        <!-- 5.9 TECH & ENTERTAINMENT DUAL GRID -->
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 36px 0;" class="dual-grid-section">
-            <!-- Tech -->
-            <section>
-                <div class="section-header">
-                    <div class="section-title">
-                        বিজ্ঞান ও প্রযুক্তি
-                    </div>
-                    <a href="category.html?cat=tech" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
+        <!-- 5.9 ENTERTAINMENT & LIFESTYLE SECTION (বিনোদন ও লাইফস্টাইল) -->
+        <section style="margin: 36px 0;">
+            <div class="section-header">
+                <div class="section-title">
+                    বিনোদন ও লাইফস্টাইল
                 </div>
-                <div class="news-grid-2" id="techGrid">
-                    <!-- Populated dynamically -->
-                </div>
-            </section>
-            <!-- Entertainment -->
-            <section>
-                <div class="section-header">
-                    <div class="section-title">
-                        বিনোদন ও লাইফস্টাইল
-                    </div>
-                    <a href="category.html?cat=entertainment" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
-                </div>
-                <div class="news-grid-2" id="entertainmentGrid">
-                    <!-- Populated dynamically -->
-                </div>
-            </section>
-        </div>
+                <a href="category?cat=entertainment" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="news-grid-4" id="entertainmentGrid">
+                <!-- Populated dynamically -->
+            </div>
+        </section>
 
         <!-- 5.10 OPINION SECTION -->
         <section style="margin: 36px 0;">
@@ -277,6 +271,19 @@
                 <a href="category.html?cat=opinion" class="section-link">আরও দেখুন <i class="fa-solid fa-arrow-right"></i></a>
             </div>
             <div class="news-grid-4" id="opinionGrid">
+                <!-- Populated by app.js -->
+            </div>
+        </section>
+
+        <!-- 5.11 ALL LATEST NEWS STREAM (সকল সর্বশেষ প্রকাশিত সংবাদ) -->
+        <section style="margin: 44px 0 20px 0;">
+            <div class="section-header">
+                <div class="section-title">
+                    <i class="fa-solid fa-bolt" style="color: var(--primary); margin-right: 6px;"></i> সর্বশেষ প্রকাশিত সংবাদ
+                </div>
+                <a href="category?cat=all" class="section-link">সকল খবর একসাথে <i class="fa-solid fa-arrow-right"></i></a>
+            </div>
+            <div class="news-grid-4" id="allLatestNewsGrid">
                 <!-- Populated by app.js -->
             </div>
         </section>
@@ -358,16 +365,14 @@
                         <div><strong>প্রধান প্রতিবেদক:</strong> রবিউল ইসলাম</div>
                     </div>
                 </div>
-                <div>
-                    <h3 class="footer-col-title">জরুরি বিভাগসমূহ</h3>
-                    <ul class="footer-links">
-                        <li><a href="category.html?cat=national">জাতীয় সংবাদ</a></li>
-                        <li><a href="category.html?cat=politics">রাজনীতি</a></li>
-                        <li><a href="category.html?cat=saradesh">সারাদেশের সংবাদ</a></li>
-                        <li><a href="category.html?cat=international">আন্তর্জাতিক</a></li>
-                        <li><a href="category.html?cat=economy">অর্থ-বাণিজ্য</a></li>
-                        <li><a href="category.html?cat=sports">খেলাধুলা</a></li>
+                <div class="footer-latest-col">
+                    <h3 class="footer-col-title"><i class="fa-solid fa-clock-rotate-left"></i> সর্বশেষ সংবাদ</h3>
+                    <ul class="footer-latest-list" id="footerLatestNewsList">
+                        <!-- Populated dynamically by app.js -->
                     </ul>
+                    <div style="margin-top: 14px;">
+                        <a href="category?cat=all" class="footer-view-all-link">সকল সংবাদ একসাথে দেখুন <i class="fa-solid fa-arrow-right"></i></a>
+                    </div>
                 </div>
                 <div>
                     <h3 class="footer-col-title">বার্তা ও বাণিজ্যিক কার্যালয়</h3>
@@ -406,8 +411,8 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="news_data.js?v=20260912_v8"></script>
-    <script src="app.js?v=20260912_v8"></script>
+    <script src="news_data.js?v=20260912_v10"></script>
+    <script src="app.js?v=20260912_v10"></script>
     <script>
         // Live Search Modal Controls
         function openSearchModal() {
@@ -442,11 +447,11 @@
             renderHomepage();
             renderSaradeshGrid();
 
-            // Populate Dual Grids
-            renderCategoryGrid('internationalGrid', 'আন্তর্জাতিক', 2);
-            renderCategoryGrid('economyGrid', 'অর্থ-বাণিজ্য', 2);
-            renderCategoryGrid('techGrid', 'প্রযুক্তি', 2);
-            renderCategoryGrid('entertainmentGrid', 'বিনোদন', 2);
+            // Populate Category Grids (4 items each)
+            renderCategoryGrid('internationalGrid', 'আন্তর্জাতিক', 4);
+            renderCategoryGrid('economyGrid', 'অর্থ-বাণিজ্য', 4);
+            renderCategoryGrid('techGrid', 'বিজ্ঞান ও প্রযুক্তি', 4);
+            renderCategoryGrid('entertainmentGrid', 'বিনোদন', 4);
             renderCategoryGrid('opinionGrid', 'মতামত', 4);
         });
     </script>

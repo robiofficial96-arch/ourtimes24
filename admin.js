@@ -2073,6 +2073,7 @@ function resetToDefaultData() {
     if (confirm('আপনি কি ব্রাউজার ক্যাশ রিসেট করে news_data.js-এর মূল ডেটায় ফিরে যেতে চান? (আপনার সাম্প্রতিক অসংরক্ষিত পরিবর্তন মুছে যেতে পারে)')) {
         localStorage.removeItem('ourtimes_news_v2');
         localStorage.removeItem('ourtimes_news_v3');
+        localStorage.removeItem('ourtimes_news_v4');
         showAdminToast('success', 'ক্যাশ রিসেট', 'ক্যাশ সফলভাবে রিসেট হয়েছে!');
         setTimeout(() => window.location.reload(), 800);
     }

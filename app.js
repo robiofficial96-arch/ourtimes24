@@ -70,7 +70,7 @@ class NewsRepository {
 
     getAllNews() {
         try {
-            const custom = JSON.parse(localStorage.getItem('ourtimes_news_v3'));
+            const custom = JSON.parse(localStorage.getItem('ourtimes_news_v4'));
             if (custom && Array.isArray(custom) && custom.length >= 100) {
                 return custom;
             }
@@ -93,12 +93,12 @@ class NewsRepository {
         } else {
             all.unshift(newsItem);
         }
-        localStorage.setItem('ourtimes_news_v3', JSON.stringify(all));
+        localStorage.setItem('ourtimes_news_v4', JSON.stringify(all));
     }
 
     deleteNews(id) {
         const filtered = this.getAllNews().filter(n => String(n.id) !== String(id));
-        localStorage.setItem('ourtimes_news_v3', JSON.stringify(filtered));
+        localStorage.setItem('ourtimes_news_v4', JSON.stringify(filtered));
     }
 
     getAdConfig() {
@@ -324,6 +324,9 @@ function renderHomepage() {
     renderCategoryGrid('nationalGrid', 'জাতীয়', 4);
     renderCategoryGrid('politicsGrid', 'রাজনীতি', 4);
     renderCategoryGrid('sportsGrid', 'খেলাধুলা', 4);
+
+    // 4. All Latest News Stream Grid
+    renderAllLatestStream(8);
 }
 
 // ==========================================
@@ -343,18 +346,19 @@ function renderCategoryGrid(containerId, categoryName, limit = 4) {
         'আন্তর্জাতিক': ['আন্তর্জাতিক', 'প্রবাস খবর', 'international'],
         'অর্থ-বাণিজ্য': ['অর্থ-বাণিজ্য', 'অর্থ ও বাণিজ্য', 'বাণিজ্য', 'economy'],
         'খেলাধুলা': ['খেলাধুলা', 'sports'],
-        'বিনোদন': ['বিনোদন', 'জীবনশৈলী', 'entertainment'],
-        'প্রযুক্তি': ['প্রযুক্তি', 'tech'],
-        'মতামত': ['মতামত', 'opinion']
+        'বিনোদন': ['বিনোদন', 'বিনোদন ও লাইফস্টাইল', 'জীবনশৈলী', 'সংস্কৃতি', 'সাহিত্য', 'entertainment'],
+        'বিজ্ঞান ও প্রযুক্তি': ['বিজ্ঞান ও প্রযুক্তি', 'প্রযুক্তি', 'বিজ্ঞান', 'tech', 'science'],
+        'প্রযুক্তি': ['বিজ্ঞান ও প্রযুক্তি', 'প্রযুক্তি', 'বিজ্ঞান', 'tech', 'science'],
+        'মতামত': ['মতামত', 'সম্পাদকীয়', 'opinion']
     };
 
     const targetList = categoryMap[categoryName] || [categoryName];
     let news = all.filter(n => targetList.includes(n.category) || targetList.includes(n.categorySlug));
 
-    // Supplement from latest news if fewer items so no section is ever empty
+    // Supplement from news pool (skipping the top 6 lead stories to prevent cross-category headline duplication)
     if (news.length < limit) {
         const existingIds = new Set(news.map(n => n.id));
-        const filler = all.filter(n => !existingIds.has(n.id));
+        const filler = all.slice(6).filter(n => !existingIds.has(n.id));
         news = news.concat(filler.slice(0, limit - news.length));
     }
 
@@ -362,13 +366,16 @@ function renderCategoryGrid(containerId, categoryName, limit = 4) {
     container.innerHTML = displayItems.map(n => `
         <div class="news-card-std">
             <a href="article?id=${n.id}" class="news-card-img">
-                <img src="${n.image}" alt="${n.title}">
+                <img src="${n.image}" alt="${n.title}" loading="lazy">
                 <span class="category-tag">${n.category}</span>
             </a>
             <div class="news-card-body">
                 <h3 class="news-card-title">
                     <a href="article?id=${n.id}">${n.title}</a>
                 </h3>
+                <div class="news-card-meta">
+                    <span><i class="fa-regular fa-clock"></i> ${n.date || 'আজ'}</span>
+                </div>
             </div>
         </div>
     `).join('');
@@ -851,6 +858,52 @@ function renderSiteAds() {
     }
 }
 
+// ==========================================
+// 11. FOOTER & ALL-LATEST NEWS STREAM ENGINE
+// ==========================================
+function renderFooterLatestNews(limit = 5) {
+    const list = document.getElementById('footerLatestNewsList');
+    if (!list || typeof NewsDB === 'undefined') return;
+    const all = NewsDB.getAllNews();
+    if (!all || all.length === 0) return;
+    const latest = all.slice(0, limit);
+    list.innerHTML = latest.map(n => `
+        <li class="footer-latest-item">
+            <a href="article?id=${n.id}" class="footer-latest-link">
+                <div class="footer-latest-top">
+                    <span class="footer-latest-badge">${n.category || 'সংবাদ'}</span>
+                    <span class="footer-latest-time"><i class="fa-regular fa-clock"></i> ${n.date || 'আজ'}</span>
+                </div>
+                <span class="footer-latest-title">${n.title}</span>
+            </a>
+        </li>
+    `).join('');
+}
+
+function renderAllLatestStream(limit = 8) {
+    const container = document.getElementById('allLatestNewsGrid');
+    if (!container || typeof NewsDB === 'undefined') return;
+    const all = NewsDB.getAllNews();
+    if (!all || all.length === 0) return;
+    const latest = all.slice(0, limit);
+    container.innerHTML = latest.map(n => `
+        <div class="news-card-std">
+            <a href="article?id=${n.id}" class="news-card-img">
+                <img src="${n.image}" alt="${n.title}" loading="lazy">
+                <span class="category-tag">${n.category}</span>
+            </a>
+            <div class="news-card-body">
+                <h3 class="news-card-title">
+                    <a href="article?id=${n.id}">${n.title}</a>
+                </h3>
+                <div class="news-card-meta">
+                    <span><i class="fa-regular fa-clock"></i> ${n.date || 'আজ'}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
 // Expose Global Helper Functions
 if (typeof window !== 'undefined') {
     window.renderHomepage = renderHomepage;
@@ -864,6 +917,8 @@ if (typeof window !== 'undefined') {
     window.closeOffcanvasMenu = closeOffcanvasMenu;
     window.renderSiteAds = renderSiteAds;
     window.shareToPlatform = shareToPlatform;
+    window.renderFooterLatestNews = renderFooterLatestNews;
+    window.renderAllLatestStream = renderAllLatestStream;
 }
 
 // Initialize on Load
@@ -875,6 +930,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initBanglaClock();
     renderBreakingTicker();
     renderSiteAds();
+    renderFooterLatestNews();
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {

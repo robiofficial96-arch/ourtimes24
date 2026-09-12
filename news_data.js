@@ -1,5 +1,7 @@
-// Automatically generated and cleaned news data
-window.RAW_NEWS_DATA = [
+/**
+ * OURTIMES24 - REAL HISTORICAL ARTICLES DATASET (324 ITEMS)
+ */
+const RAW_NEWS_DATA = [
   {
     "id": "news-1522",
     "title": "বরিশাল মহানগর ছাত্রলীগ সভাপতি জসীম উদ্দিনের  বিরুদ্ধে ধর্ষণের অভিযোগ",
@@ -684,8 +686,8 @@ window.RAW_NEWS_DATA = [
     "id": "news-1392",
     "title": "খুলনায় চিকিৎসা সেবা কার্যক্রম বন্ধের হুমকি বিএমএ'র",
     "subtitle": "",
-    "category": "বিনোদন",
-    "categorySlug": "entertainment",
+    "category": "জাতীয়",
+    "categorySlug": "national",
     "district": "খুলনা",
     "author": "স্টাফ রিপোর্টার",
     "authorAvatar": "",
@@ -1160,8 +1162,8 @@ window.RAW_NEWS_DATA = [
     "id": "news-1291",
     "title": "বাংলাদেশ সহ ৫৩ কোটি ফেসবুক আইডির তথ্য ফাঁস",
     "subtitle": "",
-    "category": "আন্তর্জাতিক",
-    "categorySlug": "international",
+    "category": "বিজ্ঞান ও প্রযুক্তি",
+    "categorySlug": "tech",
     "district": "ঢাকা",
     "author": "স্টাফ রিপোর্টার",
     "authorAvatar": "",
@@ -1908,8 +1910,8 @@ window.RAW_NEWS_DATA = [
     "id": "news-1117",
     "title": "মার্চ মাসে দেশ সেরা ডিজিটাল কন্টেন্ট নির্মাতা প্রভাষক মোছাঃ মাকছুদা বেগম",
     "subtitle": "",
-    "category": "শিক্ষাঙ্গন",
-    "categorySlug": "national",
+    "category": "বিজ্ঞান ও প্রযুক্তি",
+    "categorySlug": "tech",
     "district": "ঢাকা",
     "author": "স্টাফ রিপোর্টার",
     "authorAvatar": "",
@@ -2843,8 +2845,8 @@ window.RAW_NEWS_DATA = [
     "id": "news-841",
     "title": "কক্ষপথে পৌঁছল না চীনের স্যাটেলাইট",
     "subtitle": "",
-    "category": "আন্তর্জাতিক",
-    "categorySlug": "international",
+    "category": "বিজ্ঞান ও প্রযুক্তি",
+    "categorySlug": "tech",
     "district": "ঢাকা",
     "author": "স্টাফ রিপোর্টার",
     "authorAvatar": "",
@@ -3251,8 +3253,8 @@ window.RAW_NEWS_DATA = [
     "id": "news-699",
     "title": "বকুল আক্তার দরিয়া'র কবিতা",
     "subtitle": "",
-    "category": "জাতীয়",
-    "categorySlug": "national",
+    "category": "বিনোদন",
+    "categorySlug": "entertainment",
     "district": "ঢাকা",
     "author": "স্টাফ রিপোর্টার",
     "authorAvatar": "",
@@ -5223,8 +5225,8 @@ window.RAW_NEWS_DATA = [
     "id": "news-201",
     "title": "রোহিঙ্গা ক্যাম্পে থ্রিজি-ফোরজি বন্ধ",
     "subtitle": "",
-    "category": "জাতীয়",
-    "categorySlug": "national",
+    "category": "বিজ্ঞান ও প্রযুক্তি",
+    "categorySlug": "tech",
     "district": "কক্সবাজার",
     "author": "স্টাফ রিপোর্টার",
     "authorAvatar": "",
@@ -5509,3 +5511,7 @@ window.RAW_NEWS_DATA = [
     "views": 162
   }
 ];
+
+if (typeof window !== 'undefined') {
+    window.RAW_NEWS_DATA = RAW_NEWS_DATA;
+}
