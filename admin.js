@@ -8,6 +8,40 @@ const CLOUDINARY_CONFIG = {
     uploadPreset: 'ourtimes_news'
 };
 
+// Content & Excerpt Sanitizers (Removes dead ads, rnrn artifacts, fixes paragraphs)
+function cleanNewsHtml(html) {
+    if (!html) return '';
+    let clean = html;
+    clean = clean.replace(/<div\s+class=["']ads["'][\s\S]*?(?:<\/div>\s*){3,6}/gi, '');
+    clean = clean.replace(/<div\s+id=["'](?:div-gpt-ad|google_ads_iframe)[\s\S]*?<\/div>/gi, '');
+    clean = clean.replace(/<div[^>]*data-google-query-id[\s\S]*?<\/div>/gi, '');
+    clean = clean.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    clean = clean.replace(/(?:rn|\n){2,}/gi, '</p><p>');
+    clean = clean.replace(/rnrn/gi, '</p><p>');
+    clean = clean.replace(/([।?!])\s*rn\s*/gi, '$1</p><p>');
+    clean = clean.replace(/(<\/?(?:p|div|br|figure|img|span)[^>]*>)\s*rn\s*/gi, '$1');
+    clean = clean.replace(/\s*rn\s*(<\/?(?:p|div|br|figure|img|span)[^>]*>)/gi, '$1');
+    clean = clean.replace(/\s+rn\s+/gi, ' ');
+    clean = clean.replace(/rn([A-Za-z0-9\u0980-\u09FF])/g, ' $1');
+    clean = clean.replace(/([A-Za-z0-9\u0980-\u09FF])rn/g, '$1 ');
+    clean = clean.replace(/<p>\s*<\/p>/gi, '');
+    clean = clean.trim();
+    if (clean && !clean.startsWith('<p>') && !clean.startsWith('<div') && !clean.startsWith('<figure')) {
+        clean = `<p>${clean}</p>`;
+    }
+    return clean;
+}
+
+function cleanNewsExcerpt(text) {
+    if (!text) return '';
+    return text
+        .replace(/rnrn/gi, ' ')
+        .replace(/rn/gi, ' ')
+        .replace(/[\r\n]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
 // ==========================================
 // 0. PREMIUM NOTIFICATIONS & TOAST SYSTEM
 // ==========================================
@@ -881,6 +915,9 @@ function handleNewsSubmit(e) {
             .filter(Boolean)
             .join('\n');
     }
+    finalContent = cleanNewsHtml(finalContent);
+    excerpt = cleanNewsExcerpt(excerpt);
+
     const isLead = document.getElementById('newsIsLead')?.checked || false;
     const isBreaking = document.getElementById('newsIsBreaking')?.checked || false;
 
@@ -2035,6 +2072,7 @@ function downloadNewsJs() {
 function resetToDefaultData() {
     if (confirm('আপনি কি ব্রাউজার ক্যাশ রিসেট করে news_data.js-এর মূল ডেটায় ফিরে যেতে চান? (আপনার সাম্প্রতিক অসংরক্ষিত পরিবর্তন মুছে যেতে পারে)')) {
         localStorage.removeItem('ourtimes_news_v2');
+        localStorage.removeItem('ourtimes_news_v3');
         showAdminToast('success', 'ক্যাশ রিসেট', 'ক্যাশ সফলভাবে রিসেট হয়েছে!');
         setTimeout(() => window.location.reload(), 800);
     }

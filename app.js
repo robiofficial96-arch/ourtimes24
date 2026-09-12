@@ -15,6 +15,45 @@ const CATEGORIES = [
     { slug: 'opinion', name: 'মতামত' }
 ];
 
+// Core Content & Excerpt Sanitizers (Removes dead ads, rnrn artifacts, fixes paragraphs)
+function cleanNewsHtml(html) {
+    if (!html) return '';
+    let clean = html;
+    // 1. Remove dead Google Ad / GPT ad containers
+    clean = clean.replace(/<div\s+class=["']ads["'][\s\S]*?(?:<\/div>\s*){3,6}/gi, '');
+    clean = clean.replace(/<div\s+id=["'](?:div-gpt-ad|google_ads_iframe)[\s\S]*?<\/div>/gi, '');
+    clean = clean.replace(/<div[^>]*data-google-query-id[\s\S]*?<\/div>/gi, '');
+
+    // 2. Normalize and replace rnrn and rn line breaks
+    clean = clean.replace(/\r\n/g, '\n').replace(/\r/g, '\n');
+    clean = clean.replace(/(?:rn|\n){2,}/gi, '</p><p>');
+    clean = clean.replace(/rnrn/gi, '</p><p>');
+    clean = clean.replace(/([।?!])\s*rn\s*/gi, '$1</p><p>');
+    clean = clean.replace(/(<\/?(?:p|div|br|figure|img|span)[^>]*>)\s*rn\s*/gi, '$1');
+    clean = clean.replace(/\s*rn\s*(<\/?(?:p|div|br|figure|img|span)[^>]*>)/gi, '$1');
+    clean = clean.replace(/\s+rn\s+/gi, ' ');
+    clean = clean.replace(/rn([A-Za-z0-9\u0980-\u09FF])/g, ' $1');
+    clean = clean.replace(/([A-Za-z0-9\u0980-\u09FF])rn/g, '$1 ');
+
+    // 3. Remove empty paragraphs
+    clean = clean.replace(/<p>\s*<\/p>/gi, '');
+    clean = clean.trim();
+    if (clean && !clean.startsWith('<p>') && !clean.startsWith('<div') && !clean.startsWith('<figure')) {
+        clean = `<p>${clean}</p>`;
+    }
+    return clean;
+}
+
+function cleanNewsExcerpt(text) {
+    if (!text) return '';
+    return text
+        .replace(/rnrn/gi, ' ')
+        .replace(/rn/gi, ' ')
+        .replace(/[\r\n]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+}
+
 // Data Repository Manager
 class NewsRepository {
     constructor() {
@@ -31,7 +70,7 @@ class NewsRepository {
 
     getAllNews() {
         try {
-            const custom = JSON.parse(localStorage.getItem('ourtimes_news_v2'));
+            const custom = JSON.parse(localStorage.getItem('ourtimes_news_v3'));
             if (custom && Array.isArray(custom) && custom.length >= 100) {
                 return custom;
             }
@@ -45,6 +84,8 @@ class NewsRepository {
     }
 
     saveNews(newsItem) {
+        if (newsItem.content) newsItem.content = cleanNewsHtml(newsItem.content);
+        if (newsItem.excerpt) newsItem.excerpt = cleanNewsExcerpt(newsItem.excerpt);
         const all = this.getAllNews();
         const index = all.findIndex(n => String(n.id) === String(newsItem.id));
         if (index >= 0) {
@@ -52,12 +93,12 @@ class NewsRepository {
         } else {
             all.unshift(newsItem);
         }
-        localStorage.setItem('ourtimes_news_v2', JSON.stringify(all));
+        localStorage.setItem('ourtimes_news_v3', JSON.stringify(all));
     }
 
     deleteNews(id) {
         const filtered = this.getAllNews().filter(n => String(n.id) !== String(id));
-        localStorage.setItem('ourtimes_news_v2', JSON.stringify(filtered));
+        localStorage.setItem('ourtimes_news_v3', JSON.stringify(filtered));
     }
 
     getAdConfig() {
@@ -174,6 +215,7 @@ function getSmartExcerpt(article, maxLength = 180) {
     }
 
     if (!text) text = article.subtitle || title;
+    text = cleanNewsExcerpt(text);
 
     if (text.length > maxLength) {
         return text.substring(0, maxLength - 5).trim() + '...';
@@ -552,7 +594,7 @@ function renderSingleArticle() {
     if (elCap) elCap.textContent = `${article.title} — ছবি: Ourtimes24`;
     
     if (elBody) {
-        let bodyContent = article.content || `<p>${article.excerpt}</p>`;
+        let bodyContent = cleanNewsHtml(article.content || `<p>${article.excerpt}</p>`);
         
         // Zero Blank Space In-Article Banner Injection
         try {

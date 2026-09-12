@@ -74,6 +74,7 @@ try {
             (strpos($rawExcerpt, $rawTitle) === 0 && strlen($rawExcerpt) <= strlen($rawTitle) + 30);
 
         $rawDesc = (!$isRedundantExcerpt && $rawExcerpt) ? $rawExcerpt : ($rawContent ?: $rawExcerpt);
+        $rawDesc = str_ireplace(['rnrn', 'rn'], ' ', $rawDesc);
         $cleanDesc = trim(preg_replace('/\s+/', ' ', strip_tags($rawDesc)));
         if (function_exists('mb_strlen') && function_exists('mb_substr')) {
             if (mb_strlen($cleanDesc, 'UTF-8') > 175) {
