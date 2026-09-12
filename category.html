@@ -321,12 +321,12 @@
             } else {
                 container.innerHTML = news.map(n => `
                     <div class="news-card-std">
-                        <a href="article.html?id=${n.id}" class="news-card-img">
+                        <a href="article?id=${n.id}" class="news-card-img">
                             <img src="${n.image}" alt="${n.title}">
                             <span class="category-tag">${n.category}</span>
                         </a>
                         <div class="news-card-body">
-                            <h3 class="news-card-title"><a href="article.html?id=${n.id}">${n.title}</a></h3>
+                            <h3 class="news-card-title"><a href="article?id=${n.id}">${n.title}</a></h3>
                         </div>
                     </div>
                 `).join('');
@@ -339,7 +339,7 @@
 
             document.getElementById('latestNewsList').innerHTML = all.slice(0, 6).map((n, i) => `
                 <li class="ranked-item">
-                    <a href="article.html?id=${n.id}" class="ranked-item-link">
+                    <a href="article?id=${n.id}" class="ranked-item-link">
                         <div class="rank-thumb-wrapper">
                             <span class="rank-badge-overlay">${rankDigits[i] || (i + 1)}</span>
                             <img src="${n.image}" alt="${n.title}">
@@ -357,7 +357,7 @@
             const mostReadSorted = [...all].reverse().slice(0, 6);
             document.getElementById('mostReadNewsList').innerHTML = mostReadSorted.map((n, i) => `
                 <li class="ranked-item">
-                    <a href="article.html?id=${n.id}" class="ranked-item-link">
+                    <a href="article?id=${n.id}" class="ranked-item-link">
                         <div class="rank-thumb-wrapper">
                             <span class="rank-badge-overlay rank-fire">${rankDigits[i] || (i + 1)}</span>
                             <img src="${n.image}" alt="${n.title}">

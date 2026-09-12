@@ -137,7 +137,7 @@ function renderBreakingTicker() {
     if (!tickerContainer) return;
 
     tickerContainer.innerHTML = displayList.map(n => `
-        <a href="article.html?id=${n.id}" style="margin-right: 40px; color: inherit; display: inline-flex; align-items: center; gap: 8px;">
+        <a href="article?id=${n.id}" style="margin-right: 40px; color: inherit; display: inline-flex; align-items: center; gap: 8px;">
             <span style="color:var(--primary); font-weight:800;">[${n.category}]</span>
             <span>${n.title}</span>
         </a>
@@ -160,13 +160,13 @@ function renderHomepage() {
         unifiedContainer.innerHTML = `
             <!-- Top Main Big Lead Story -->
             <div class="lead-story-row">
-                <a href="article.html?id=${lead.id}" class="lead-img-box">
+                <a href="article?id=${lead.id}" class="lead-img-box">
                     <img src="${lead.image}" alt="${lead.title}">
                 </a>
                 <div class="lead-content">
                     <span class="category-tag-inline">${lead.category}</span>
                     <h1 class="lead-title">
-                        <a href="article.html?id=${lead.id}">${lead.title}</a>
+                        <a href="article?id=${lead.id}">${lead.title}</a>
                     </h1>
                     <p class="lead-excerpt">${lead.excerpt}</p>
                     <div class="lead-meta">
@@ -182,7 +182,7 @@ function renderHomepage() {
                 ${subLeads.map(n => {
                     const cleanExcerpt = n.excerpt && n.excerpt.length > 110 ? n.excerpt.substring(0, 105).trim() + '...' : (n.excerpt || '');
                     return `
-                        <a href="article.html?id=${n.id}" class="sublead-list-row">
+                        <a href="article?id=${n.id}" class="sublead-list-row">
                             <div class="sublead-row-img">
                                 <img src="${n.image}" alt="${n.title}">
                             </div>
@@ -204,7 +204,7 @@ function renderHomepage() {
     if (latestList) {
         latestList.innerHTML = all.slice(0, 6).map((n, i) => `
             <li class="ranked-item">
-                <a href="article.html?id=${n.id}" class="ranked-item-link">
+                <a href="article?id=${n.id}" class="ranked-item-link">
                     <div class="rank-thumb-wrapper">
                         <span class="rank-badge-overlay">${rankDigits[i] || (i + 1)}</span>
                         <img src="${n.image}" alt="${n.title}">
@@ -224,7 +224,7 @@ function renderHomepage() {
         const curatedMostRead = [...all].reverse().slice(0, 6);
         mostReadList.innerHTML = curatedMostRead.map((n, i) => `
             <li class="ranked-item">
-                <a href="article.html?id=${n.id}" class="ranked-item-link">
+                <a href="article?id=${n.id}" class="ranked-item-link">
                     <div class="rank-thumb-wrapper">
                         <span class="rank-badge-overlay rank-fire">${rankDigits[i] || (i + 1)}</span>
                         <img src="${n.image}" alt="${n.title}">
@@ -283,13 +283,13 @@ function renderCategoryGrid(containerId, categoryName, limit = 4) {
     const displayItems = news.slice(0, limit);
     container.innerHTML = displayItems.map(n => `
         <div class="news-card-std">
-            <a href="article.html?id=${n.id}" class="news-card-img">
+            <a href="article?id=${n.id}" class="news-card-img">
                 <img src="${n.image}" alt="${n.title}">
                 <span class="category-tag">${n.category}</span>
             </a>
             <div class="news-card-body">
                 <h3 class="news-card-title">
-                    <a href="article.html?id=${n.id}">${n.title}</a>
+                    <a href="article?id=${n.id}">${n.title}</a>
                 </h3>
             </div>
         </div>
@@ -325,12 +325,12 @@ function renderSaradeshGrid(selectedDivision = 'all') {
         <div class="saradesh-split-container">
             <!-- Left Side: Big District Lead News -->
             <div class="saradesh-left-lead">
-                <a href="article.html?id=${lead.id}" class="saradesh-left-img-box">
+                <a href="article?id=${lead.id}" class="saradesh-left-img-box">
                     <img src="${lead.image}" alt="${lead.title}">
                 </a>
                 <span class="category-tag-inline"><i class="fa-solid fa-location-dot"></i> ${lead.district || 'জেলা সংবাদ'}</span>
                 <h2 class="saradesh-left-title">
-                    <a href="article.html?id=${lead.id}">${lead.title}</a>
+                    <a href="article?id=${lead.id}">${lead.title}</a>
                 </h2>
                 <p class="saradesh-left-excerpt">${lead.excerpt || ''}</p>
                 <div class="saradesh-left-meta">
@@ -344,12 +344,12 @@ function renderSaradeshGrid(selectedDivision = 'all') {
             <div class="saradesh-right-grid">
                 ${subItems.map(n => `
                     <div class="news-card-std">
-                        <a href="article.html?id=${n.id}" class="news-card-img">
+                        <a href="article?id=${n.id}" class="news-card-img">
                             <img src="${n.image}" alt="${n.title}">
                             <span class="category-tag">${n.district || n.category}</span>
                         </a>
                         <div class="news-card-body">
-                            <h4 class="news-card-title"><a href="article.html?id=${n.id}">${n.title}</a></h4>
+                            <h4 class="news-card-title"><a href="article?id=${n.id}">${n.title}</a></h4>
                         </div>
                     </div>
                 `).join('')}
@@ -406,7 +406,7 @@ function handleLiveSearch(query) {
     }
 
     container.innerHTML = results.map(n => `
-        <a href="article.html?id=${n.id}" class="search-result-item">
+        <a href="article?id=${n.id}" class="search-result-item">
             <img src="${n.image}" alt="${n.title}" class="search-result-thumb">
             <div>
                 <div class="search-result-title">${n.title}</div>
@@ -572,13 +572,13 @@ function renderSingleArticle() {
 
         relatedList.innerHTML = related.map(n => `
             <div class="news-card-std">
-                <a href="article.html?id=${n.id}" class="news-card-img">
+                <a href="article?id=${n.id}" class="news-card-img">
                     <img src="${n.image}" alt="${n.title}">
                     <span class="category-tag">${n.category}</span>
                 </a>
                 <div class="news-card-body">
                     <h3 class="news-card-title">
-                        <a href="article.html?id=${n.id}">${n.title}</a>
+                        <a href="article?id=${n.id}">${n.title}</a>
                     </h3>
                 </div>
             </div>

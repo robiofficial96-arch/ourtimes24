@@ -24,12 +24,20 @@ DirectoryIndex index.html
     RewriteEngine On
     RewriteBase /
 
-    # Canonical 301 Redirect: remove index.html from URL (/index.html -> /)
-    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /(.*)index\.html HTTP/ [NC]
+    # 1. Canonical 301 Redirect: remove index.html from URL (/index.html -> /)
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /(.*)index\.html [NC]
     RewriteRule ^(.*)index\.html$ /$1 [R=301,L]
 
-    # Route social media crawlers (Facebook, WhatsApp, Twitter, etc.) to share.php for dynamic Open Graph & Twitter Cards
+    # 2. Route social media crawlers for /article or /article.html to share.php
     RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit|Facebot|WhatsApp|Twitterbot|LinkedInBot|TelegramBot|Slackbot|Discordbot|Pinterest|SkypeUriPreview) [NC]
+    RewriteRule ^article(\.html)?$ share.php [L,QSA]
+
+    # 3. Canonical 301 Redirect: strip .html extension from browser address bar (e.g. /article.html?id=123 -> /article?id=123)
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /([^.\s?]+)\.html [NC]
+    RewriteRule ^([^.]+)\.html$ /$1 [R=301,L,QSA]
+
+    # 4. Internally rewrite extensionless requests to .html (e.g. /article -> article.html, /category -> category.html)
     RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^article\.html$ share.php [L,QSA]
+    RewriteCond %{REQUEST_FILENAME}\.html -f
+    RewriteRule ^([^/]+)/?$ $1.html [L,QSA]
 </IfModule>

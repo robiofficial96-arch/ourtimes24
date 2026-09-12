@@ -18,7 +18,7 @@
     <meta property="og:image:secure_url" id="ogImageSecure" content="https://ourtimes24.com/logo.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:url" id="ogUrl" content="https://ourtimes24.com/article.html">
+    <meta property="og:url" id="ogUrl" content="https://ourtimes24.com/article">
 
     <!-- TWITTER CARD FOR X / TWITTER -->
     <meta name="twitter:card" content="summary_large_image">
@@ -392,7 +392,7 @@
 
             document.getElementById('latestNewsList').innerHTML = all.slice(0, 6).map((n, i) => `
                 <li class="ranked-item">
-                    <a href="article.html?id=${n.id}" class="ranked-item-link">
+                    <a href="article?id=${n.id}" class="ranked-item-link">
                         <div class="rank-thumb-wrapper">
                             <span class="rank-badge-overlay">${rankDigits[i] || (i + 1)}</span>
                             <img src="${n.image}" alt="${n.title}">
@@ -410,7 +410,7 @@
             const mostReadSorted = [...all].reverse().slice(0, 6);
             document.getElementById('mostReadNewsList').innerHTML = mostReadSorted.map((n, i) => `
                 <li class="ranked-item">
-                    <a href="article.html?id=${n.id}" class="ranked-item-link">
+                    <a href="article?id=${n.id}" class="ranked-item-link">
                         <div class="rank-thumb-wrapper">
                             <span class="rank-badge-overlay rank-fire">${rankDigits[i] || (i + 1)}</span>
                             <img src="${n.image}" alt="${n.title}">

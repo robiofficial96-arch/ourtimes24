@@ -69,10 +69,10 @@ function showNewsPublishSuccessModal(newsItem) {
         titleEl.textContent = `"${newsItem.title}"`;
     }
     if (viewLink && newsItem) {
-        viewLink.href = `article.html?id=${encodeURIComponent(newsItem.id)}`;
+        viewLink.href = `article?id=${encodeURIComponent(newsItem.id)}`;
     }
     if (photocardLink && newsItem) {
-        photocardLink.href = `photocard.html?newsId=${encodeURIComponent(newsItem.id)}`;
+        photocardLink.href = `photocard?newsId=${encodeURIComponent(newsItem.id)}`;
     }
 
     modal.style.display = 'flex';
@@ -1006,7 +1006,7 @@ function renderNewsTable() {
                                 <img src="${n.image}" style="width: 55px; height: 38px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="">
                             </td>
                             <td style="padding: 10px 14px; font-weight: 600;">
-                                <a href="article.html?id=${n.id}" target="_blank" style="color: var(--text-main); line-height: 1.4; display: inline-block;">
+                                <a href="article?id=${n.id}" target="_blank" style="color: var(--text-main); line-height: 1.4; display: inline-block;">
                                     ${n.title}
                                 </a>
                                 <div style="margin-top: 4px; display: flex; gap: 6px;">
@@ -1020,7 +1020,7 @@ function renderNewsTable() {
                                 <button class="tool-btn" style="display:inline-flex; padding:6px 10px; margin-right:4px; border-radius:4px; cursor:pointer;" onclick="editNews('${n.id}')" title="সম্পাদনা করুন">
                                     <i class="fa-solid fa-pen-to-square"></i>
                                 </button>
-                                <a href="photocard.html?title=${encodeURIComponent(n.title)}&cat=${encodeURIComponent(n.category)}&img=${encodeURIComponent(n.image)}" target="_blank" class="tool-btn" style="display:inline-flex; padding:6px 10px; margin-right:4px; color:#059669; border-radius:4px;" title="ফটো কার্ড তৈরি">
+                                <a href="photocard?title=${encodeURIComponent(n.title)}&cat=${encodeURIComponent(n.category)}&img=${encodeURIComponent(n.image)}" target="_blank" class="tool-btn" style="display:inline-flex; padding:6px 10px; margin-right:4px; color:#059669; border-radius:4px;" title="ফটো কার্ড তৈরি">
                                     <i class="fa-solid fa-camera"></i>
                                 </a>
                                 <button class="tool-btn" style="display:inline-flex; padding:6px 10px; color:#dc2626; border-radius:4px; cursor:pointer;" onclick="deleteNewsItem('${n.id}')" title="মুছে ফেলুন">
@@ -1042,7 +1042,7 @@ function renderNewsTable() {
                     <div class="mobile-news-top">
                         <img src="${n.image}" class="mobile-news-thumb" alt="">
                         <div class="mobile-news-info">
-                            <a href="article.html?id=${n.id}" target="_blank" class="mobile-news-title">${n.title}</a>
+                            <a href="article?id=${n.id}" target="_blank" class="mobile-news-title">${n.title}</a>
                             <div class="mobile-news-meta">
                                 <span style="color:var(--primary); font-weight:700;">${n.category}</span>
                                 <span>•</span>

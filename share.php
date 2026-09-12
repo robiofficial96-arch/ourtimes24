@@ -16,7 +16,7 @@ try {
     $pageTitle = 'সংবাদ বিস্তারিত - আওয়ার টাইমস২৪';
     $pageDesc = 'সত্য ও বস্তুনিষ্ঠ সংবাদের সার্বক্ষণিক ঠিকানা - আওয়ার টাইমস২৪। দেশ ও বিদেশের সর্বশেষ তাজা খবর।';
     $pageImage = $baseUrl . '/logo.png';
-    $pageUrl = $baseUrl . '/article.html' . ($articleId ? '?id=' . urlencode($articleId) : '');
+    $pageUrl = $baseUrl . '/article' . ($articleId ? '?id=' . urlencode($articleId) : '');
     $publishDate = date('c');
     $authorName = 'আওয়ার টাইমস২৪ ডেস্ক';
     $category = 'জাতীয়';
@@ -88,7 +88,7 @@ try {
         if (!empty($found['author'])) $authorName = htmlspecialchars($found['author'], ENT_QUOTES, 'UTF-8');
         if (!empty($found['category'])) $category = htmlspecialchars($found['category'], ENT_QUOTES, 'UTF-8');
         if (!empty($found['date'])) $publishDate = htmlspecialchars($found['date'], ENT_QUOTES, 'UTF-8');
-        if (!empty($found['id'])) $pageUrl = $baseUrl . '/article.html?id=' . urlencode($found['id']);
+        if (!empty($found['id'])) $pageUrl = $baseUrl . '/article?id=' . urlencode($found['id']);
     }
 
     if (!empty($_GET['title'])) $pageTitle = htmlspecialchars(trim($_GET['title']), ENT_QUOTES, 'UTF-8');

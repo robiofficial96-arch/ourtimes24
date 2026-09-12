@@ -66,7 +66,16 @@ class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
             self.end_headers()
             return
 
-        if parsed.path in ('/article.html', '/share.php', '/article.php'):
+        if parsed.path.endswith('.html') and parsed.path != '/index.html':
+            clean_path = parsed.path[:-5]
+            if os.path.exists(os.path.join(DIRECTORY, parsed.path.lstrip('/'))):
+                self.send_response(301)
+                target = clean_path + ('?' + parsed.query if parsed.query else '')
+                self.send_header('Location', target)
+                self.end_headers()
+                return
+
+        if parsed.path in ('/article', '/article.html', '/share.php', '/article.php'):
             qs = urllib.parse.parse_qs(parsed.query)
             art_id = qs.get('id', [''])[0]
             
@@ -132,6 +141,10 @@ class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
                 self.end_headers()
                 self.wfile.write(content)
                 return
+
+        potential_html = os.path.join(DIRECTORY, parsed.path.lstrip('/') + '.html')
+        if os.path.isfile(potential_html):
+            self.path = parsed.path + '.html' + ('?' + parsed.query if parsed.query else '')
 
         super().do_GET()
 
