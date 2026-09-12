@@ -433,7 +433,7 @@ function renderSingleArticle() {
         if (cont) {
             cont.innerHTML = `
                 <h2>সংবাদটি পাওয়া যায়নি!</h2>
-                <p><a href="index.html" class="text-primary">হোমপেজে ফিরে যান</a></p>
+                <p><a href="/" class="text-primary">হোমপেজে ফিরে যান</a></p>
             `;
         }
         return;

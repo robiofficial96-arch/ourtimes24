@@ -24,6 +24,10 @@ DirectoryIndex index.html
     RewriteEngine On
     RewriteBase /
 
+    # Canonical 301 Redirect: remove index.html from URL (/index.html -> /)
+    RewriteCond %{THE_REQUEST} ^[A-Z]{3,9}\ /(.*)index\.html HTTP/ [NC]
+    RewriteRule ^(.*)index\.html$ /$1 [R=301,L]
+
     # Route social media crawlers (Facebook, WhatsApp, Twitter, etc.) to share.php for dynamic Open Graph & Twitter Cards
     RewriteCond %{HTTP_USER_AGENT} (facebookexternalhit|Facebot|WhatsApp|Twitterbot|LinkedInBot|TelegramBot|Slackbot|Discordbot|Pinterest|SkypeUriPreview) [NC]
     RewriteCond %{REQUEST_FILENAME} !-d
