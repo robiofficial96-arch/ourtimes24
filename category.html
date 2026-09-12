@@ -162,8 +162,8 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="news_data.js?v=20260912_v3"></script>
-    <script src="app.js?v=20260912_v3"></script>
+    <script src="news_data.js?v=20260912_v4"></script>
+    <script src="app.js?v=20260912_v4"></script>
     <script>
         const categoryMap = {
             'national': 'জাতীয়',
@@ -193,7 +193,22 @@
 
             let news = NewsDB.getAllNews();
             if (catSlug !== 'all') {
-                news = news.filter(n => n.categorySlug === catSlug || n.category === catName);
+                const categoryFilterMap = {
+                    'national': ['national', 'জাতীয়', 'অপরাধ', 'আইন-আদালত', 'শিক্ষাঙ্গন', 'ক্যাম্পাস নিউজ'],
+                    'politics': ['politics', 'রাজনীতি'],
+                    'international': ['international', 'আন্তর্জাতিক', 'প্রবাস খবর'],
+                    'economy': ['economy', 'অর্থ-বাণিজ্য', 'অর্থ ও বাণিজ্য'],
+                    'sports': ['sports', 'খেলাধুলা'],
+                    'entertainment': ['entertainment', 'বিনোদন', 'জীবনশৈলী'],
+                    'tech': ['tech', 'প্রযুক্তি', 'বিজ্ঞান ও প্রযুক্তি'],
+                    'saradesh': ['saradesh', 'সারাদেশ', 'দেশজুড়ে', 'দেশজুড়ে'],
+                    'opinion': ['opinion', 'মতামত', 'সম্পাদকীয়']
+                };
+                const allowed = categoryFilterMap[catSlug] || [catSlug, catName];
+                news = news.filter(n => allowed.includes(n.categorySlug) || allowed.includes(n.category));
+                if (news.length === 0) {
+                    news = NewsDB.getAllNews().slice(0, 12);
+                }
             }
 
             document.getElementById('totalCatNews').textContent = news.length.toLocaleString('bn-BD');

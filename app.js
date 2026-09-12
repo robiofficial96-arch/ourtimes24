@@ -30,7 +30,7 @@ class NewsRepository {
     getAllNews() {
         try {
             const custom = JSON.parse(localStorage.getItem('ourtimes_news_v2'));
-            if (custom && Array.isArray(custom) && custom.length > 0) {
+            if (custom && Array.isArray(custom) && custom.length >= 100) {
                 return custom;
             }
         } catch (e) {}
@@ -229,13 +229,33 @@ function renderCategoryGrid(containerId, categoryName, limit = 4) {
     const container = document.getElementById(containerId);
     if (!container) return;
 
-    const news = NewsDB.getAllNews().filter(n => n.category === categoryName).slice(0, limit);
-    if (news.length === 0) {
-        container.innerHTML = `<p class="text-muted" style="grid-column: 1/-1; padding: 12px;">এই মুহূর্তে এই বিভাগে কোনো খবর নেই।</p>`;
-        return;
+    const all = NewsDB.getAllNews();
+    if (all.length === 0) return;
+
+    const categoryMap = {
+        'জাতীয়': ['জাতীয়', 'অপরাধ', 'আইন-আদালত', 'শিক্ষাঙ্গন', 'national'],
+        'সারাদেশ': ['সারাদেশ', 'দেশজুড়ে', 'দেশজুড়ে', 'saradesh'],
+        'রাজনীতি': ['রাজনীতি', 'politics'],
+        'আন্তর্জাতিক': ['আন্তর্জাতিক', 'প্রবাস খবর', 'international'],
+        'অর্থ-বাণিজ্য': ['অর্থ-বাণিজ্য', 'অর্থ ও বাণিজ্য', 'বাণিজ্য', 'economy'],
+        'খেলাধুলা': ['খেলাধুলা', 'sports'],
+        'বিনোদন': ['বিনোদন', 'জীবনশৈলী', 'entertainment'],
+        'প্রযুক্তি': ['প্রযুক্তি', 'tech'],
+        'মতামত': ['মতামত', 'opinion']
+    };
+
+    const targetList = categoryMap[categoryName] || [categoryName];
+    let news = all.filter(n => targetList.includes(n.category) || targetList.includes(n.categorySlug));
+
+    // If section has fewer items than limit, supplement from latest news so no section is ever empty
+    if (news.length < limit) {
+        const existingIds = new Set(news.map(n => n.id));
+        const filler = all.filter(n => !existingIds.has(n.id));
+        news = news.concat(filler.slice(0, limit - news.length));
     }
 
-    container.innerHTML = news.map(n => `
+    const displayItems = news.slice(0, limit);
+    container.innerHTML = displayItems.map(n => `
         <div class="news-card-std">
             <a href="article.html?id=${n.id}" class="news-card-img">
                 <img src="${n.image}" alt="${n.title}">

@@ -332,8 +332,8 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="news_data.js?v=20260912_v3"></script>
-    <script src="app.js?v=20260912_v3"></script>
+    <script src="news_data.js?v=20260912_v4"></script>
+    <script src="app.js?v=20260912_v4"></script>
     <script>
         function openVideoModal(url, title) {
             const modal = document.getElementById('videoModal');
@@ -366,11 +366,13 @@
             const container = document.getElementById('saradeshGridContainer');
             if (!container) return;
 
-            const news = NewsDB.getAllNews().filter(n => n.categorySlug === 'saradesh' || n.category === 'সারাদেশ');
+            const all = NewsDB.getAllNews();
+            const saradeshAliases = ['saradesh', 'সারাদেশ', 'দেশজুড়ে', 'দেশজুড়ে'];
+            let news = all.filter(n => saradeshAliases.includes(n.categorySlug) || saradeshAliases.includes(n.category));
             if (news.length === 0) {
-                container.innerHTML = `<div style="padding: 32px; text-align: center; color: var(--text-muted); background: #f8fafc; border: 1px dashed #e2e8f0; border-radius: 6px;">এই মুহূর্তে কোনো বিশেষ সংবাদ পাওয়া যায়নি।</div>`;
-                return;
+                news = all.slice(6, 12);
             }
+            if (news.length === 0) return;
 
             const lead = news[0];
             const subItems = news.slice(1, 5);
