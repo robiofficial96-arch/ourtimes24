@@ -63,7 +63,17 @@ try {
         if (!empty($found['title'])) {
             $pageTitle = htmlspecialchars(trim($found['title']), ENT_QUOTES, 'UTF-8');
         }
-        $rawDesc = !empty($found['excerpt']) ? $found['excerpt'] : (!empty($found['content']) ? $found['content'] : '');
+        $rawTitle = !empty($found['title']) ? trim($found['title']) : '';
+        $rawExcerpt = !empty($found['excerpt']) ? trim($found['excerpt']) : '';
+        $rawContent = !empty($found['content']) ? trim($found['content']) : '';
+
+        $isRedundantExcerpt = empty($rawExcerpt) ||
+            $rawExcerpt === $rawTitle ||
+            $rawExcerpt === "{$rawTitle} - বিস্তারিত পড়ুন।" ||
+            $rawExcerpt === "{$rawTitle} - বিস্তারিত পড়ুন" ||
+            (strpos($rawExcerpt, $rawTitle) === 0 && strlen($rawExcerpt) <= strlen($rawTitle) + 30);
+
+        $rawDesc = (!$isRedundantExcerpt && $rawExcerpt) ? $rawExcerpt : ($rawContent ?: $rawExcerpt);
         $cleanDesc = trim(preg_replace('/\s+/', ' ', strip_tags($rawDesc)));
         if (function_exists('mb_strlen') && function_exists('mb_substr')) {
             if (mb_strlen($cleanDesc, 'UTF-8') > 175) {

@@ -845,9 +845,27 @@ function handleNewsSubmit(e) {
     const author = document.getElementById('newsAuthor').value.trim() || 'নিজস্ব প্রতিবেদক';
     let authorAvatar = document.getElementById('newsAuthorAvatar')?.value || '';
     const authorId = document.getElementById('newsAuthorId')?.value || '';
-    const image = document.getElementById('newsImage').value.trim();
-    const excerpt = document.getElementById('newsExcerpt').value.trim() || (title + ' - বিস্তারিত পড়ুন।');
-    const rawContent = document.getElementById('newsContent').value.trim() || `<p>${excerpt}</p>`;
+    const rawContent = document.getElementById('newsContent').value.trim();
+    let excerpt = document.getElementById('newsExcerpt').value.trim();
+
+    // Auto-generate rich clean excerpt from news content if excerpt field is left empty
+    if (!excerpt && rawContent) {
+        const cleanContent = rawContent
+            .replace(/<style[^>]*>.*?<\/style>/gis, '')
+            .replace(/<script[^>]*>.*?<\/script>/gis, '')
+            .replace(/<figure[^>]*>.*?<\/figure>/gis, '')
+            .replace(/<blockquote[^>]*>.*?<\/blockquote>/gis, '')
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/&nbsp;/gi, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        if (cleanContent) {
+            excerpt = cleanContent.length > 175 ? cleanContent.substring(0, 170).trim() + '...' : cleanContent;
+        }
+    }
+    if (!excerpt) {
+        excerpt = subtitle || title;
+    }
     let finalContent = rawContent;
     if (!finalContent.includes('<p>')) {
         finalContent = finalContent

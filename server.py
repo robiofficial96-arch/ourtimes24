@@ -99,7 +99,12 @@ class CustomHTTPHandler(http.server.SimpleHTTPRequestHandler):
                     html = f.read()
                 
                 title = art.get('title', 'সংবাদ বিস্তারিত') if art else 'সংবাদ বিস্তারিত'
-                raw_desc = art.get('excerpt', '') if art else ''
+                raw_excerpt = (art.get('excerpt', '') or '').strip() if art else ''
+                raw_content = (art.get('content', '') or '').strip() if art else ''
+                if not raw_excerpt or raw_excerpt == title or raw_excerpt.startswith(title):
+                    raw_desc = raw_content if raw_content else raw_excerpt
+                else:
+                    raw_desc = raw_excerpt
                 clean_desc = re.sub(r'<[^>]+>', '', raw_desc)[:160].strip()
                 if not clean_desc: clean_desc = title
                 

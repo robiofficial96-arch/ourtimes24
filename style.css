@@ -631,14 +631,14 @@ button, input, select, textarea {
 }
 
 .lead-excerpt {
-    font-size: 15px;
-    line-height: 1.6;
+    font-size: 15.5px;
+    line-height: 1.65;
     color: var(--text-muted);
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
     overflow: hidden;
-    margin-bottom: 12px;
+    margin-bottom: 14px;
 }
 
 .lead-meta {
@@ -677,6 +677,21 @@ button, input, select, textarea {
     border-radius: var(--radius-sm);
     margin-bottom: 10px;
     background: #e2e8f0;
+    position: relative;
+}
+
+.sublead-row-img .category-tag {
+    position: absolute;
+    bottom: 8px;
+    left: 8px;
+    background: rgba(15, 23, 42, 0.85);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 2px 7px;
+    border-radius: 3px;
+    backdrop-filter: blur(4px);
+    z-index: 2;
 }
 
 .sublead-row-img img {

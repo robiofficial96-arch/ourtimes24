@@ -144,6 +144,43 @@ function renderBreakingTicker() {
     `).join('');
 }
 
+// Smart excerpt extractor: ensures high-quality teaser text without repeating headline
+function getSmartExcerpt(article, maxLength = 180) {
+    if (!article) return '';
+    let text = (article.excerpt || '').trim();
+    const title = (article.title || '').trim();
+
+    // Detect if excerpt is missing, empty, or merely duplicates the headline
+    const isRedundant = !text ||
+        text === title ||
+        text === `${title} - বিস্তারিত পড়ুন।` ||
+        text === `${title} - বিস্তারিত পড়ুন` ||
+        text === `${title} বিস্তারিত পড়ুন` ||
+        (text.startsWith(title) && text.length <= title.length + 30);
+
+    if (isRedundant && article.content) {
+        const clean = article.content
+            .replace(/<style[^>]*>.*?<\/style>/gis, '')
+            .replace(/<script[^>]*>.*?<\/script>/gis, '')
+            .replace(/<figure[^>]*>.*?<\/figure>/gis, '')
+            .replace(/<blockquote[^>]*>.*?<\/blockquote>/gis, '')
+            .replace(/<[^>]+>/g, ' ')
+            .replace(/&nbsp;/gi, ' ')
+            .replace(/\s+/g, ' ')
+            .trim();
+        if (clean) {
+            text = clean;
+        }
+    }
+
+    if (!text) text = article.subtitle || title;
+
+    if (text.length > maxLength) {
+        return text.substring(0, maxLength - 5).trim() + '...';
+    }
+    return text;
+}
+
 // ==========================================
 // 3. HOMEPAGE FEEDS RENDERER
 // ==========================================
@@ -168,7 +205,8 @@ function renderHomepage() {
                     <h1 class="lead-title">
                         <a href="article?id=${lead.id}">${lead.title}</a>
                     </h1>
-                    <p class="lead-excerpt">${lead.excerpt}</p>
+                    ${lead.subtitle ? `<div class="lead-subtitle" style="font-size:16px; font-weight:600; color:var(--text-body); margin-bottom:8px;">${lead.subtitle}</div>` : ''}
+                    <p class="lead-excerpt">${getSmartExcerpt(lead, 260)}</p>
                     <div class="lead-meta">
                         <span><i class="fa-regular fa-user"></i> ${lead.author || 'স্টাফ রিপোর্টার'}</span>
                         <span>•</span>
@@ -179,18 +217,16 @@ function renderHomepage() {
 
             <!-- Sub-leads 3 Cards Grid -->
             <div class="sublead-flat-list">
-                ${subLeads.map(n => {
-                    const cleanExcerpt = n.excerpt && n.excerpt.length > 110 ? n.excerpt.substring(0, 105).trim() + '...' : (n.excerpt || '');
-                    return `
-                        <a href="article?id=${n.id}" class="sublead-list-row">
-                            <div class="sublead-row-img">
-                                <img src="${n.image}" alt="${n.title}">
-                            </div>
-                            <h3 class="sublead-row-title">${n.title}</h3>
-                            <p class="sublead-row-excerpt">${cleanExcerpt}</p>
-                        </a>
-                    `;
-                }).join('')}
+                ${subLeads.map(n => `
+                    <a href="article?id=${n.id}" class="sublead-list-row">
+                        <div class="sublead-row-img">
+                            <img src="${n.image}" alt="${n.title}">
+                            <span class="category-tag">${n.category}</span>
+                        </div>
+                        <h3 class="sublead-row-title">${n.title}</h3>
+                        <p class="sublead-row-excerpt">${getSmartExcerpt(n, 110)}</p>
+                    </a>
+                `).join('')}
             </div>
         `;
     }
@@ -332,7 +368,7 @@ function renderSaradeshGrid(selectedDivision = 'all') {
                 <h2 class="saradesh-left-title">
                     <a href="article?id=${lead.id}">${lead.title}</a>
                 </h2>
-                <p class="saradesh-left-excerpt">${lead.excerpt || ''}</p>
+                <p class="saradesh-left-excerpt">${getSmartExcerpt(lead, 180)}</p>
                 <div class="saradesh-left-meta">
                     <span><i class="fa-regular fa-user"></i> ${lead.author || 'জেলা প্রতিনিধি'}</span>
                     <span>•</span>
@@ -450,7 +486,7 @@ function renderSingleArticle() {
                 : window.location.origin;
             fullImgUrl = domain + '/' + fullImgUrl.replace(/^\/+/, '');
         }
-        const cleanDesc = (article.excerpt || article.title || '').replace(/<[^>]*>?/gm, '').trim();
+        const cleanDesc = getSmartExcerpt(article, 160);
         const pageUrl = window.location.href;
 
         function setOrUpdateMeta(selector, val) {
