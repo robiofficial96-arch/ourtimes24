@@ -18,3 +18,12 @@ AddDefaultCharset UTF-8
 </IfModule>
 
 DirectoryIndex index.html
+
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+    RewriteBase /
+
+    # Route article.html requests to article.php for dynamic Open Graph, Twitter Card & thumbnail injection
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^article\.html$ article.php [L,QSA]
+</IfModule>

@@ -238,6 +238,16 @@ function handleNewsSubmit(e) {
     }
 
     NewsDB.saveNews(newsItem);
+
+    // Sync to server (for Facebook / WhatsApp dynamic SSR crawling)
+    try {
+        fetch('api_save_news.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(newsItem)
+        }).catch(() => {});
+    } catch (err) {}
+
     alert('🎉 সংবাদটি সফলভাবে সংরক্ষিত ও প্রকাশিত হয়েছে!');
     resetNewsForm();
     switchAdminTab('tabManageNews');

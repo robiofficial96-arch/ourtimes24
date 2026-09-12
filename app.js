@@ -439,7 +439,47 @@ function renderSingleArticle() {
         return;
     }
 
-    document.title = `${article.title} - Ourtimes24`;
+    document.title = `${article.title} - আওয়ার টাইমস২৪`;
+
+    // Dynamic Meta Tags updater for DOM and mobile webviews
+    try {
+        let fullImgUrl = article.image || '';
+        if (fullImgUrl && !fullImgUrl.startsWith('http://') && !fullImgUrl.startsWith('https://')) {
+            const domain = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+                ? 'https://ourtimes24.com'
+                : window.location.origin;
+            fullImgUrl = domain + '/' + fullImgUrl.replace(/^\/+/, '');
+        }
+        const cleanDesc = (article.excerpt || article.title || '').replace(/<[^>]*>?/gm, '').trim();
+        const pageUrl = window.location.href;
+
+        function setOrUpdateMeta(selector, val) {
+            let el = document.querySelector(selector);
+            if (el) {
+                el.setAttribute('content', val);
+            } else {
+                el = document.createElement('meta');
+                if (selector.includes('property=')) {
+                    el.setAttribute('property', selector.match(/property=["'](.*?)["']/)[1]);
+                } else if (selector.includes('name=')) {
+                    el.setAttribute('name', selector.match(/name=["'](.*?)["']/)[1]);
+                }
+                el.setAttribute('content', val);
+                document.head.appendChild(el);
+            }
+        }
+
+        setOrUpdateMeta('meta[property="og:title"]', article.title);
+        setOrUpdateMeta('meta[property="og:description"]', cleanDesc);
+        setOrUpdateMeta('meta[property="og:image"]', fullImgUrl);
+        setOrUpdateMeta('meta[property="og:image:secure_url"]', fullImgUrl);
+        setOrUpdateMeta('meta[property="og:url"]', pageUrl);
+        setOrUpdateMeta('meta[name="twitter:title"]', article.title);
+        setOrUpdateMeta('meta[name="twitter:description"]', cleanDesc);
+        setOrUpdateMeta('meta[name="twitter:image"]', fullImgUrl);
+    } catch (e) {
+        console.error('Meta update error:', e);
+    }
 
     const elCat = document.getElementById('artCategory');
     const elHead = document.getElementById('artHeadline');
@@ -621,20 +661,26 @@ function closeOffcanvasMenu() {
 
 // Share Functions
 function shareToPlatform(platform) {
-    const url = encodeURIComponent(window.location.href);
+    let currentUrl = window.location.href;
+    // If tested on localhost, replace origin with live production domain so Facebook/WhatsApp scrapers work!
+    if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+        currentUrl = currentUrl.replace(/^http:\/\/[^/]+/, 'https://ourtimes24.com');
+    }
+
+    const url = encodeURIComponent(currentUrl);
     const title = encodeURIComponent(document.title);
 
     if (platform === 'facebook') {
         window.open(`https://www.facebook.com/sharer/sharer.php?u=${url}`, '_blank', 'width=600,height=450');
     } else if (platform === 'whatsapp') {
-        window.open(`https://api.whatsapp.com/send?text=${title}%20${url}`, '_blank');
+        window.open(`https://api.whatsapp.com/send?text=${title}%0A${url}`, '_blank');
     } else if (platform === 'twitter') {
         window.open(`https://twitter.com/intent/tweet?text=${title}&url=${url}`, '_blank', 'width=600,height=450');
     } else if (platform === 'copy') {
-        navigator.clipboard.writeText(window.location.href).then(() => {
+        navigator.clipboard.writeText(currentUrl).then(() => {
             alert('সংবাদের লিঙ্ক সফলভাবে কপি করা হয়েছে!');
         }).catch(() => {
-            prompt('লিঙ্কটি কপি করুন:', window.location.href);
+            prompt('লিঙ্কটি কপি করুন:', currentUrl);
         });
     }
 }
@@ -722,6 +768,7 @@ if (typeof window !== 'undefined') {
     window.toggleOffcanvasMenu = toggleOffcanvasMenu;
     window.closeOffcanvasMenu = closeOffcanvasMenu;
     window.renderSiteAds = renderSiteAds;
+    window.shareToPlatform = shareToPlatform;
 }
 
 // Initialize on Load
