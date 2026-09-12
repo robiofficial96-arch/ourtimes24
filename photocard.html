@@ -5,31 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>সোশ্যাল ফটো কার্ড স্টুডিও - Ourtimes24</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260912_v7">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
 
     <!-- TOPBAR -->
     <div class="topbar">
-        <div class="container">
-            <div class="topbar-left">
-                <a href="admin.html" class="topbar-btn" style="font-weight: 800; color:#059669;">
+        <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
+            <div class="topbar-left" style="display: flex; align-items: center; gap: 12px;">
+                <a href="admin.html" class="topbar-btn" style="font-weight: 800; color:var(--primary);">
                     <i class="fa-solid fa-arrow-left"></i> অ্যাডমিন প্যানেলে ফিরুন
                 </a>
-                <a href="index.html" class="topbar-btn" style="margin-left: 10px;">
-                    <i class="fa-solid fa-house"></i> হোমপেজ
+                <a href="index.html" class="topbar-btn" style="font-weight: 600;">
+                    <i class="fa-solid fa-house"></i> মূল ওয়েবসাইট
                 </a>
             </div>
-            <div class="topbar-right">
-                <a href="epaper.html" class="topbar-btn">
-                    <i class="fa-regular fa-newspaper"></i> ই-পেপার
-                </a>
-                <a href="admin.html" class="topbar-btn">
-                    <i class="fa-solid fa-shield-halved"></i> অ্যাডমিন
-                </a>
-                <button class="btn-theme-toggle" onclick="toggleTheme()" title="ডার্ক/লাইট মোড">
-                    <i class="fa-solid fa-moon"></i>
+            <div class="theme-switch-wrapper" style="display: flex; align-items: center; gap: 10px;">
+                <button class="theme-switch-btn" onclick="toggleTheme()" id="themeBtn" title="ডার্ক / লাইট মোড পরিবর্তন">
+                    <i class="fa-solid fa-moon theme-switch-icon" id="themeIcon"></i>
+                    <span id="themeText">ডার্ক মোড</span>
                 </button>
             </div>
         </div>
@@ -37,20 +32,16 @@
 
     <!-- MAIN HEADER -->
     <header class="main-header" style="padding: 14px 0;">
-        <div class="container header-grid">
-            <div class="header-left">
-                <span class="topbar-pill" style="background:#059669; color:white; border:none; padding:6px 14px; font-size:13px;">
-                    <i class="fa-solid fa-wand-magic-sparkles"></i> প্রফেশনাল ফটো কার্ড স্টুডিও
-                </span>
-            </div>
-            <div class="brand-logo">
-                <a href="index.html">
-                    <img src="logo.png" alt="Ourtimes24" class="brand-logo-img">
+        <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
+            <div class="brand-logo-left">
+                <a href="photocard.html">
+                    <div class="brand-logo-bn">আওয়ার টাইমস<span>২৪</span></div>
+                    <div class="brand-tagline-bn">সোশ্যাল ফটো কার্ড স্টুডিও v2.0</div>
                 </a>
             </div>
-            <div class="header-right">
-                <a href="index.html" class="topbar-btn">
-                    <i class="fa-solid fa-house"></i> হোমপেজ
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <a href="admin.html" class="btn-epaper-topbar" style="background:#059669; color:white; border:none; padding:8px 16px; font-size:13.5px; border-radius:var(--radius-sm); font-weight:700; text-decoration:none; display:inline-flex; align-items:center; gap:6px;">
+                    <i class="fa-solid fa-shield-halved"></i> অ্যাডমিন প্যানেল
                 </a>
             </div>
         </div>
@@ -59,13 +50,13 @@
     <!-- STUDIO MAIN CONTAINER -->
     <main class="container">
         
-        <div style="margin: 20px 0 10px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+        <div style="margin: 20px 0 14px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
             <div>
-                <h1 style="font-size: 26px; font-weight: 800; font-family: var(--font-heading);">
+                <h1 style="font-size: 24px; font-weight: 800; font-family: var(--font-heading); display: flex; align-items: center; gap: 8px;">
                     <i class="fa-solid fa-camera-retro text-primary"></i> ইনস্ট্যান্ট সোশ্যাল ফটো কার্ড ক্রিয়েটর
                 </h1>
-                <p style="color: var(--text-muted); font-size: 14.5px;">
-                    ফেসবুক, টুইটার বা ইনস্টাগ্রামে পোস্ট করার জন্য ফ্রেমযুক্ত ফুল এইচডি (১০৮০x১০৮০) ফটো কার্ড বানান।
+                <p style="color: var(--text-muted); font-size: 14px; margin-top: 4px;">
+                    ফেসবুক, টুইটার বা ইনস্টাগ্রামে পোস্ট করার জন্য ফ্রেমযুক্ত ফুল এইচডি (১০৮০x১০৮০) সোশ্যাল ফটো কার্ড বানান।
                 </p>
             </div>
         </div>
@@ -78,16 +69,17 @@
                     <canvas id="photoCardCanvas" width="1080" height="1080"></canvas>
                 </div>
                 
-                <div style="margin-top: 18px; display: flex; gap: 12px; width: 100%; max-width: 520px;">
-                    <button class="btn-download-card" onclick="downloadPhotoCard()">
-                        <i class="fa-solid fa-download"></i> ১০৮০p HD ফটো কার্ড ডাউনলোড
-                    </button>
-                    <button class="tool-btn" onclick="copyCanvasImageToClipboard()" title="ক্লিপবোর্ডে কপি করুন" style="padding: 0 16px; font-size: 16px;">
-                        <i class="fa-regular fa-copy"></i>
-                    </button>
+                <div class="photocard-hint-box">
+                    💡 ছবির ওপর মাউস বা আঙুল দিয়ে ড্র্যাগ (Drag) করে পজিশন ঠিক করুন এবং জুম স্লাইডার ব্যবহার করুন।
                 </div>
-                <div style="font-size: 12.5px; color: var(--text-muted); margin-top: 8px; text-align: center;">
-                    💡 ছবির ওপর মাউস ড্র্যাগ (Drag) করে পজিশন ঠিক করুন এবং জুম স্লাইডার ব্যবহার করুন।
+
+                <div class="card-actions-row">
+                    <button type="button" class="btn-download-card" onclick="downloadPhotoCard()">
+                        <i class="fa-solid fa-download"></i> ১০৮০p HD ডাউনলোড
+                    </button>
+                    <button type="button" class="tool-btn" onclick="copyCanvasImageToClipboard()" title="ক্লিপবোর্ডে কপি করুন">
+                        <i class="fa-regular fa-copy"></i> কপি
+                    </button>
                 </div>
             </div>
 
@@ -99,38 +91,44 @@
                     <label class="control-label"><i class="fa-solid fa-swatchbook text-primary"></i> ফ্রেম / টেমপ্লেট নির্বাচন করুন</label>
                     <div class="template-picker-grid">
                         <div class="template-card active" onclick="setTemplate('classic')" id="tpl-classic">
-                            <i class="fa-solid fa-newspaper" style="font-size: 22px; margin-bottom: 6px; color:var(--primary);"></i>
+                            <i class="fa-solid fa-newspaper" style="font-size: 20px; margin-bottom: 6px; color:var(--primary);"></i>
                             <div style="font-size: 13px; font-weight: 700;">ক্লাসিক নিউজ</div>
                         </div>
                         <div class="template-card" onclick="setTemplate('quote')" id="tpl-quote">
-                            <i class="fa-solid fa-quote-left" style="font-size: 22px; margin-bottom: 6px; color:#d97706;"></i>
+                            <i class="fa-solid fa-quote-left" style="font-size: 20px; margin-bottom: 6px; color:#d97706;"></i>
                             <div style="font-size: 13px; font-weight: 700;">উক্তি / বক্তব্য</div>
                         </div>
                         <div class="template-card" onclick="setTemplate('breaking')" id="tpl-breaking">
-                            <i class="fa-solid fa-bolt" style="font-size: 22px; margin-bottom: 6px; color:#ef4444;"></i>
+                            <i class="fa-solid fa-bolt" style="font-size: 20px; margin-bottom: 6px; color:#ef4444;"></i>
                             <div style="font-size: 13px; font-weight: 700;">ব্রেকিং ফ্ল্যাশ</div>
                         </div>
                         <div class="template-card" onclick="setTemplate('sports')" id="tpl-sports">
-                            <i class="fa-solid fa-trophy" style="font-size: 22px; margin-bottom: 6px; color:#059669;"></i>
+                            <i class="fa-solid fa-trophy" style="font-size: 20px; margin-bottom: 6px; color:#059669;"></i>
                             <div style="font-size: 13px; font-weight: 700;">স্পোর্টস স্পট</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- 2. Image Uploader & Controls -->
+                <!-- 2. Image Source: Upload or Direct URL -->
                 <div class="control-group">
-                    <label class="control-label"><i class="fa-solid fa-image text-primary"></i> নিজের ছবি আপলোড করুন</label>
+                    <label class="control-label"><i class="fa-solid fa-image text-primary"></i> ছবি নির্বাচন (আপলোড বা ডিরেক্ট লিঙ্ক)</label>
                     <input type="file" id="imageInput" accept="image/*" class="control-input" onchange="handleImageUpload(event)" style="padding: 8px;">
+                    <div style="margin-top: 6px;">
+                        <input type="url" id="imageUrlInput" class="control-input" placeholder="অথবা ছবির ডিরেক্ট ওয়েব লিঙ্ক পেস্ট করুন (https://...)" oninput="handleImageUrlChange(this.value)">
+                    </div>
                 </div>
 
                 <!-- Image Zoom Slider -->
-                <div class="control-group" style="display: flex; align-items: center; gap: 14px;">
-                    <label class="control-label" style="margin-bottom:0; min-width: 80px;">ছবি জুম:</label>
-                    <input type="range" id="zoomSlider" min="0.5" max="2.5" step="0.05" value="1.0" class="control-input" oninput="updateImageZoom(this.value)" style="flex:1;">
-                    <span id="zoomVal" style="font-weight: 700; min-width: 45px;">1.0x</span>
-                    <button class="tool-btn" onclick="resetImagePosition()" title="পজিশন রিসেট" style="padding: 5px 10px;">
-                        <i class="fa-solid fa-arrows-rotate"></i>
-                    </button>
+                <div class="control-group">
+                    <label class="control-label"><i class="fa-solid fa-magnifying-glass-plus text-primary"></i> ছবি জুম ও অ্যাডজাস্টমেন্ট</label>
+                    <div class="slider-control-row">
+                        <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">জুম:</span>
+                        <input type="range" id="zoomSlider" min="0.5" max="2.5" step="0.05" value="1.0" oninput="updateImageZoom(this.value)">
+                        <span id="zoomVal" class="slider-badge">1.0x</span>
+                        <button type="button" class="tool-btn" onclick="resetImagePosition()" title="পজিশন রিসেট" style="padding: 4px 10px; font-size: 12px;">
+                            <i class="fa-solid fa-arrows-rotate"></i> রিসেট
+                        </button>
+                    </div>
                 </div>
 
                 <!-- 3. Headline Input -->
@@ -140,10 +138,13 @@
                 </div>
 
                 <!-- Font Size Slider -->
-                <div class="control-group" style="display: flex; align-items: center; gap: 14px;">
-                    <label class="control-label" style="margin-bottom:0; min-width: 80px;">ফন্ট সাইজ:</label>
-                    <input type="range" id="fontSizeSlider" min="32" max="68" step="2" value="48" class="control-input" oninput="updateFontSize(this.value)" style="flex:1;">
-                    <span id="fontSizeVal" style="font-weight: 700; min-width: 45px;">48px</span>
+                <div class="control-group">
+                    <label class="control-label"><i class="fa-solid fa-text-height text-primary"></i> শিরোনামের ফন্ট সাইজ</label>
+                    <div class="slider-control-row">
+                        <span style="font-size: 13px; font-weight: 600; color: var(--text-muted);">সাইজ:</span>
+                        <input type="range" id="fontSizeSlider" min="30" max="68" step="2" value="48" oninput="updateFontSize(this.value)">
+                        <span id="fontSizeVal" class="slider-badge">48px</span>
+                    </div>
                 </div>
 
                 <!-- Dynamic Speaker Field for Quote Template -->
@@ -153,9 +154,9 @@
                 </div>
 
                 <!-- 4. Category & Date -->
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px;">
+                <div class="photocard-form-row-2">
                     <div class="control-group">
-                        <label class="control-label">ক্যাটাগরি</label>
+                        <label class="control-label"><i class="fa-solid fa-layer-group text-primary"></i> ক্যাটাগরি</label>
                         <select class="control-select" id="cardCategory" onchange="renderCanvas()">
                             <option value="জাতীয়">জাতীয়</option>
                             <option value="রাজনীতি">রাজনীতি</option>
@@ -169,18 +170,20 @@
                     </div>
 
                     <div class="control-group">
-                        <label class="control-label">তারিখ</label>
-                        <input type="text" class="control-input" id="cardDate" value="২৯ আগস্ট ২০২৬" oninput="renderCanvas()">
+                        <label class="control-label"><i class="fa-regular fa-calendar text-primary"></i> তারিখ</label>
+                        <input type="text" class="control-input" id="cardDate" value="১২ সেপ্টেম্বর ২০২৬" oninput="renderCanvas()">
                     </div>
                 </div>
 
                 <!-- 5. Toggles -->
-                <div style="display: flex; gap: 20px; margin-top: 10px;">
-                    <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
-                        <input type="checkbox" id="toggleLogo" checked onchange="renderCanvas()"> লোগো দেখান
+                <div class="photocard-toggles">
+                    <label class="photocard-toggle-item">
+                        <input type="checkbox" id="toggleLogo" checked onchange="renderCanvas()"> 
+                        <span>লোগো দেখান</span>
                     </label>
-                    <label style="display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 600; cursor: pointer;">
-                        <input type="checkbox" id="toggleWatermark" checked onchange="renderCanvas()"> ourtimes24.com ওয়াটারমার্ক
+                    <label class="photocard-toggle-item">
+                        <input type="checkbox" id="toggleWatermark" checked onchange="renderCanvas()"> 
+                        <span>ourtimes24.com ওয়াটারমার্ক</span>
                     </label>
                 </div>
 
@@ -198,6 +201,7 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="photocard.js"></script>
+    <script src="app.js?v=20260912_v7"></script>
+    <script src="photocard.js?v=20260912_v7"></script>
 </body>
 </html>

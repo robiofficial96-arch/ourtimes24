@@ -36,17 +36,63 @@ activeImage.onload = () => {
     renderCanvas();
 };
 
-// Check for URL Query Parameters from Single Article Page
+function initCardDate() {
+    const cardDateInput = document.getElementById('cardDate');
+    if (!cardDateInput || cardDateInput.value) return;
+    const banglaDigits = {'0':'০','1':'১','2':'২','3':'৩','4':'৪','5':'৫','6':'৬','7':'৭','8':'৮','9':'৯'};
+    const months = ['জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন', 'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর'];
+    const now = new Date();
+    const day = String(now.getDate()).replace(/[0-9]/g, d => banglaDigits[d]);
+    const month = months[now.getMonth()];
+    const year = String(now.getFullYear()).replace(/[0-9]/g, d => banglaDigits[d]);
+    cardDateInput.value = `${day} ${month} ${year}`;
+}
+
+function loadImageFromUrl(url) {
+    if (!url) return;
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.onload = () => {
+        activeImage = img;
+        imageLoaded = true;
+        resetImagePosition();
+        renderCanvas();
+    };
+    img.onerror = () => {
+        console.warn("Retrying image load without CORS headers...");
+        const fallback = new Image();
+        fallback.onload = () => {
+            activeImage = fallback;
+            imageLoaded = true;
+            resetImagePosition();
+            renderCanvas();
+        };
+        fallback.src = url;
+    };
+    img.src = url;
+}
+
+// Check for URL Query Parameters from Single Article Page or Admin
 window.addEventListener('DOMContentLoaded', () => {
+    initCardDate();
+
     const params = new URLSearchParams(window.location.search);
     const titleParam = params.get('title');
     const catParam = params.get('cat');
     const imgParam = params.get('img');
+    const dateParam = params.get('date');
 
     if (titleParam) document.getElementById('cardHeadline').value = titleParam;
     if (catParam) document.getElementById('cardCategory').value = catParam;
+    if (dateParam) document.getElementById('cardDate').value = dateParam;
     if (imgParam) {
-        activeImage.src = imgParam;
+        const urlInput = document.getElementById('imageUrlInput');
+        if (urlInput) urlInput.value = imgParam;
+        loadImageFromUrl(imgParam);
+    }
+
+    if (document.fonts) {
+        document.fonts.ready.then(() => renderCanvas());
     }
 });
 
@@ -69,27 +115,38 @@ function handleImageUpload(e) {
     reader.readAsDataURL(file);
 }
 
+function handleImageUrlChange(val) {
+    const trimmed = (val || '').trim();
+    if (trimmed) {
+        loadImageFromUrl(trimmed);
+    }
+}
+
 // Reset Image Position
 function resetImagePosition() {
     imageX = 0;
     imageY = 0;
     imageZoom = 1.0;
-    document.getElementById('zoomSlider').value = 1.0;
-    document.getElementById('zoomVal').textContent = '1.0x';
+    const slider = document.getElementById('zoomSlider');
+    const val = document.getElementById('zoomVal');
+    if (slider) slider.value = 1.0;
+    if (val) val.textContent = '1.0x';
     renderCanvas();
 }
 
 // Update Zoom
 function updateImageZoom(val) {
     imageZoom = parseFloat(val);
-    document.getElementById('zoomVal').textContent = `${imageZoom.toFixed(2)}x`;
+    const label = document.getElementById('zoomVal');
+    if (label) label.textContent = `${imageZoom.toFixed(2)}x`;
     renderCanvas();
 }
 
 // Update Font Size
 function updateFontSize(val) {
     headlineFontSize = parseInt(val);
-    document.getElementById('fontSizeVal').textContent = `${headlineFontSize}px`;
+    const label = document.getElementById('fontSizeVal');
+    if (label) label.textContent = `${headlineFontSize}px`;
     renderCanvas();
 }
 
@@ -127,6 +184,36 @@ window.addEventListener('mousemove', (e) => {
 });
 
 window.addEventListener('mouseup', () => {
+    isDragging = false;
+});
+
+// Touch Pan / Drag Events for Mobile Phones (Touchscreens)
+canvas.addEventListener('touchstart', (e) => {
+    if (e.touches && e.touches.length === 1) {
+        e.preventDefault();
+        isDragging = true;
+        const rect = canvas.getBoundingClientRect();
+        const scale = 1080 / rect.width;
+        startX = (e.touches[0].clientX - rect.left) * scale - imageX;
+        startY = (e.touches[0].clientY - rect.top) * scale - imageY;
+    }
+}, { passive: false });
+
+window.addEventListener('touchmove', (e) => {
+    if (!isDragging || !e.touches || e.touches.length !== 1) return;
+    e.preventDefault();
+    const rect = canvas.getBoundingClientRect();
+    const scale = 1080 / rect.width;
+    imageX = (e.touches[0].clientX - rect.left) * scale - startX;
+    imageY = (e.touches[0].clientY - rect.top) * scale - startY;
+    renderCanvas();
+}, { passive: false });
+
+window.addEventListener('touchend', () => {
+    isDragging = false;
+});
+
+window.addEventListener('touchcancel', () => {
     isDragging = false;
 });
 
