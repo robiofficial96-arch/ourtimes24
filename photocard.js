@@ -27,14 +27,37 @@ let startX = 0;
 let startY = 0;
 let headlineFontSize = 48;
 
-// Initialize Default Sample Image
+// Initialize Default Image
 activeImage.crossOrigin = "anonymous";
-activeImage.src = 'https://images.unsplash.com/photo-1541872703-74c5e44368f9?w=1200&auto=format&fit=crop&q=80';
 activeImage.onload = () => {
     imageLoaded = true;
     resetImagePosition();
     renderCanvas();
 };
+
+function initDefaultPhotoCardData() {
+    const params = new URLSearchParams(window.location.search);
+    if (!params.get('title') && !params.get('img')) {
+        const defaultArt = (typeof NewsDB !== 'undefined' && NewsDB.getAllNews) ? NewsDB.getAllNews()[0] : null;
+        if (defaultArt) {
+            const headlineEl = document.getElementById('cardHeadline');
+            if (headlineEl && !headlineEl.value) {
+                headlineEl.value = defaultArt.title;
+            }
+            const catEl = document.getElementById('cardCategory');
+            if (catEl && defaultArt.category) {
+                catEl.value = defaultArt.category;
+            }
+            if (defaultArt.image) {
+                activeImage.src = defaultArt.image;
+                return;
+            }
+        }
+    }
+    if (!activeImage.src) {
+        activeImage.src = 'logo.png';
+    }
+}
 
 function initCardDate() {
     const cardDateInput = document.getElementById('cardDate');
@@ -89,6 +112,8 @@ window.addEventListener('DOMContentLoaded', () => {
         const urlInput = document.getElementById('imageUrlInput');
         if (urlInput) urlInput.value = imgParam;
         loadImageFromUrl(imgParam);
+    } else {
+        initDefaultPhotoCardData();
     }
 
     if (document.fonts) {

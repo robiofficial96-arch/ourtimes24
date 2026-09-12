@@ -204,7 +204,7 @@ function handleNewsSubmit(e) {
         categorySlug: catSlugs[category] || 'national',
         district,
         author,
-        authorAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80',
+        authorAvatar: '',
         image,
         excerpt,
         content: content.startsWith('<p>') ? content : `<p>${content}</p>`,
@@ -555,30 +555,6 @@ const DEFAULT_USERS = [
         status: 'active',
         isMaster: true,
         createdAt: '২০২৬-০১-০১'
-    },
-    {
-        id: 'usr-2',
-        name: 'সহ-সম্পাদক (বার্তা)',
-        username: 'subeditor',
-        role: 'সহ-সম্পাদক',
-        roleKey: 'subeditor',
-        pin: '2026',
-        phone: '+8801745481785',
-        status: 'active',
-        isMaster: false,
-        createdAt: '২০২৬-০১-০১'
-    },
-    {
-        id: 'usr-3',
-        name: 'স্টাফ রিপোর্টার',
-        username: 'reporter',
-        role: 'স্টাফ রিপোর্টার',
-        roleKey: 'reporter',
-        pin: '1234',
-        phone: '+8801800000000',
-        status: 'active',
-        isMaster: false,
-        createdAt: '২০২৬-০১-০১'
     }
 ];
 
@@ -587,8 +563,12 @@ class UserStore {
         try {
             const raw = localStorage.getItem('ourtimes_users_v1');
             if (raw) {
-                const parsed = JSON.parse(raw);
-                if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+                let parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    // Purge legacy demo users
+                    parsed = parsed.filter(u => u.id !== 'usr-2' && u.id !== 'usr-3');
+                    if (parsed.length > 0) return parsed;
+                }
             }
         } catch (e) {}
         localStorage.setItem('ourtimes_users_v1', JSON.stringify(DEFAULT_USERS));
