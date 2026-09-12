@@ -1735,6 +1735,11 @@ button, input, select, textarea {
         aspect-ratio: 16 / 11;
     }
 
+    /* Phone View: Remove category badge from top of images */
+    .category-tag {
+        display: none !important;
+    }
+
     .news-card-body {
         padding: 8px 10px 8px 0;
         justify-content: center;
