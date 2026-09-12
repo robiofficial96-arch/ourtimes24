@@ -31,41 +31,52 @@
         </div>
     </div>
 
-    <!-- TOPBAR -->
-    <div class="topbar">
-        <div class="container" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:10px;">
-            <div class="topbar-left">
-                <a href="index.html" class="topbar-btn" style="font-weight: 800; color:var(--primary);">
-                    <i class="fa-solid fa-arrow-up-right-from-square"></i> মূল ওয়েবসাইট দেখুন
+    <!-- UNIFIED EDITORIAL CONTROL NAVBAR -->
+    <header class="admin-top-navbar">
+        <div class="container admin-navbar-inner">
+            <!-- Brand & Title -->
+            <div class="admin-brand-block">
+                <a href="admin.html" class="admin-brand-link">
+                    <img src="logo.png" alt="OurTimes24" class="admin-brand-logo-img" onerror="this.style.display='none'">
+                    <div>
+                        <div class="admin-brand-name">
+                            আওয়ার টাইমস<span style="color:var(--primary);">২৪</span>
+                            <span class="admin-badge-portal">নিউজরুম কন্ট্রোল</span>
+                        </div>
+                        <div class="admin-brand-tagline">সত্য ও বস্তুনিষ্ঠ সাংবাদিকতার ম্যানেজমেন্ট পোর্টাল</div>
+                    </div>
                 </a>
             </div>
-            <div class="theme-switch-wrapper" style="display: flex; align-items: center; gap: 10px;">
-                <button class="theme-switch-btn" onclick="toggleTheme()" id="themeBtn" title="ডার্ক / লাইট মোড পরিবর্তন">
-                    <i class="fa-solid fa-moon theme-switch-icon" id="themeIcon"></i>
-                    <span id="themeText">ডার্ক মোড</span>
-                </button>
-                <button onclick="adminLogout()" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
-                    <i class="fa-solid fa-power-off"></i> লগআউট
-                </button>
-            </div>
-        </div>
-    </div>
 
-    <!-- MAIN HEADER: LEFT-ALIGNED BANGLA LOGO -->
-    <header class="main-header" style="padding: 14px 0;">
-        <div class="container header-row-left" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;">
-            <div class="brand-logo-left">
-                <a href="admin.html">
-                    <div class="brand-logo-bn">আওয়ার টাইমস<span>২৪</span></div>
-                    <div class="brand-tagline-bn">অ্যাডমিন নিউজরুম ম্যানেজমেন্ট পোর্টাল</div>
-                </a>
-            </div>
-            <div style="font-size: 14px; color: var(--text-muted); font-weight: 700; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                <div id="adminCurrentUserBadge" style="display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; background: var(--bg-surface-alt); padding: 5px 14px; border-radius: 50px; border: 1px solid var(--border-color);">
-                    <i class="fa-solid fa-circle-user text-primary" style="font-size: 17px;"></i>
-                    <span id="adminCurrentUserName">সৈয়দ হাফিজ মনির</span>
-                    <span style="font-size: 11px; background: var(--primary); color: white; padding: 2px 7px; border-radius: 4px; font-weight: 800;" id="adminCurrentUserRole">অ্যাডমিন</span>
+            <!-- Right Side: User Profile & Quick Actions -->
+            <div class="admin-header-actions">
+                <!-- Current User Pill -->
+                <div id="adminCurrentUserBadge" class="admin-user-pill">
+                    <div class="admin-user-avatar-circle">
+                        <i class="fa-solid fa-user-shield" id="adminCurrentUserIcon"></i>
+                    </div>
+                    <div class="admin-user-details">
+                        <div class="admin-user-name" id="adminCurrentUserName">সৈয়দ হাফিজ মনির</div>
+                        <div class="admin-user-role-label" id="adminCurrentUserRole">প্রধান সম্পাদক / অ্যাডমিন</div>
+                    </div>
                 </div>
+
+                <!-- View Live Site -->
+                <a href="index.html" target="_blank" class="admin-action-btn btn-visit-site" title="মূল ওয়েবসাইট দেখুন">
+                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    <span>পোর্টাল দেখুন</span>
+                </a>
+
+                <!-- Theme Toggle -->
+                <button class="admin-action-btn btn-theme-toggle" onclick="toggleTheme()" id="themeBtn" title="ডার্ক / লাইট মোড">
+                    <i class="fa-solid fa-moon" id="themeIcon"></i>
+                </button>
+
+                <!-- Logout -->
+                <button onclick="adminLogout()" class="admin-action-btn btn-admin-logout" title="লগআউট">
+                    <i class="fa-solid fa-power-off"></i>
+                    <span>লগআউট</span>
+                </button>
             </div>
         </div>
     </header>
@@ -289,47 +300,209 @@
                 <div id="tabAdSettings" class="admin-content-card" style="display: none;">
                     <div class="section-header" style="margin-bottom: 20px;">
                         <div class="section-title">
-                            <i class="fa-solid fa-rectangle-ad text-primary"></i> স্মার্ট অ্যাড স্পেস ম্যানেজার
+                            <i class="fa-solid fa-rectangle-ad text-primary"></i> স্মার্ট অ্যাড স্পেস ম্যানেজার ও ব্যানার মাপ গাইড
                         </div>
                     </div>
-                    <div style="background: var(--bg-surface-alt); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 20px;">
-                        <h4 style="margin-bottom: 8px; font-size: 16px;">🔒 জিরো ব্ল্যাংক স্পেস অ্যাড পলিসি (Zero Blank Space Guarantee)</h4>
-                        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">
-                            বিজ্ঞাপন নিষ্ক্রিয় বা কোড দেওয়া না থাকলে কোনো দৃশ্যমান বা অস্বস্তিকর ফাঁকা ফ্রেম থাকবে না।
-                        </p>
 
-                        <div style="display: flex; flex-direction: column; gap: 16px;">
-                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 14px; flex-wrap: wrap; gap: 10px;">
-                                <div>
-                                    <div style="font-weight: 800; font-size: 14.5px;">১. হেডার ব্যানার অ্যাড (Header Leaderboard 728x90)</div>
-                                    <div style="font-size: 12.5px; color: var(--text-muted);">লোগোর পাশে দেখানো হয়</div>
-                                </div>
-                                <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 700;">
-                                    <input type="checkbox" id="adToggleHeader" onchange="saveAdToggles()" style="width:18px; height:18px; accent-color:var(--primary);"> সক্রিয় করুন
-                                </label>
-                            </div>
-
-                            <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border-color); padding-bottom: 14px; flex-wrap: wrap; gap: 10px;">
-                                <div>
-                                    <div style="font-weight: 800; font-size: 14.5px;">২. সাইডবার রেকট্যাঙ্গেল অ্যাড (Sidebar Box 300x250)</div>
-                                    <div style="font-size: 12.5px; color: var(--text-muted);">খবরের ডান পাশের সাইডবারে প্রদর্শিত হবে</div>
-                                </div>
-                                <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 700;">
-                                    <input type="checkbox" id="adToggleSidebar" onchange="saveAdToggles()" style="width:18px; height:18px; accent-color:var(--primary);"> সক্রিয় করুন
-                                </label>
-                            </div>
-
-                            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
-                                <div>
-                                    <div style="font-weight: 800; font-size: 14.5px;">৩. সংবাদের অভ্যন্তরে ইন-আর্টিকেল অ্যাড (In-Article 600x120)</div>
-                                    <div style="font-size: 12.5px; color: var(--text-muted);">খবর পড়ার মাঝখানে অনুচ্ছেদের পরে প্রদর্শিত হবে</div>
-                                </div>
-                                <label style="cursor: pointer; display: flex; align-items: center; gap: 8px; font-weight: 700;">
-                                    <input type="checkbox" id="adToggleInArticle" onchange="saveAdToggles()" style="width:18px; height:18px; accent-color:var(--primary);"> সক্রিয় করুন
-                                </label>
-                            </div>
+                    <!-- Size & Placement Guide Alert -->
+                    <div style="background: linear-gradient(135deg, rgba(192, 6, 18, 0.05), rgba(59, 130, 246, 0.05)); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 18px 20px; margin-bottom: 24px;">
+                        <div style="font-weight: 800; font-size: 15px; color: var(--text-main); margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+                            <i class="fa-solid fa-circle-info text-primary"></i> ব্যানার মাপ ও অবস্থানের আদর্শ নির্দেশিকা (Ad Placement & Size Guide):
+                        </div>
+                        <div style="font-size: 13.5px; color: var(--text-body); line-height: 1.6;">
+                            • <strong>১. হেডার লিডারবোর্ড ব্যানার:</strong> মাপ <code>728 × 90 px</code> (ডেস্কটপ) / <code>320 × 50 px</code> (মোবাইল) — লোগোর নিচে বা হেডারের শীর্ষে।<br>
+                            • <strong>২. হোমপেজ মিডল ব্যানার:</strong> মাপ <code>970 × 90 px</code> বা <code>728 × 90 px</code> — লিড সংবাদের নিচে (সারাদেশ সেকশনের আগে)।<br>
+                            • <strong>৩. সাইডবার ব্যানার:</strong> মাপ <code>300 × 250 px</code> — হোমপেজ, ক্যাটাগরি ও সংবাদের বিস্তারিত পাতার সাইডবারে।<br>
+                            • <strong>৪. ইন-আর্টিকেল ব্যানার:</strong> মাপ <code>728 × 90 px</code> বা <code>300 × 250 px</code> — সংবাদের মূল লেখার ভেতরে ২য় অনুচ্ছেদের পর।<br>
+                            🔒 <em>জিরো ব্ল্যাংক স্পেস পলিসি: কোনো বিজ্ঞাপন নিষ্ক্রিয় বা ছবি না থাকলে ওয়েবসাইটে কোনো ফাঁকা ফ্রেম থাকবে না।</em>
                         </div>
                     </div>
+
+                    <form id="adSettingsForm" onsubmit="handleSaveAdConfig(event)" class="admin-ad-slots-grid">
+                        
+                        <!-- SLOT 1: HEADER LEADERBOARD -->
+                        <div class="admin-ad-card">
+                            <div class="admin-ad-card-header">
+                                <div class="admin-ad-card-title">
+                                    <span>১. হেডার লিডারবোর্ড ব্যানার (Header Leaderboard)</span>
+                                    <span class="ad-size-badge">মাপ: 728 × 90 px</span>
+                                </div>
+                                <label class="ad-toggle-switch">
+                                    <input type="checkbox" id="adToggleHeader" onchange="toggleAdSlotInputs('header')">
+                                    <span id="adStatusHeader">বিজ্ঞাপন বন্ধ</span>
+                                </label>
+                            </div>
+                            <div id="adBodyHeader" style="display: flex; flex-direction: column; gap: 14px;">
+                                <div class="ad-type-tabs">
+                                    <button type="button" class="ad-type-tab-btn active" id="btnTypeHeaderImg" onclick="switchSlotType('header', 'image')"><i class="fa-solid fa-image"></i> ছবি ব্যানার + লিঙ্ক</button>
+                                    <button type="button" class="ad-type-tab-btn" id="btnTypeHeaderCode" onclick="switchSlotType('header', 'code')"><i class="fa-solid fa-code"></i> গুগল অ্যাডসেন্স / স্ক্রিপ্ট</button>
+                                </div>
+                                <div id="secHeaderImg" class="ad-form-grid">
+                                    <div class="control-group">
+                                        <label class="control-label">ব্যানার ছবির লিংক (Image URL)</label>
+                                        <div style="display:flex; gap:8px;">
+                                            <input type="url" id="adImgHeader" class="control-input" placeholder="https://res.cloudinary.com/... বা ছবির লিঙ্ক" oninput="previewAdImage('header', this.value)">
+                                            <label class="tool-btn" style="white-space:nowrap; cursor:pointer; background:var(--bg-subtle);">
+                                                <i class="fa-solid fa-upload"></i> আপলোড
+                                                <input type="file" accept="image/*" style="display:none;" onchange="handleAdFileUpload('header', this)">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">টার্গেট ওয়েবসাইট লিঙ্ক (Click URL)</label>
+                                        <input type="url" id="adLinkHeader" class="control-input" placeholder="https://example.com">
+                                    </div>
+                                </div>
+                                <div id="secHeaderCode" style="display:none;" class="control-group">
+                                    <label class="control-label">গুগল অ্যাডসেন্স বা কাস্টম এইচটিএমএল কোড</label>
+                                    <textarea id="adCodeHeader" class="control-textarea" rows="3" placeholder="<ins class='adsbygoogle' ...></ins>"></textarea>
+                                </div>
+                                <div class="ad-preview-box" id="previewBoxHeader">
+                                    <span style="font-size:12px; color:var(--text-muted);"><i class="fa-regular fa-eye"></i> হেডার ব্যানার প্রিভিউ (728×90)</span>
+                                    <img id="previewImgHeader" src="" style="display:none;" alt="Header Preview">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SLOT 2: HOMEPAGE MIDDLE BANNER -->
+                        <div class="admin-ad-card">
+                            <div class="admin-ad-card-header">
+                                <div class="admin-ad-card-title">
+                                    <span>২. হোমপেজ সেকশন ব্যানার (Homepage Middle Banner)</span>
+                                    <span class="ad-size-badge">মাপ: 970 × 90 px</span>
+                                </div>
+                                <label class="ad-toggle-switch">
+                                    <input type="checkbox" id="adToggleHomeMiddle" onchange="toggleAdSlotInputs('homeMiddle')">
+                                    <span id="adStatusHomeMiddle">বিজ্ঞাপন বন্ধ</span>
+                                </label>
+                            </div>
+                            <div id="adBodyHomeMiddle" style="display: flex; flex-direction: column; gap: 14px;">
+                                <div class="ad-type-tabs">
+                                    <button type="button" class="ad-type-tab-btn active" id="btnTypeHomeMiddleImg" onclick="switchSlotType('homeMiddle', 'image')"><i class="fa-solid fa-image"></i> ছবি ব্যানার + লিঙ্ক</button>
+                                    <button type="button" class="ad-type-tab-btn" id="btnTypeHomeMiddleCode" onclick="switchSlotType('homeMiddle', 'code')"><i class="fa-solid fa-code"></i> গুগল অ্যাডসেন্স / স্ক্রিপ্ট</button>
+                                </div>
+                                <div id="secHomeMiddleImg" class="ad-form-grid">
+                                    <div class="control-group">
+                                        <label class="control-label">ব্যানার ছবির লিংক (Image URL)</label>
+                                        <div style="display:flex; gap:8px;">
+                                            <input type="url" id="adImgHomeMiddle" class="control-input" placeholder="https://res.cloudinary.com/..." oninput="previewAdImage('homeMiddle', this.value)">
+                                            <label class="tool-btn" style="white-space:nowrap; cursor:pointer; background:var(--bg-subtle);">
+                                                <i class="fa-solid fa-upload"></i> আপলোড
+                                                <input type="file" accept="image/*" style="display:none;" onchange="handleAdFileUpload('homeMiddle', this)">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">টার্গেট ওয়েবসাইট লিঙ্ক (Click URL)</label>
+                                        <input type="url" id="adLinkHomeMiddle" class="control-input" placeholder="https://example.com">
+                                    </div>
+                                </div>
+                                <div id="secHomeMiddleCode" style="display:none;" class="control-group">
+                                    <label class="control-label">গুগল অ্যাডসেন্স বা কাস্টম এইচটিএমএল কোড</label>
+                                    <textarea id="adCodeHomeMiddle" class="control-textarea" rows="3" placeholder="<ins class='adsbygoogle' ...></ins>"></textarea>
+                                </div>
+                                <div class="ad-preview-box" id="previewBoxHomeMiddle">
+                                    <span style="font-size:12px; color:var(--text-muted);"><i class="fa-regular fa-eye"></i> হোমপেজ মিডল প্রিভিউ (970×90)</span>
+                                    <img id="previewImgHomeMiddle" src="" style="display:none;" alt="Middle Preview">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SLOT 3: SIDEBAR BOX BANNER -->
+                        <div class="admin-ad-card">
+                            <div class="admin-ad-card-header">
+                                <div class="admin-ad-card-title">
+                                    <span>৩. সাইডবার রেকট্যাঙ্গেল ব্যানার (Sidebar Box 300x250)</span>
+                                    <span class="ad-size-badge">মাপ: 300 × 250 px</span>
+                                </div>
+                                <label class="ad-toggle-switch">
+                                    <input type="checkbox" id="adToggleSidebar" onchange="toggleAdSlotInputs('sidebar')">
+                                    <span id="adStatusSidebar">বিজ্ঞাপন বন্ধ</span>
+                                </label>
+                            </div>
+                            <div id="adBodySidebar" style="display: flex; flex-direction: column; gap: 14px;">
+                                <div class="ad-type-tabs">
+                                    <button type="button" class="ad-type-tab-btn active" id="btnTypeSidebarImg" onclick="switchSlotType('sidebar', 'image')"><i class="fa-solid fa-image"></i> ছবি ব্যানার + লিঙ্ক</button>
+                                    <button type="button" class="ad-type-tab-btn" id="btnTypeSidebarCode" onclick="switchSlotType('sidebar', 'code')"><i class="fa-solid fa-code"></i> গুগল অ্যাডসেন্স / স্ক্রিপ্ট</button>
+                                </div>
+                                <div id="secSidebarImg" class="ad-form-grid">
+                                    <div class="control-group">
+                                        <label class="control-label">ব্যানার ছবির লিংক (Image URL)</label>
+                                        <div style="display:flex; gap:8px;">
+                                            <input type="url" id="adImgSidebar" class="control-input" placeholder="https://res.cloudinary.com/..." oninput="previewAdImage('sidebar', this.value)">
+                                            <label class="tool-btn" style="white-space:nowrap; cursor:pointer; background:var(--bg-subtle);">
+                                                <i class="fa-solid fa-upload"></i> আপলোড
+                                                <input type="file" accept="image/*" style="display:none;" onchange="handleAdFileUpload('sidebar', this)">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">টার্গেট ওয়েবসাইট লিঙ্ক (Click URL)</label>
+                                        <input type="url" id="adLinkSidebar" class="control-input" placeholder="https://example.com">
+                                    </div>
+                                </div>
+                                <div id="secSidebarCode" style="display:none;" class="control-group">
+                                    <label class="control-label">গুগল অ্যাডসেন্স বা কাস্টম এইচটিএমএল কোড</label>
+                                    <textarea id="adCodeSidebar" class="control-textarea" rows="3" placeholder="<ins class='adsbygoogle' ...></ins>"></textarea>
+                                </div>
+                                <div class="ad-preview-box" id="previewBoxSidebar">
+                                    <span style="font-size:12px; color:var(--text-muted);"><i class="fa-regular fa-eye"></i> সাইডবার প্রিভিউ (300×250)</span>
+                                    <img id="previewImgSidebar" src="" style="display:none;" alt="Sidebar Preview">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SLOT 4: IN-ARTICLE BANNER -->
+                        <div class="admin-ad-card">
+                            <div class="admin-ad-card-header">
+                                <div class="admin-ad-card-title">
+                                    <span>৪. সংবাদের ভেতরে ইন-আর্টিকেল ব্যানার (In-Article Content)</span>
+                                    <span class="ad-size-badge">মাপ: 728 × 90 বা 300 × 250 px</span>
+                                </div>
+                                <label class="ad-toggle-switch">
+                                    <input type="checkbox" id="adToggleInArticle" onchange="toggleAdSlotInputs('inArticle')">
+                                    <span id="adStatusInArticle">বিজ্ঞাপন বন্ধ</span>
+                                </label>
+                            </div>
+                            <div id="adBodyInArticle" style="display: flex; flex-direction: column; gap: 14px;">
+                                <div class="ad-type-tabs">
+                                    <button type="button" class="ad-type-tab-btn active" id="btnTypeInArticleImg" onclick="switchSlotType('inArticle', 'image')"><i class="fa-solid fa-image"></i> ছবি ব্যানার + লিঙ্ক</button>
+                                    <button type="button" class="ad-type-tab-btn" id="btnTypeInArticleCode" onclick="switchSlotType('inArticle', 'code')"><i class="fa-solid fa-code"></i> গুগল অ্যাডসেন্স / স্ক্রিপ্ট</button>
+                                </div>
+                                <div id="secInArticleImg" class="ad-form-grid">
+                                    <div class="control-group">
+                                        <label class="control-label">ব্যানার ছবির লিংক (Image URL)</label>
+                                        <div style="display:flex; gap:8px;">
+                                            <input type="url" id="adImgInArticle" class="control-input" placeholder="https://res.cloudinary.com/..." oninput="previewAdImage('inArticle', this.value)">
+                                            <label class="tool-btn" style="white-space:nowrap; cursor:pointer; background:var(--bg-subtle);">
+                                                <i class="fa-solid fa-upload"></i> আপলোড
+                                                <input type="file" accept="image/*" style="display:none;" onchange="handleAdFileUpload('inArticle', this)">
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="control-group">
+                                        <label class="control-label">টার্গেট ওয়েবসাইট লিঙ্ক (Click URL)</label>
+                                        <input type="url" id="adLinkInArticle" class="control-input" placeholder="https://example.com">
+                                    </div>
+                                </div>
+                                <div id="secInArticleCode" style="display:none;" class="control-group">
+                                    <label class="control-label">গুগল অ্যাডসেন্স বা কাস্টম এইচটিএমএল কোড</label>
+                                    <textarea id="adCodeInArticle" class="control-textarea" rows="3" placeholder="<ins class='adsbygoogle' ...></ins>"></textarea>
+                                </div>
+                                <div class="ad-preview-box" id="previewBoxInArticle">
+                                    <span style="font-size:12px; color:var(--text-muted);"><i class="fa-regular fa-eye"></i> ইন-আর্টিকেল প্রিভিউ</span>
+                                    <img id="previewImgInArticle" src="" style="display:none;" alt="In-Article Preview">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- SAVE BUTTON -->
+                        <div style="text-align: right; margin-top: 10px;">
+                            <button type="submit" class="tool-btn" style="background: var(--primary); color: white; border: none; padding: 12px 28px; font-size: 15px; font-weight: 800; border-radius: var(--radius-sm); cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-floppy-disk"></i> সকল বিজ্ঞাপন সেটিংস সংরক্ষণ করুন
+                            </button>
+                        </div>
+                    </form>
                 </div>
 
                 <!-- TAB 4: BREAKING TICKER CONTROLLER -->
@@ -421,12 +594,15 @@
 
                 <div class="control-group" style="margin-bottom: 14px;">
                     <label class="control-label">ভূমিকা / পদবি (Role) *</label>
-                    <select id="editUserRole" class="control-select">
-                        <option value="admin">প্রধান সম্পাদক / অ্যাডমিন (Full Admin)</option>
-                        <option value="subeditor">সহ-সম্পাদক (Sub-Editor)</option>
+                    <select id="editUserRole" class="control-select" onchange="updateRolePermissionHint()">
                         <option value="reporter">স্টাফ রিপোর্টার (Staff Reporter)</option>
                         <option value="correspondent">জেলা প্রতিনিধি (District Correspondent)</option>
+                        <option value="subeditor">সহ-সম্পাদক (Sub-Editor)</option>
+                        <option value="admin">প্রধান সম্পাদক / অ্যাডমিন (Full Admin)</option>
                     </select>
+                    <div id="rolePermissionHint" style="margin-top: 8px; font-size: 12px; color: var(--text-muted); background: var(--bg-subtle); padding: 8px 12px; border-radius: 4px; border: 1px solid var(--border-color); line-height: 1.4;">
+                        <i class="fa-solid fa-shield-halved text-primary"></i> <span id="rolePermissionHintText">স্টাফ রিপোর্টার: শুধুমাত্র নতুন সংবাদ প্রকাশ, নিজের সংবাদ তালিকা দেখা ও ফটো কার্ড তৈরি করতে পারবেন। ইউজার ও বিজ্ঞাপন নিয়ন্ত্রণ লক থাকবে।</span>
+                    </div>
                 </div>
 
                 <div class="control-group" style="margin-bottom: 14px;">

@@ -19,11 +19,13 @@ const CATEGORIES = [
 class NewsRepository {
     constructor() {
         if (!localStorage.getItem('ourtimes_ads_config')) {
-            localStorage.setItem('ourtimes_ads_config', JSON.stringify({
-                headerLeaderboard: false,
-                sidebarRectangle: false,
-                inArticleBanner: false
-            }));
+            const initialConfig = {
+                header: { enabled: false, type: 'image', imageUrl: '', linkUrl: '', code: '' },
+                homeMiddle: { enabled: false, type: 'image', imageUrl: '', linkUrl: '', code: '' },
+                sidebar: { enabled: false, type: 'image', imageUrl: '', linkUrl: '', code: '' },
+                inArticle: { enabled: false, type: 'image', imageUrl: '', linkUrl: '', code: '' }
+            };
+            localStorage.setItem('ourtimes_ads_config', JSON.stringify(initialConfig));
         }
     }
 
@@ -59,7 +61,24 @@ class NewsRepository {
     }
 
     getAdConfig() {
-        return JSON.parse(localStorage.getItem('ourtimes_ads_config')) || {};
+        try {
+            const raw = localStorage.getItem('ourtimes_ads_config');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                return {
+                    header: parsed.header || { enabled: false, type: 'image', imageUrl: '', linkUrl: '', code: '' },
+                    homeMiddle: parsed.homeMiddle || { enabled: false, type: 'image', imageUrl: '', linkUrl: '', code: '' },
+                    sidebar: parsed.sidebar || { enabled: false, type: 'image', imageUrl: '', linkUrl: '', code: '' },
+                    inArticle: parsed.inArticle || { enabled: false, type: 'image', imageUrl: '', linkUrl: '', code: '' }
+                };
+            }
+        } catch (e) {}
+        return {
+            header: { enabled: false, type: 'image', imageUrl: '', linkUrl: '', code: '' },
+            homeMiddle: { enabled: false, type: 'image', imageUrl: '', linkUrl: '', code: '' },
+            sidebar: { enabled: false, type: 'image', imageUrl: '', linkUrl: '', code: '' },
+            inArticle: { enabled: false, type: 'image', imageUrl: '', linkUrl: '', code: '' }
+        };
     }
 
     setAdConfig(config) {
@@ -438,7 +457,54 @@ function renderSingleArticle() {
     if (elDate) elDate.textContent = `${article.date || 'আজ'}`;
     if (elImg) elImg.src = article.image;
     if (elCap) elCap.textContent = `${article.title} — ছবি: Ourtimes24`;
-    if (elBody) elBody.innerHTML = article.content || `<p>${article.excerpt}</p>`;
+    
+    if (elBody) {
+        let bodyContent = article.content || `<p>${article.excerpt}</p>`;
+        
+        // Zero Blank Space In-Article Banner Injection
+        try {
+            const ads = NewsDB.getAdConfig();
+            if (ads && ads.inArticle && ads.inArticle.enabled) {
+                let adHtml = '';
+                if (ads.inArticle.type === 'code' && ads.inArticle.code && ads.inArticle.code.trim()) {
+                    adHtml = `
+                        <div class="site-ad-wrapper in-article-ad-slot" style="display:block;">
+                            <div class="site-ad-container">
+                                <span class="site-ad-label">বিজ্ঞাপন</span>
+                                <div class="site-ad-code-inner">${ads.inArticle.code}</div>
+                            </div>
+                        </div>
+                    `;
+                } else if (ads.inArticle.type === 'image' && ads.inArticle.imageUrl && ads.inArticle.imageUrl.trim()) {
+                    const link = ads.inArticle.linkUrl && ads.inArticle.linkUrl.trim() ? ads.inArticle.linkUrl.trim() : '#';
+                    adHtml = `
+                        <div class="site-ad-wrapper in-article-ad-slot" style="display:block;">
+                            <div class="site-ad-container">
+                                <span class="site-ad-label">বিজ্ঞাপন</span>
+                                <a href="${link}" ${link !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''}>
+                                    <img src="${ads.inArticle.imageUrl}" alt="সংবাদের বিজ্ঞাপন" class="site-ad-img" loading="lazy">
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }
+
+                if (adHtml) {
+                    const paragraphs = bodyContent.split('</p>');
+                    if (paragraphs.length > 2) {
+                        paragraphs[1] = paragraphs[1] + '</p>' + adHtml;
+                        bodyContent = paragraphs.join('</p>');
+                    } else {
+                        bodyContent += adHtml;
+                    }
+                }
+            }
+        } catch (e) {
+            console.error('In-article ad injection error:', e);
+        }
+
+        elBody.innerHTML = bodyContent;
+    }
 
     // Render 4 Related Articles
     const relatedList = document.getElementById('relatedNewsGrid');
@@ -573,6 +639,77 @@ function shareToPlatform(platform) {
     }
 }
 
+// ==========================================
+// 10. SMART AD BANNER RENDERING ENGINE (ZERO BLANK SPACE)
+// ==========================================
+function renderSiteAds() {
+    if (typeof NewsDB === 'undefined' || !NewsDB.getAdConfig) return;
+    const ads = NewsDB.getAdConfig();
+
+    function buildAdElement(slotData, altText) {
+        if (!slotData || !slotData.enabled) return '';
+        if (slotData.type === 'code' && slotData.code && slotData.code.trim()) {
+            return `
+                <div class="site-ad-container">
+                    <span class="site-ad-label">বিজ্ঞাপন</span>
+                    <div class="site-ad-code-inner">${slotData.code}</div>
+                </div>
+            `;
+        }
+        if (slotData.type === 'image' && slotData.imageUrl && slotData.imageUrl.trim()) {
+            const link = slotData.linkUrl && slotData.linkUrl.trim() ? slotData.linkUrl.trim() : '#';
+            return `
+                <div class="site-ad-container">
+                    <span class="site-ad-label">বিজ্ঞাপন</span>
+                    <a href="${link}" ${link !== '#' ? 'target="_blank" rel="noopener noreferrer"' : ''}>
+                        <img src="${slotData.imageUrl}" alt="${altText}" class="site-ad-img" loading="lazy">
+                    </a>
+                </div>
+            `;
+        }
+        return '';
+    }
+
+    // 1. Header Slot
+    const headerSlot = document.getElementById('headerAdSlot');
+    if (headerSlot) {
+        const html = buildAdElement(ads.header, 'Header Banner');
+        if (html) {
+            headerSlot.innerHTML = html;
+            headerSlot.style.display = 'block';
+        } else {
+            headerSlot.innerHTML = '';
+            headerSlot.style.display = 'none';
+        }
+    }
+
+    // 2. Homepage Middle Slot
+    const homeMiddleSlot = document.getElementById('homepageMiddleAdSlot');
+    if (homeMiddleSlot) {
+        const html = buildAdElement(ads.homeMiddle, 'Homepage Middle Banner');
+        if (html) {
+            homeMiddleSlot.innerHTML = html;
+            homeMiddleSlot.style.display = 'block';
+        } else {
+            homeMiddleSlot.innerHTML = '';
+            homeMiddleSlot.style.display = 'none';
+        }
+    }
+
+    // 3. Sidebar Slot
+    const sidebarSlot = document.getElementById('sidebarAdSlot');
+    if (sidebarSlot) {
+        const html = buildAdElement(ads.sidebar, 'Sidebar Banner');
+        if (html) {
+            sidebarSlot.innerHTML = html;
+            sidebarSlot.style.display = 'block';
+        } else {
+            sidebarSlot.innerHTML = '';
+            sidebarSlot.style.display = 'none';
+        }
+    }
+}
+
 // Expose Global Helper Functions
 if (typeof window !== 'undefined') {
     window.renderHomepage = renderHomepage;
@@ -584,6 +721,7 @@ if (typeof window !== 'undefined') {
     window.toggleTheme = toggleTheme;
     window.toggleOffcanvasMenu = toggleOffcanvasMenu;
     window.closeOffcanvasMenu = closeOffcanvasMenu;
+    window.renderSiteAds = renderSiteAds;
 }
 
 // Initialize on Load
@@ -594,6 +732,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initBanglaClock();
     renderBreakingTicker();
+    renderSiteAds();
 
     document.querySelectorAll('.tab-btn').forEach(btn => {
         btn.addEventListener('click', () => {

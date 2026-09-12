@@ -127,10 +127,26 @@ function setupDropzone() {
 }
 
 // ==========================================
-// 2. TAB SWITCHING
+// 2. TAB SWITCHING (WITH RBAC SECURITY GATE)
 // ==========================================
 
 function switchAdminTab(tabId) {
+    const user = UserStore.getCurrentUser();
+    const role = user ? user.roleKey : 'reporter';
+
+    // RBAC Security Guard: Normal reporters cannot open user manager, ads or ticker
+    if (role === 'reporter' || role === 'correspondent') {
+        if (tabId === 'tabAdSettings' || tabId === 'tabUserManager' || tabId === 'tabBreakingTicker') {
+            alert('⛔ আপনার পদবি অনুযায়ী এই সেকশনে প্রবেশের অনুমতি নেই। আপনি সংবাদ প্রকাশ, তালিকা ও ফটো কার্ড ব্যবহার করতে পারবেন।');
+            tabId = 'tabCreateNews';
+        }
+    } else if (role === 'subeditor') {
+        if (tabId === 'tabAdSettings' || tabId === 'tabUserManager') {
+            alert('⛔ সহ-সম্পাদক হিসেবে আপনি শুধুমাত্র সংবাদ ও ব্রেকিং নিউজ নিয়ন্ত্রণ করতে পারবেন।');
+            tabId = 'tabCreateNews';
+        }
+    }
+
     ['tabCreateNews', 'tabManageNews', 'tabAdSettings', 'tabBreakingTicker', 'tabUserManager'].forEach(id => {
         const el = document.getElementById(id);
         if (el) el.style.display = (id === tabId) ? 'block' : 'none';
@@ -455,6 +471,11 @@ function editNews(id) {
 }
 
 function deleteNewsItem(id) {
+    const user = UserStore.getCurrentUser();
+    if (user && (user.roleKey === 'reporter' || user.roleKey === 'correspondent')) {
+        alert('⛔ রিপোর্টার বা প্রতিনিধিদের প্রকাশিত সংবাদ মুছে ফেলার অনুমতি নেই। যেকোনো পরিবর্তনের জন্য বার্তা বিভাগে যোগাযোগ করুন।');
+        return;
+    }
     if (confirm('আপনি কি নিশ্চিত যে এই সংবাদটি মুছে ফেলতে চান?')) {
         NewsDB.deleteNews(id);
         renderNewsTable();
@@ -473,27 +494,176 @@ function resetNewsForm() {
 }
 
 // ==========================================
-// 4. AD SETTINGS CONTROLLER
+// 4. SMART AD SPACE CONTROLLER (4 SLOTS)
 // ==========================================
+
+const AD_SLOTS = ['header', 'homeMiddle', 'sidebar', 'inArticle'];
+const AD_SLOT_CAPS = {
+    header: 'Header',
+    homeMiddle: 'HomeMiddle',
+    sidebar: 'Sidebar',
+    inArticle: 'InArticle'
+};
+
+// Slot types state tracker: 'image' or 'code'
+let adSlotTypes = {
+    header: 'image',
+    homeMiddle: 'image',
+    sidebar: 'image',
+    inArticle: 'image'
+};
+
+function toggleAdSlotInputs(slot) {
+    const cap = AD_SLOT_CAPS[slot];
+    const toggle = document.getElementById(`adToggle${cap}`);
+    const statusText = document.getElementById(`adStatus${cap}`);
+    const body = document.getElementById(`adBody${cap}`);
+    if (!toggle) return;
+
+    const isEnabled = toggle.checked;
+    if (statusText) {
+        statusText.textContent = isEnabled ? 'বিজ্ঞাপন সক্রিয়' : 'বিজ্ঞাপন বন্ধ';
+        statusText.style.color = isEnabled ? '#16a34a' : 'var(--text-muted)';
+    }
+    if (body) {
+        body.style.opacity = isEnabled ? '1' : '0.5';
+        body.style.pointerEvents = isEnabled ? 'auto' : 'none';
+    }
+}
+
+function switchSlotType(slot, type) {
+    adSlotTypes[slot] = type;
+    const cap = AD_SLOT_CAPS[slot];
+    const btnImg = document.getElementById(`btnType${cap}Img`);
+    const btnCode = document.getElementById(`btnType${cap}Code`);
+    const secImg = document.getElementById(`sec${cap}Img`);
+    const secCode = document.getElementById(`sec${cap}Code`);
+
+    if (type === 'image') {
+        if (btnImg) btnImg.classList.add('active');
+        if (btnCode) btnCode.classList.remove('active');
+        if (secImg) secImg.style.display = 'grid';
+        if (secCode) secCode.style.display = 'none';
+    } else {
+        if (btnImg) btnImg.classList.remove('active');
+        if (btnCode) btnCode.classList.add('active');
+        if (secImg) secImg.style.display = 'none';
+        if (secCode) secCode.style.display = 'block';
+    }
+}
+
+function previewAdImage(slot, url) {
+    const cap = AD_SLOT_CAPS[slot];
+    const img = document.getElementById(`previewImg${cap}`);
+    if (!img) return;
+
+    if (url && (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:'))) {
+        img.src = url;
+        img.style.display = 'block';
+    } else {
+        img.src = '';
+        img.style.display = 'none';
+    }
+}
+
+function handleAdFileUpload(slot, input) {
+    const file = input.files && input.files[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+        alert('অনুগ্রহ করে শুধুমাত্র একটি ইমেজ ফাইল নির্বাচন করুন (JPG, PNG, WebP)!');
+        return;
+    }
+
+    const cap = AD_SLOT_CAPS[slot];
+    const urlInput = document.getElementById(`adImg${cap}`);
+
+    const label = input.parentElement;
+    if (label) {
+        label.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> আপলোড হচ্ছে...';
+    }
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_CONFIG.uploadPreset);
+
+    fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CONFIG.cloudName}/image/upload`, {
+        method: 'POST',
+        body: formData
+    })
+    .then(res => {
+        if (!res.ok) throw new Error(`Cloudinary Error: ${res.status}`);
+        return res.json();
+    })
+    .then(data => {
+        if (data && data.secure_url) {
+            if (urlInput) urlInput.value = data.secure_url;
+            previewAdImage(slot, data.secure_url);
+            alert('✅ ব্যানার ছবি সফলভাবে ক্লাউডিনারিতে আপলোড হয়েছে!');
+        } else {
+            throw new Error('কোনো ছবির URL পাওয়া যায়নি');
+        }
+    })
+    .catch(err => {
+        console.error('Ad Upload Error:', err);
+        alert('ছবি আপলোড করতে ব্যর্থ হয়েছে: ' + err.message);
+    })
+    .finally(() => {
+        if (label) {
+            label.innerHTML = `
+                <i class="fa-solid fa-upload"></i> আপলোড
+                <input type="file" accept="image/*" style="display:none;" onchange="handleAdFileUpload('${slot}', this)">
+            `;
+        }
+    });
+}
 
 function loadAdSettings() {
     const config = NewsDB.getAdConfig();
-    const h = document.getElementById('adToggleHeader');
-    const s = document.getElementById('adToggleSidebar');
-    const a = document.getElementById('adToggleInArticle');
 
-    if (h) h.checked = !!config.headerLeaderboard;
-    if (s) s.checked = !!config.sidebarRectangle;
-    if (a) a.checked = !!config.inArticleBanner;
+    AD_SLOTS.forEach(slot => {
+        const cap = AD_SLOT_CAPS[slot];
+        const slotData = config[slot] || { enabled: false, type: 'image', imageUrl: '', linkUrl: '', code: '' };
+
+        const toggle = document.getElementById(`adToggle${cap}`);
+        const imgInput = document.getElementById(`adImg${cap}`);
+        const linkInput = document.getElementById(`adLink${cap}`);
+        const codeInput = document.getElementById(`adCode${cap}`);
+
+        if (toggle) toggle.checked = !!slotData.enabled;
+        if (imgInput) imgInput.value = slotData.imageUrl || '';
+        if (linkInput) linkInput.value = slotData.linkUrl || '';
+        if (codeInput) codeInput.value = slotData.code || '';
+
+        switchSlotType(slot, slotData.type || 'image');
+        toggleAdSlotInputs(slot);
+        previewAdImage(slot, slotData.imageUrl || '');
+    });
 }
 
-function saveAdToggles() {
-    const config = {
-        headerLeaderboard: !!document.getElementById('adToggleHeader')?.checked,
-        sidebarRectangle: !!document.getElementById('adToggleSidebar')?.checked,
-        inArticleBanner: !!document.getElementById('adToggleInArticle')?.checked
-    };
+function handleSaveAdConfig(e) {
+    if (e) e.preventDefault();
+
+    const config = {};
+    AD_SLOTS.forEach(slot => {
+        const cap = AD_SLOT_CAPS[slot];
+        const isEnabled = !!document.getElementById(`adToggle${cap}`)?.checked;
+        const type = adSlotTypes[slot] || 'image';
+        const imageUrl = document.getElementById(`adImg${cap}`)?.value.trim() || '';
+        const linkUrl = document.getElementById(`adLink${cap}`)?.value.trim() || '';
+        const code = document.getElementById(`adCode${cap}`)?.value.trim() || '';
+
+        config[slot] = {
+            enabled: isEnabled,
+            type,
+            imageUrl,
+            linkUrl,
+            code
+        };
+    });
+
     NewsDB.setAdConfig(config);
+    alert('🎉 সকল বিজ্ঞাপন সেটিংস সফলভাবে সংরক্ষিত হয়েছে! মূল ওয়েবসাইটে সক্রিয় বিজ্ঞাপনগুলো প্রদর্শিত হবে।');
 }
 
 // ==========================================
@@ -617,6 +787,10 @@ class UserStore {
     static setCurrentUser(user) {
         sessionStorage.setItem('ourtimes_admin_user', JSON.stringify(user));
     }
+}
+
+if (typeof window !== 'undefined') {
+    window.UserStore = UserStore;
 }
 
 let userPinVisibility = {};
@@ -769,6 +943,23 @@ function toggleUserPinVisibility(id) {
     renderUserList();
 }
 
+function updateRolePermissionHint() {
+    const select = document.getElementById('editUserRole');
+    const hintText = document.getElementById('rolePermissionHintText');
+    if (!select || !hintText) return;
+
+    const role = select.value;
+    if (role === 'admin') {
+        hintText.innerHTML = '<strong>প্রধান সম্পাদক / অ্যাডমিন:</strong> সম্পূর্ণ সাইট নিয়ন্ত্রণ — সংবাদ প্রকাশ, ইউজার ও রিপোর্টার তৈরি/মুছে ফেলা, বিজ্ঞাপন সেটিংস এবং ব্রেকিং নিউজ পরিবর্তন।';
+    } else if (role === 'subeditor') {
+        hintText.innerHTML = '<strong>সহ-সম্পাদক:</strong> সংবাদ তৈরি ও সম্পাদনা, ব্রেকিং নিউজ সরাসরি নিয়ন্ত্রণ এবং ফটো কার্ড স্টুডিও অ্যাক্সেস। (ইউজার ও বিজ্ঞাপন লক থাকবে)';
+    } else if (role === 'correspondent') {
+        hintText.innerHTML = '<strong>জেলা প্রতিনিধি:</strong> নিজের জেলার সংবাদ পাঠানো, সংবাদ তালিকা দেখা এবং সংবাদের ফটো কার্ড তৈরি। (অন্যান্য নিয়ন্ত্রণ লক থাকবে)';
+    } else {
+        hintText.innerHTML = '<strong>স্টাফ রিপোর্টার:</strong> শুধুমাত্র নতুন সংবাদ প্রকাশ, সংবাদ তালিকা দেখা ও সংবাদের ফটো কার্ড তৈরি করতে পারবেন। ইউজার ও বিজ্ঞাপন নিয়ন্ত্রণ লক থাকবে।';
+    }
+}
+
 function openUserModal(userId = null) {
     const modal = document.getElementById('userModalOverlay');
     const form = document.getElementById('userForm');
@@ -790,9 +981,11 @@ function openUserModal(userId = null) {
         if (modalTitle) modalTitle.textContent = 'নতুন ইউজার / প্রতিনিধি যোগ করুন';
         if (form) form.reset();
         document.getElementById('editUserId').value = '';
+        document.getElementById('editUserRole').value = 'reporter';
         document.getElementById('editUserStatus').value = 'active';
     }
 
+    updateRolePermissionHint();
     modal.style.display = 'flex';
 }
 
@@ -865,10 +1058,37 @@ function deleteUserConfirm(id) {
 }
 
 // ==========================================
-// 7. ADMIN AUTHENTICATION & EXPORT
+// 7. ADMIN AUTHENTICATION & RBAC ENFORCER
 // ==========================================
 
 const ADMIN_MASTER_PIN = '2424';
+
+function applyUserPermissions(user) {
+    if (!user) user = UserStore.getCurrentUser();
+    if (!user) return;
+
+    const role = user.roleKey || 'reporter';
+    const btnUsers = document.getElementById('btnTabUsers');
+    const btnAds = document.getElementById('btnTabAds');
+    const btnBreaking = document.getElementById('btnTabBreaking');
+
+    if (role === 'reporter' || role === 'correspondent') {
+        // Normal users / reporters: Only News + Photo Card
+        if (btnUsers) btnUsers.style.display = 'none';
+        if (btnAds) btnAds.style.display = 'none';
+        if (btnBreaking) btnBreaking.style.display = 'none';
+    } else if (role === 'subeditor') {
+        // Sub-editor: News + Breaking + Photo Card (No Users, No Ads)
+        if (btnUsers) btnUsers.style.display = 'none';
+        if (btnAds) btnAds.style.display = 'none';
+        if (btnBreaking) btnBreaking.style.display = 'flex';
+    } else {
+        // Full Admin: Show all
+        if (btnUsers) btnUsers.style.display = 'flex';
+        if (btnAds) btnAds.style.display = 'flex';
+        if (btnBreaking) btnBreaking.style.display = 'flex';
+    }
+}
 
 function checkAdminAuth() {
     const isAuth = sessionStorage.getItem('ourtimes_admin_auth');
@@ -885,10 +1105,35 @@ function checkAdminAuth() {
 
 function updateCurrentUserUI() {
     const user = UserStore.getCurrentUser();
+    if (!user) return;
+
     const nameEl = document.getElementById('adminCurrentUserName');
     const roleEl = document.getElementById('adminCurrentUserRole');
-    if (nameEl && user) nameEl.textContent = user.name;
-    if (roleEl && user) roleEl.textContent = user.role;
+    const iconEl = document.getElementById('adminCurrentUserIcon');
+    
+    if (nameEl) nameEl.textContent = user.name;
+    if (roleEl) {
+        roleEl.textContent = user.role;
+        if (user.roleKey === 'admin') {
+            roleEl.style.background = 'var(--primary)';
+        } else if (user.roleKey === 'subeditor') {
+            roleEl.style.background = '#2563eb';
+        } else {
+            roleEl.style.background = '#16a34a';
+        }
+    }
+    if (iconEl) {
+        if (user.roleKey === 'admin') {
+            iconEl.className = 'fa-solid fa-user-shield';
+        } else if (user.roleKey === 'subeditor') {
+            iconEl.className = 'fa-solid fa-pen-nib';
+        } else {
+            iconEl.className = 'fa-solid fa-feather-pointed';
+        }
+    }
+
+    // Apply strict tab permissions
+    applyUserPermissions(user);
 
     // Auto-fill author in news form if empty or default
     const authorInput = document.getElementById('newsAuthor');
@@ -906,12 +1151,17 @@ function handlePinSubmit(e) {
     const matchedUser = UserStore.getByPin(pin);
     if (pin === ADMIN_MASTER_PIN || matchedUser) {
         sessionStorage.setItem('ourtimes_admin_auth', 'true');
-        const activeUser = matchedUser || UserStore.getAll()[0];
+        const activeUser = matchedUser || (pin === ADMIN_MASTER_PIN ? UserStore.getAll().find(u => u.isMaster) || UserStore.getAll()[0] : UserStore.getAll()[0]);
         UserStore.setCurrentUser(activeUser);
         const overlay = document.getElementById('adminPinOverlay');
         if (overlay) overlay.style.display = 'none';
         updateCurrentUserUI();
         if (err) err.style.display = 'none';
+
+        // Redirect reporters to News creation immediately
+        if (activeUser.roleKey === 'reporter' || activeUser.roleKey === 'correspondent') {
+            switchAdminTab('tabCreateNews');
+        }
     } else {
         if (err) err.style.display = 'block';
     }

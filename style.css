@@ -2046,6 +2046,184 @@ button, input, select, textarea {
 /* ==========================================================================
    20. ADMIN NEWSROOM DASHBOARD (RESPONSIVE & TOUCH-OPTIMIZED)
    ========================================================================== */
+.admin-top-navbar {
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04);
+    padding: 12px 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.admin-navbar-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.admin-brand-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: inherit;
+}
+
+.admin-brand-logo-img {
+    height: 42px;
+    width: auto;
+    object-fit: contain;
+    border-radius: 4px;
+}
+
+.admin-brand-name {
+    font-family: var(--font-heading);
+    font-size: 22px;
+    font-weight: 900;
+    color: var(--text-main);
+    line-height: 1.1;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.admin-badge-portal {
+    font-size: 11px;
+    background: rgba(192, 6, 18, 0.1);
+    color: var(--primary);
+    border: 1px solid rgba(192, 6, 18, 0.25);
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 800;
+    font-family: var(--font-body);
+}
+
+.admin-brand-tagline {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+    margin-top: 2px;
+}
+
+.admin-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.admin-user-pill {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--bg-subtle);
+    padding: 5px 14px;
+    border-radius: 50px;
+    border: 1px solid var(--border-color);
+}
+
+.admin-user-avatar-circle {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--primary-light);
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    border: 1px solid var(--primary-border);
+}
+
+.admin-user-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-user-name {
+    font-size: 13.5px;
+    font-weight: 800;
+    color: var(--text-main);
+    line-height: 1.2;
+}
+
+.admin-user-role-label {
+    font-size: 10.5px;
+    color: #ffffff;
+    background: var(--primary);
+    padding: 1px 7px;
+    border-radius: 4px;
+    font-weight: 800;
+    display: inline-block;
+    margin-top: 2px;
+}
+
+.admin-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    transition: var(--transition);
+    border: 1px solid var(--border-color);
+}
+
+.admin-action-btn.btn-visit-site {
+    background: var(--bg-surface);
+    color: var(--primary);
+    border-color: var(--primary-border);
+}
+
+.admin-action-btn.btn-visit-site:hover {
+    background: var(--primary);
+    color: #ffffff;
+}
+
+.admin-action-btn.btn-theme-toggle {
+    background: var(--bg-subtle);
+    color: var(--text-main);
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    justify-content: center;
+    border-radius: 50%;
+}
+
+.admin-action-btn.btn-theme-toggle:hover {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+}
+
+.admin-action-btn.btn-admin-logout {
+    background: #ef4444;
+    color: #ffffff;
+    border-color: #dc2626;
+}
+
+.admin-action-btn.btn-admin-logout:hover {
+    background: #dc2626;
+}
+
+@media (max-width: 768px) {
+    .admin-navbar-inner {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+    .admin-header-actions {
+        justify-content: space-between;
+        width: 100%;
+    }
+}
+
 .admin-layout {
     display: grid;
     grid-template-columns: 260px 1fr;
@@ -2998,4 +3176,212 @@ button, input, select, textarea {
         gap: 10px;
     }
 }
+
+/* ==========================================================================
+   SMART AD BANNER SLOTS (ZERO BLANK SPACE ARCHITECTURE)
+   ========================================================================== */
+.site-ad-wrapper {
+    display: none;
+    width: 100%;
+    margin: 18px auto;
+    text-align: center;
+    position: relative;
+    clear: both;
+}
+
+.site-ad-container {
+    display: inline-block;
+    max-width: 100%;
+    position: relative;
+    border-radius: var(--radius-sm);
+    overflow: hidden;
+}
+
+.site-ad-label {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.site-ad-img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-sm);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    margin: 0 auto;
+    display: block;
+}
+
+.site-ad-img:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+}
+
+/* Header Leaderboard (728x90 / 320x50) */
+.header-ad-slot {
+    margin: 14px auto 8px auto;
+}
+
+/* Homepage Middle Super Banner (970x90 or 728x90) */
+.homepage-middle-ad-slot {
+    margin: 28px auto;
+    padding: 14px 0;
+    border-top: 1px dashed var(--border-color);
+    border-bottom: 1px dashed var(--border-color);
+}
+
+/* Sidebar Medium Rectangle (300x250) */
+.sidebar-ad-slot {
+    margin: 18px 0;
+    width: 100%;
+    text-align: center;
+}
+
+.sidebar-ad-slot .site-ad-container {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+}
+
+/* In-Article Content Banner (728x90 / 300x250) */
+.in-article-ad-slot {
+    margin: 24px auto;
+    padding: 16px 0;
+    border-top: 1px dashed var(--border-color);
+    border-bottom: 1px dashed var(--border-color);
+    text-align: center;
+}
+
+/* ==========================================================================
+   ADMIN AD MANAGER STYLES
+   ========================================================================== */
+.admin-ad-slots-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.admin-ad-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+}
+
+.admin-ad-card:hover {
+    border-color: var(--primary-border);
+}
+
+.admin-ad-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 14px;
+}
+
+.admin-ad-card-title {
+    font-size: 15.5px;
+    font-weight: 800;
+    color: var(--text-main);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.ad-size-badge {
+    background: var(--primary-light);
+    color: var(--primary);
+    border: 1px solid var(--primary-border);
+    font-size: 12px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: var(--radius-pill);
+    font-family: monospace;
+}
+
+.ad-toggle-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    background: var(--bg-subtle);
+    padding: 6px 12px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border-color);
+}
+
+.ad-form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+@media (max-width: 768px) {
+    .ad-form-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.ad-type-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.ad-type-tab-btn {
+    padding: 6px 14px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-subtle);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    color: var(--text-main);
+    transition: var(--transition);
+}
+
+.ad-type-tab-btn.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.ad-preview-box {
+    background: var(--bg-subtle);
+    border: 1px dashed var(--border-dark);
+    border-radius: var(--radius-sm);
+    padding: 12px;
+    text-align: center;
+    margin-top: 14px;
+    min-height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.ad-preview-box img {
+    max-width: 100%;
+    max-height: 120px;
+    object-fit: contain;
+    border-radius: 4px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
 
