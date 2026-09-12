@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>সংবাদ বিস্তারিত - আওয়ার টাইমস২৪</title>
+    <link rel="stylesheet" href="style.css?v=20260831_v5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- Reading Progress Bar -->
+    <div id="readingProgressBar"></div>
+
+    <!-- CLEAN TOP HEADER BAR: COMPACT LOGO ON LEFT & E-PAPER/HAMBURGER ON RIGHT -->
+    <header class="top-header-bar">
+        <div class="container top-header-inner">
+            <a href="index.html" class="top-brand-logo">
+                <div class="top-logo-bn">আওয়ার টাইমস<span>২৪</span></div>
+                <div class="top-logo-tagline-bottom">
+                    <span class="tag-bar"></span> সত্য ও বস্তুনিষ্ঠ সংবাদের সার্বক্ষণিক ঠিকানা
+                </div>
+            </a>
+            <a href="epaper.html" class="top-epaper-btn" title="ডিজিটাল ই-পেপার পড়ুন">
+                <i class="fa-regular fa-newspaper"></i> ই-পেপার
+            </a>
+        </div>
+    </header>
+
+    <!-- STICKY NAVBAR (SCROLLABLE CATEGORIES) -->
+    <div class="main-nav-wrapper">
+        <div class="container nav-container-sticky-row">
+            <ul class="nav-menu-scrollable">
+                <li class="nav-item"><a href="index.html" class="nav-link"><i class="fa-solid fa-house" style="font-size:14px; margin-right:4px;"></i> প্রচ্ছদ</a></li>
+                <li class="nav-item"><a href="category.html?cat=national" class="nav-link">জাতীয়</a></li>
+                <li class="nav-item"><a href="category.html?cat=politics" class="nav-link">রাজনীতি</a></li>
+                <li class="nav-item"><a href="category.html?cat=international" class="nav-link">আন্তর্জাতিক</a></li>
+                <li class="nav-item"><a href="category.html?cat=economy" class="nav-link">অর্থ-বাণিজ্য</a></li>
+                <li class="nav-item"><a href="category.html?cat=sports" class="nav-link">খেলাধুলা</a></li>
+                <li class="nav-item"><a href="category.html?cat=entertainment" class="nav-link">বিনোদন</a></li>
+                <li class="nav-item"><a href="category.html?cat=tech" class="nav-link">প্রযুক্তি</a></li>
+                <li class="nav-item"><a href="category.html?cat=saradesh" class="nav-link">সারাদেশ</a></li>
+                <li class="nav-item"><a href="category.html?cat=opinion" class="nav-link">মতামত</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- ARTICLE CONTAINER -->
+    <main class="container" id="articleContainer">
+        <div class="article-layout">
+            
+            <!-- MAIN ARTICLE BODY -->
+            <article class="article-main">
+                <!-- Breadcrumbs -->
+                <div class="breadcrumb-nav">
+                    <a href="index.html"><i class="fa-solid fa-house"></i> প্রচ্ছদ</a>
+                    <span>/</span>
+                    <span id="artCategory" style="color:var(--primary); font-weight:800;">জাতীয়</span>
+                </div>
+
+                <!-- Headline -->
+                <h1 class="article-headline" id="artHeadline">লোড হচ্ছে...</h1>
+                <h3 style="font-size: 19px; color: var(--text-muted); margin-bottom: 18px; font-weight: 500; font-family: var(--font-heading);" id="artSubtitle"></h3>
+
+                <!-- Author, Date & Interactive Toolbar Bar -->
+                <div class="article-author-bar">
+                    <div class="author-info">
+                        <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80" class="author-avatar" alt="Author">
+                        <div>
+                            <div style="font-weight: 800; font-size: 15.5px;" id="artAuthor">রবিউল ইসলাম (প্রধান প্রতিবেদক)</div>
+                            <div style="font-size: 12.5px; color: var(--text-muted);">
+                                <i class="fa-regular fa-calendar-days"></i> <span id="artDate">২৯ আগস্ট ২০২৬</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="article-toolbar">
+                        <button class="tool-btn" id="btnListenAudio" onclick="toggleSpeechReader()">
+                            <i class="fa-solid fa-volume-high"></i> খবর শুনুন
+                        </button>
+                        <button class="tool-btn" onclick="adjustFontSize(1)" title="লেখা বড় করুন">A+</button>
+                        <button class="tool-btn" onclick="adjustFontSize(-1)" title="লেখা ছোট করুন">A-</button>
+                        <button class="tool-btn" onclick="window.print()" title="প্রিন্ট করুন">
+                            <i class="fa-solid fa-print"></i>
+                        </button>
+                        
+                        <!-- Integrated Share Button & Dropdown -->
+                        <div class="share-dropdown-wrapper">
+                            <button class="tool-btn" onclick="toggleShareMenu(event)" id="btnShareArticle" title="শেয়ার করুন" style="color:var(--primary); font-weight:800;">
+                                <i class="fa-solid fa-share-nodes"></i> শেয়ার
+                            </button>
+                            <div class="share-popover-menu" id="sharePopover">
+                                <a href="javascript:void(0)" class="share-pop-item" onclick="shareToPlatform('facebook')">
+                                    <i class="fa-brands fa-facebook" style="color:#1877f2;"></i> ফেসবুক
+                                </a>
+                                <a href="javascript:void(0)" class="share-pop-item" onclick="shareToPlatform('whatsapp')">
+                                    <i class="fa-brands fa-whatsapp" style="color:#25d366;"></i> হোয়াটসঅ্যাপ
+                                </a>
+                                <a href="javascript:void(0)" class="share-pop-item" onclick="shareToPlatform('twitter')">
+                                    <i class="fa-brands fa-x-twitter" style="color:#000;"></i> এক্স (টুইটার)
+                                </a>
+                                <a href="javascript:void(0)" class="share-pop-item" onclick="shareToPlatform('copy')">
+                                    <i class="fa-solid fa-link" style="color:#64748b;"></i> কপি লিঙ্ক
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Featured Image -->
+                <div class="featured-img-frame">
+                    <img id="artImage" src="" alt="Featured News Image">
+                    <div class="img-caption" id="artCaption"></div>
+                </div>
+
+                <!-- Article Content Body -->
+                <div class="article-body-content" id="artBody">
+                    <!-- Loaded dynamically -->
+                </div>
+
+                <!-- Related News Section -->
+                <div style="margin-top: 40px; border-top: 2px solid var(--border-color); padding-top: 24px;">
+                    <h3 style="font-size: 22px; font-weight: 800; margin-bottom: 20px; font-family: var(--font-heading);">
+                        <i class="fa-solid fa-newspaper text-primary"></i> সম্পর্কিত আরও খবর
+                    </h3>
+                    <div class="news-grid-3" id="relatedNewsGrid">
+                        <!-- Loaded dynamically -->
+                    </div>
+                </div>
+
+                <!-- Interactive Comments -->
+                <div style="margin-top: 40px; background-color: var(--bg-subtle); padding: 24px; border-radius: var(--radius-lg); border: 1px solid var(--border-color);">
+                    <h3 style="font-size: 19px; font-weight: 800; margin-bottom: 14px;">
+                        <i class="fa-regular fa-comment-dots text-primary"></i> মতামত ও মন্তব্য
+                    </h3>
+                    <textarea class="control-textarea" placeholder="আপনার সুচিন্তিত মতামত লিখুন..." id="commentInput" style="margin-bottom: 12px;"></textarea>
+                    <button class="nav-epaper-pinned-btn" style="border:none; cursor:pointer; padding:8px 18px;" onclick="submitComment()">
+                        মন্তব্য প্রকাশ করুন
+                    </button>
+                    <div id="commentsList" style="margin-top: 18px;">
+                        <div style="font-size: 14.5px; color: var(--text-body); padding: 10px 0; border-top: 1px solid var(--border-color);">
+                            👤 <strong>তাহসিন আহমেদ:</strong> সময়োপযোগী ও বস্তুনিষ্ঠ প্রতিবেদনের জন্য ধন্যবাদ।
+                        </div>
+                    </div>
+                </div>
+
+            </article>
+
+            <!-- RIGHT SIDEBAR (FLAT PROTHOM ALO STYLE) -->
+            <aside class="sidebar-column">
+                <div class="flat-sidebar-block" style="position: sticky; top: 75px;">
+                    <div class="sidebar-tabs">
+                        <button class="tab-btn active" data-tab="tabSideLatest"><i class="fa-regular fa-clock"></i> সর্বশেষ</button>
+                        <button class="tab-btn" data-tab="tabSideMostRead"><i class="fa-solid fa-fire"></i> সর্বাধিক পঠিত</button>
+                    </div>
+                    <div class="tab-panel active" id="tabSideLatest">
+                        <ul class="ranked-news-list" id="latestNewsList"></ul>
+                    </div>
+                    <div class="tab-panel" id="tabSideMostRead">
+                        <ul class="ranked-news-list" id="mostReadNewsList"></ul>
+                    </div>
+                </div>
+            </aside>
+
+        </div>
+    </main>
+
+    <!-- MAIN FOOTER WITH OFFICIAL CREDENTIALS -->
+    <footer class="main-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <div class="top-logo-bn" style="color:white; font-size:30px; margin-bottom:4px;">আওয়ার টাইমস<span>২৪</span></div>
+                    <p>সত্য ও বস্তুনিষ্ঠ সাংবাদিকতায় অবিচল। আধুনিক ও নিরপেক্ষ তথ্যপ্রবাহ নিশ্চিত করতে প্রতিজ্ঞাবদ্ধ।</p>
+                    <div style="margin-top: 14px; line-height: 1.8; font-size: 14px; color: #cbd5e1;">
+                        <div><strong>সম্পাদক:</strong> সৈয়দ হাফিজ মনির</div>
+                        <div><strong>নির্বাহী সম্পাদক:</strong> শেখ মনির</div>
+                        <div><strong>প্রধান প্রতিবেদক:</strong> রবিউল ইসলাম</div>
+                    </div>
+                    <div class="footer-social-row">
+                        <a href="#" class="footer-social-btn" title="ফেসবুক"><i class="fa-brands fa-facebook-f"></i></a>
+                        <a href="#" class="footer-social-btn" title="ইউটিউব"><i class="fa-brands fa-youtube"></i></a>
+                        <a href="#" class="footer-social-btn" title="এক্স"><i class="fa-brands fa-x-twitter"></i></a>
+                        <a href="#" class="footer-social-btn" title="ইনস্টাগ্রাম"><i class="fa-brands fa-instagram"></i></a>
+                        <a href="#" class="footer-social-btn" title="হোয়াটসঅ্যাপ"><i class="fa-brands fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h4>অন্যান্য পাতা</h4>
+                    <ul class="footer-links">
+                        <li><a href="epaper.html" style="color:var(--primary); font-weight:700;">ডিজিটাল ই-পেপার</a></li>
+                        <li><a href="#">বিজ্ঞাপন মূল্য তালিকা</a></li>
+                        <li><a href="#">গোপনীয়তা নীতি</a></li>
+                        <li><a href="#">যোগাযোগ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>বার্তা ও বাণিজ্যিক কার্যালয়</h4>
+                    <div class="footer-contact-block">
+                        <div class="footer-contact-item">
+                            <span class="footer-contact-icon"><i class="fa-solid fa-location-dot"></i></span>
+                            <div class="footer-contact-text">
+                                আওয়ার টাইমস মিডিয়ার পক্ষে <strong>সৈয়দ হাফিজ মনির</strong> কর্তৃক গাউসেপাক ভবন, লেভেল-৬ (৭ম তলা), ২৮জি/১ টয়েনবি সার্কুলার রোড, মতিঝিল, ঢাকা-১০০০ থেকে প্রকাশিত।
+                            </div>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span class="footer-contact-icon"><i class="fa-solid fa-mobile-screen-button"></i></span>
+                            <div class="footer-contact-text">
+                                <strong>মোবাইল:</strong> <a href="tel:+8801711152711">+8801711152711</a>
+                            </div>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span class="footer-contact-icon"><i class="fa-solid fa-phone"></i></span>
+                            <div class="footer-contact-text">
+                                <strong>অফিস ফোন:</strong> <a href="tel:+8801745481785">+8801745481785</a>
+                            </div>
+                        </div>
+                        <div class="footer-contact-item">
+                            <span class="footer-contact-icon"><i class="fa-solid fa-envelope"></i></span>
+                            <div class="footer-contact-text">
+                                <strong>ইমেইল:</strong> <a href="mailto:news.ourtimes24@gmail.com">news.ourtimes24@gmail.com</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div>© ২০২৬ Ourtimes24.com | সর্বস্বত্ব সংরক্ষিত।</div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="app.js?v=20260831_v5"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            renderSingleArticle();
+            const all = NewsDB.getAllNews();
+            const rankDigits = ['১', '২', '৩', '৪', '৫', '৬', '৭'];
+            const timeLabels = ['৫ মিনিট আগে', '১৫ মিনিট আগে', '৩০ মিনিট আগে', '১ ঘণ্টা আগে', '২ ঘণ্টা আগে', '৩ ঘণ্টা আগে'];
+            const latestList = document.getElementById('latestNewsList');
+            if (latestList) {
+                latestList.innerHTML = all.slice(0, 6).map((n, i) => `
+                    <li class="ranked-item">
+                        <a href="article.html?id=${n.id}" class="ranked-item-link">
+                            <div class="rank-thumb-wrapper">
+                                <span class="rank-badge-overlay">${rankDigits[i] || (i + 1)}</span>
+                                <div class="rank-img-box">
+                                    <img src="${n.image}" alt="${n.title}">
+                                </div>
+                            </div>
+                            <div class="rank-content">
+                                <h4 class="rank-title">${n.title}</h4>
+                                <div class="rank-meta">
+                                    <span class="rank-time"><i class="fa-regular fa-clock"></i> ${timeLabels[i] || '১ ঘণ্টা আগে'}</span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                `).join('');
+            }
+            const mostReadList = document.getElementById('mostReadNewsList');
+            if (mostReadList) {
+                const curated = [...all].reverse().slice(0, 6);
+                mostReadList.innerHTML = curated.map((n, i) => `
+                    <li class="ranked-item">
+                        <a href="article.html?id=${n.id}" class="ranked-item-link">
+                            <div class="rank-thumb-wrapper">
+                                <span class="rank-badge-overlay rank-fire">${rankDigits[i] || (i + 1)}</span>
+                                <div class="rank-img-box">
+                                    <img src="${n.image}" alt="${n.title}">
+                                </div>
+                            </div>
+                            <div class="rank-content">
+                                <h4 class="rank-title">${n.title}</h4>
+                                <div class="rank-meta">
+                                    <span class="rank-cat">${n.category}</span>
+                                    <span>•</span>
+                                    <span>জনপ্রিয়</span>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                `).join('');
+            }
+        });
+
+        function submitComment() {
+            const input = document.getElementById('commentInput');
+            if (!input.value.trim()) return;
+            const commentsList = document.getElementById('commentsList');
+            const newComment = document.createElement('div');
+            newComment.style = "font-size: 14.5px; color: var(--text-main); padding: 10px 0; border-top: 1px solid var(--border-color);";
+            newComment.innerHTML = `👤 <strong>পাঠক:</strong> ${input.value.trim()}`;
+            commentsList.prepend(newComment);
+            input.value = '';
+            alert('আপনার মন্তব্যটি যোগ করা হয়েছে!');
+        }
+    </script>
+</body>
+</html>

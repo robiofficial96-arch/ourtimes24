@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ই-পেপার - আওয়ার টাইমস২৪ (E-Paper)</title>
+    <link rel="stylesheet" href="style.css?v=20260831_v5">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <!-- CLEAN TOP HEADER BAR: LOGO ON LEFT & NIGHT MODE ON RIGHT -->
+    <header class="top-header-bar">
+        <div class="container top-header-inner">
+            <a href="index.html" class="top-brand-logo">
+                <div class="top-logo-bn">আওয়ার টাইমস<span>২৪</span></div>
+                <div class="top-logo-tagline-bottom">ডিজিটাল ই-পেপার সংস্করণ</div>
+            </a>
+            <a href="index.html" class="top-epaper-btn">
+                <i class="fa-solid fa-arrow-left"></i> প্রধান পোর্টাল
+            </a>
+        </div>
+    </header>
+
+    <!-- E-PAPER INTERACTIVE TOOLBAR -->
+    <div class="epaper-toolbar">
+        <div class="container">
+            
+            <!-- Left Controls: Date & Edition -->
+            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <label style="font-size: 13.5px; font-weight: 700;">তারিখ:</label>
+                    <input type="date" id="epaperDatePicker" class="control-input" style="padding: 5px 10px; width: auto; font-size: 13px;" value="2026-08-29" onchange="changeEpaperDate(this.value)">
+                </div>
+
+                <div style="display: flex; align-items: center; gap: 6px;">
+                    <label style="font-size: 13.5px; font-weight: 700;">সংস্করণ:</label>
+                    <select class="control-select" style="padding: 5px 10px; width: auto; font-size: 13px;">
+                        <option value="dhaka">ঢাকা সংস্করণ</option>
+                        <option value="ctg">চট্টগ্রাম সংস্করণ</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Center Controls: Page Switcher -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button class="tool-btn" onclick="prevEpaperPage()"><i class="fa-solid fa-chevron-left"></i> আগের পাতা</button>
+                <span style="font-weight: 800; font-size: 14.5px; min-width: 90px; text-align: center;" id="currentPageIndicator">পৃষ্ঠা ১ / ৫</span>
+                <button class="tool-btn" onclick="nextEpaperPage()">পরের পাতা <i class="fa-solid fa-chevron-right"></i></button>
+            </div>
+
+            <!-- Right Controls: Zoom & Download -->
+            <div style="display: flex; align-items: center; gap: 8px;">
+                <button class="tool-btn" onclick="zoomEpaper(0.1)" title="বড় করুন"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                <button class="tool-btn" onclick="zoomEpaper(-0.1)" title="ছোট করুন"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                <button class="tool-btn" onclick="resetEpaperZoom()" title="রিসেট">১০০%</button>
+                <button class="tool-btn" onclick="toggleEpaperFullscreen()" title="ফুলস্ক্রিন"><i class="fa-solid fa-expand"></i></button>
+                <button class="tool-btn" style="background:var(--primary); color:white; border:none;" onclick="downloadFullPage()"><i class="fa-solid fa-download"></i> পাতা ডাউনলোড</button>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- MAIN NEWSPAPER VIEWER CANVAS -->
+    <div class="epaper-viewer-wrapper" id="epaperViewerWrapper">
+        
+        <div class="newspaper-sheet" id="newspaperSheet">
+            
+            <!-- Authentic Print Masthead -->
+            <div class="epaper-masthead">
+                <div class="epaper-masthead-top">
+                    <div>শনিবার, ২৯ আগস্ট ২০২৬ | ১৪ ভাদ্র ১৪৩৩ | ১৬ সফর ১৪৪৮</div>
+                    <div>রেজিস্টার্ড নং ডিএ-৭৪২২ | বর্ষ ৪ | সংখ্যা ১৬৫</div>
+                    <div>মূল্য: ১০.০০ টাকা | ১২ পৃষ্ঠা</div>
+                </div>
+                
+                <div class="epaper-brand-title">
+                    <div class="top-logo-bn" style="font-size: 44px;">আওয়ার টাইমস<span>২৪</span></div>
+                    <div class="top-logo-tagline-bottom" style="font-size: 13px; margin-top:3px;">সত্য ও বস্তুনিষ্ঠ সাংবাদিকতায় অবিচল</div>
+                </div>
+            </div>
+
+            <!-- DYNAMIC NEWSPAPER PAGE CONTENT (PAGE 1 TO 5) -->
+            <div id="epaperPageContent">
+                <!-- Loaded dynamically by epaper.js -->
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- BOTTOM THUMBNAIL DRAWER STRIP -->
+    <div class="epaper-thumbnail-drawer">
+        <div class="container">
+            <div style="font-size: 13px; font-weight: 800; margin-bottom: 8px; color: var(--text-muted); text-transform: uppercase;">
+                <i class="fa-solid fa-images text-primary"></i> সকল পাতা একনজরে (পৃষ্ঠা নির্বাচন করুন):
+            </div>
+            <div class="thumbnail-slider" id="thumbnailSlider">
+                <div class="page-thumb-card active" onclick="goToEpaperPage(1)" id="thumb-1">
+                    <div class="thumb-preview-box">১</div>
+                    <div style="font-size: 12px; font-weight: 700;">প্রথম পাতা</div>
+                </div>
+                <div class="page-thumb-card" onclick="goToEpaperPage(2)" id="thumb-2">
+                    <div class="thumb-preview-box">২</div>
+                    <div style="font-size: 12px; font-weight: 700;">সম্পাদকীয় ও মতামত</div>
+                </div>
+                <div class="page-thumb-card" onclick="goToEpaperPage(3)" id="thumb-3">
+                    <div class="thumb-preview-box">৩</div>
+                    <div style="font-size: 12px; font-weight: 700;">সারাদেশ ও নগর</div>
+                </div>
+                <div class="page-thumb-card" onclick="goToEpaperPage(4)" id="thumb-4">
+                    <div class="thumb-preview-box">৪</div>
+                    <div style="font-size: 12px; font-weight: 700;">আন্তর্জাতিক ও বাণিজ্য</div>
+                </div>
+                <div class="page-thumb-card" onclick="goToEpaperPage(5)" id="thumb-5">
+                    <div class="thumb-preview-box">৫</div>
+                    <div style="font-size: 12px; font-weight: 700;">খেলা ও বিনোদন</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- NEWS CLIPPING POPUP MODAL -->
+    <div class="clipping-modal" id="clippingModal">
+        <div class="clipping-modal-content">
+            
+            <div class="clipping-header">
+                <div style="font-size: 15px; font-weight: 800; color: var(--primary);">
+                    <i class="fa-solid fa-scissors"></i> পেপার কাটিং ভিউয়ার
+                </div>
+                <button class="tool-btn" onclick="closeClippingModal()" style="border:none; font-size:18px; cursor:pointer;">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
+            <div class="clipping-body">
+                
+                <!-- Cropped News Clipping Box -->
+                <div class="clipping-preview-frame" id="clippingFrame">
+                    <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #e5e7eb; padding-bottom:8px; margin-bottom:12px; font-size:12px; color:#6b7280; font-weight:700;">
+                        <div class="top-logo-bn" style="font-size: 22px;">আওয়ার টাইমস<span>২৪</span></div>
+                        <span id="clipDate">২৯ আগস্ট ২০২৬</span>
+                    </div>
+                    <h2 style="font-size: 24px; font-weight: 800; line-height: 1.35; margin-bottom: 10px; font-family: var(--font-serif); color:#111827;" id="clipTitle">
+                        সংবাদের শিরোনাম
+                    </h2>
+                    <div id="clipImageContainer" style="margin-bottom: 12px; border-radius: 4px; overflow: hidden;">
+                        <img id="clipImage" src="" style="width: 100%; max-height: 280px; object-fit: cover;" alt="">
+                    </div>
+                    <div style="font-size: 15px; line-height: 1.8; color: #374151;" id="clipBody">
+                        খবরের বিস্তারিত টেক্সট...
+                    </div>
+                </div>
+
+                <!-- Action Tools -->
+                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px;">
+                    <button class="btn-epaper-topbar" onclick="downloadClippingImage()" style="border:none; cursor:pointer; background:var(--primary); color:white; padding:8px 16px;">
+                        <i class="fa-solid fa-download"></i> কাটিং ছবি ডাউনলোড
+                    </button>
+                    <button class="tool-btn" onclick="copyClippingLink()">
+                        <i class="fa-solid fa-link"></i> লিঙ্ক কপি
+                    </button>
+                    <button class="tool-btn" onclick="shareClippingToFB()">
+                        <i class="fa-brands fa-facebook"></i> ফেসবুকে শেয়ার
+                    </button>
+                    <button class="tool-btn" onclick="window.print()">
+                        <i class="fa-solid fa-print"></i> প্রিন্ট
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="app.js?v=20260831_v5"></script>
+    <script src="epaper.js?v=20260831_v5"></script>
+</body>
+</html>
