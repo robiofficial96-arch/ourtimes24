@@ -223,29 +223,74 @@ function handleNewsSubmit(e) {
     switchAdminTab('tabManageNews');
 }
 
+let adminSearchQuery = '';
+let adminCategoryQuery = 'all';
+let adminCurrentPage = 1;
+const ADMIN_PER_PAGE = 15;
+
+function handleAdminSearch(val) {
+    adminSearchQuery = (val || '').trim().toLowerCase();
+    adminCurrentPage = 1;
+    renderNewsTable();
+}
+
+function filterAdminCategory(cat) {
+    adminCategoryQuery = cat || 'all';
+    adminCurrentPage = 1;
+    renderNewsTable();
+}
+
+function getFilteredNews() {
+    let all = NewsDB.getAllNews();
+    if (adminCategoryQuery !== 'all') {
+        all = all.filter(n => n.category === adminCategoryQuery || n.categorySlug === adminCategoryQuery);
+    }
+    if (adminSearchQuery) {
+        all = all.filter(n => {
+            const title = (n.title || '').toLowerCase();
+            const excerpt = (n.excerpt || '').toLowerCase();
+            const author = (n.author || '').toLowerCase();
+            const cat = (n.category || '').toLowerCase();
+            return title.includes(adminSearchQuery) || excerpt.includes(adminSearchQuery) || author.includes(adminSearchQuery) || cat.includes(adminSearchQuery);
+        });
+    }
+    return all;
+}
+
 function renderNewsTable() {
     const container = document.getElementById('adminNewsListTable');
+    const paginationContainer = document.getElementById('adminPagination');
     if (!container) return;
 
-    const news = NewsDB.getAllNews();
+    const filtered = getFilteredNews();
     const countEl = document.getElementById('totalNewsCount');
-    if (countEl) countEl.textContent = news.length;
+    if (countEl) countEl.textContent = filtered.length;
 
-    if (news.length === 0) {
+    if (filtered.length === 0) {
         container.innerHTML = `
-            <div style="padding: 40px; text-align: center; color: var(--text-muted); background: var(--bg-subtle); border-radius: 8px; border: 1px dashed var(--border-color);">
+            <div style="padding: 40px 20px; text-align: center; color: var(--text-muted); background: var(--bg-surface-alt); border-radius: 8px; border: 1px dashed var(--border-color);">
                 <i class="fa-regular fa-newspaper" style="font-size: 36px; margin-bottom: 12px; color: var(--text-muted);"></i>
-                <div style="font-weight: 700;">এখনো কোনো সংবাদ প্রকাশিত হয়নি।</div>
+                <div style="font-weight: 700;">কোনো সংবাদ পাওয়া যায়নি।</div>
+                <div style="font-size: 13px; margin-top: 4px;">অনুসন্ধানের শর্ত পরিবর্তন করে আবার চেষ্টা করুন।</div>
             </div>
         `;
+        if (paginationContainer) paginationContainer.innerHTML = '';
         return;
     }
 
-    container.innerHTML = `
-        <div style="overflow-x: auto; background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 8px;">
+    const totalPages = Math.ceil(filtered.length / ADMIN_PER_PAGE);
+    if (adminCurrentPage > totalPages) adminCurrentPage = totalPages;
+    if (adminCurrentPage < 1) adminCurrentPage = 1;
+
+    const startIdx = (adminCurrentPage - 1) * ADMIN_PER_PAGE;
+    const pageItems = filtered.slice(startIdx, startIdx + ADMIN_PER_PAGE);
+
+    // Desktop Table HTML
+    const desktopTable = `
+        <div class="admin-table-desktop" style="overflow-x: auto; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: 8px;">
             <table style="width: 100%; border-collapse: collapse; font-size: 14.5px; text-align: left;">
                 <thead>
-                    <tr style="background: var(--bg-subtle); border-bottom: 2px solid var(--border-color);">
+                    <tr style="background: var(--bg-surface-alt); border-bottom: 2px solid var(--border-color);">
                         <th style="padding: 12px 14px; width: 70px;">ছবি</th>
                         <th style="padding: 12px 14px;">শিরোনাম</th>
                         <th style="padding: 12px 14px; width: 110px;">বিভাগ</th>
@@ -254,7 +299,7 @@ function renderNewsTable() {
                     </tr>
                 </thead>
                 <tbody id="newsTableBody">
-                    ${news.map(n => `
+                    ${pageItems.map(n => `
                         <tr style="border-bottom: 1px solid var(--border-color); transition: background 0.15s ease;">
                             <td style="padding: 10px 14px;">
                                 <img src="${n.image}" style="width: 55px; height: 38px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-color);" alt="">
@@ -287,6 +332,91 @@ function renderNewsTable() {
             </table>
         </div>
     `;
+
+    // Mobile News Card List HTML
+    const mobileCards = `
+        <div class="admin-news-card-mobile">
+            ${pageItems.map(n => `
+                <div class="mobile-news-item">
+                    <div class="mobile-news-top">
+                        <img src="${n.image}" class="mobile-news-thumb" alt="">
+                        <div class="mobile-news-info">
+                            <a href="article.html?id=${n.id}" target="_blank" class="mobile-news-title">${n.title}</a>
+                            <div class="mobile-news-meta">
+                                <span style="color:var(--primary); font-weight:700;">${n.category}</span>
+                                <span>•</span>
+                                <span>${n.date || 'আজ'}</span>
+                                ${n.isLead ? '<span style="background:var(--primary); color:white; font-size:10px; font-weight:700; padding:1px 5px; border-radius:3px;">লিড</span>' : ''}
+                                ${n.isBreaking ? '<span style="background:#eab308; color:black; font-size:10px; font-weight:700; padding:1px 5px; border-radius:3px;">ব্রেকিং</span>' : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mobile-news-actions">
+                        <button type="button" class="mobile-action-btn btn-edit" onclick="editNews('${n.id}')">
+                            <i class="fa-solid fa-pen-to-square"></i> সম্পাদনা
+                        </button>
+                        <a href="photocard.html?title=${encodeURIComponent(n.title)}&cat=${encodeURIComponent(n.category)}&img=${encodeURIComponent(n.image)}" target="_blank" class="mobile-action-btn btn-photo">
+                            <i class="fa-solid fa-camera"></i> ফটো কার্ড
+                        </a>
+                        <button type="button" class="mobile-action-btn btn-del" onclick="deleteNewsItem('${n.id}')">
+                            <i class="fa-solid fa-trash"></i> মুছুন
+                        </button>
+                    </div>
+                </div>
+            `).join('')}
+        </div>
+    `;
+
+    container.innerHTML = desktopTable + mobileCards;
+
+    // Render Pagination Controls
+    if (paginationContainer) {
+        if (totalPages <= 1) {
+            paginationContainer.innerHTML = '';
+        } else {
+            let paginationHtml = `
+                <button class="admin-page-btn" onclick="changeAdminPage(${adminCurrentPage - 1})" ${adminCurrentPage === 1 ? 'disabled' : ''}>
+                    <i class="fa-solid fa-chevron-left"></i> পূর্ববর্তী
+                </button>
+            `;
+
+            const startPage = Math.max(1, adminCurrentPage - 2);
+            const endPage = Math.min(totalPages, adminCurrentPage + 2);
+
+            if (startPage > 1) {
+                paginationHtml += `<button class="admin-page-btn" onclick="changeAdminPage(1)">১</button>`;
+                if (startPage > 2) paginationHtml += `<span style="padding:0 4px; color:var(--text-muted);">...</span>`;
+            }
+
+            for (let p = startPage; p <= endPage; p++) {
+                const bnDigits = String(p).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+                paginationHtml += `
+                    <button class="admin-page-btn ${p === adminCurrentPage ? 'active' : ''}" onclick="changeAdminPage(${p})">
+                        ${bnDigits}
+                    </button>
+                `;
+            }
+
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) paginationHtml += `<span style="padding:0 4px; color:var(--text-muted);">...</span>`;
+                const bnTotal = String(totalPages).replace(/\d/g, d => '০১২৩৪৫৬৭৮৯'[d]);
+                paginationHtml += `<button class="admin-page-btn" onclick="changeAdminPage(${totalPages})">${bnTotal}</button>`;
+            }
+
+            paginationHtml += `
+                <button class="admin-page-btn" onclick="changeAdminPage(${adminCurrentPage + 1})" ${adminCurrentPage === totalPages ? 'disabled' : ''}>
+                    পরবর্তী <i class="fa-solid fa-chevron-right"></i>
+                </button>
+            `;
+
+            paginationContainer.innerHTML = paginationHtml;
+        }
+    }
+}
+
+function changeAdminPage(page) {
+    adminCurrentPage = page;
+    renderNewsTable();
 }
 
 function editNews(id) {
@@ -372,22 +502,22 @@ function renderBreakingManagerList() {
     if (!container) return;
 
     if (news.length === 0) {
-        container.innerHTML = `<div style="padding: 24px; color: var(--text-muted);">কোনো সংবাদ পাওয়া যায়নি।</div>`;
+        container.innerHTML = `<div style="padding: 24px; color: var(--text-muted); text-align: center;">কোনো সংবাদ পাওয়া যায়নি।</div>`;
         return;
     }
 
     container.innerHTML = news.map(n => `
-        <div style="display:flex; justify-content:space-between; align-items:center; background:var(--bg-subtle); padding:14px 18px; border-radius:6px; margin-bottom:10px; border:1px solid var(--border-color);">
-            <div style="display: flex; align-items: center; gap: 12px;">
-                <img src="${n.image}" style="width: 44px; height: 32px; object-fit: cover; border-radius: 4px;" alt="">
-                <div>
-                    <span style="color:var(--primary); font-weight:700; font-size:13px;">[${n.category}]</span>
-                    <strong style="font-size:14.5px; margin-left: 4px;">${n.title}</strong>
+        <div class="admin-breaking-item">
+            <div class="admin-breaking-info">
+                <img src="${n.image}" class="admin-breaking-thumb" alt="" onerror="this.src='data:image/svg+xml;utf8,<svg xmlns=\'http://www.w3.org/2000/svg\' width=\'48\' height=\'36\'><rect width=\'48\' height=\'36\' fill=\'%23e2e8f0\'/></svg>'">
+                <div class="admin-breaking-text">
+                    <span class="admin-breaking-cat">[${n.category}]</span>
+                    <span class="admin-breaking-title">${n.title}</span>
                 </div>
             </div>
-            <label style="cursor:pointer; font-weight:700; color:var(--primary); display:flex; align-items:center; gap:6px; white-space:nowrap;">
-                <input type="checkbox" ${n.isBreaking ? 'checked' : ''} onchange="toggleBreakingStatus('${n.id}', this.checked)">
-                টিকারে দেখান
+            <label class="admin-breaking-toggle">
+                <input type="checkbox" ${n.isBreaking ? 'checked' : ''} onchange="toggleBreakingStatus('${n.id}', this.checked)" style="width:16px; height:16px; accent-color:var(--primary);">
+                <span>টিকারে প্রদর্শন</span>
             </label>
         </div>
     `).join('');

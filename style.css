@@ -2042,3 +2042,473 @@ button, input, select, textarea {
     border-color: var(--primary);
     background: #fff5f5;
 }
+
+/* ==========================================================================
+   20. ADMIN NEWSROOM DASHBOARD (RESPONSIVE & TOUCH-OPTIMIZED)
+   ========================================================================== */
+.admin-layout {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    gap: 24px;
+    margin-top: 24px;
+    align-items: start;
+}
+
+.admin-sidebar {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 16px;
+    position: sticky;
+    top: 75px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+.admin-nav-item {
+    padding: 12px 14px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14.5px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-main);
+    background: transparent;
+    border: 1px solid transparent;
+    transition: var(--transition);
+    text-decoration: none;
+}
+
+.admin-nav-item:hover {
+    background: var(--bg-hover);
+    color: var(--primary);
+}
+
+.admin-nav-item.active {
+    background: rgba(192, 6, 18, 0.08);
+    color: var(--primary);
+    border-color: rgba(192, 6, 18, 0.2);
+}
+
+.admin-nav-photocard {
+    color: #059669 !important;
+    background: #ecfdf5 !important;
+    border: 1px solid #a7f3d0 !important;
+    margin-top: 10px;
+}
+
+[data-theme="dark"] .admin-nav-photocard {
+    background: rgba(5, 150, 105, 0.15) !important;
+    border-color: rgba(5, 150, 105, 0.3) !important;
+    color: #34d399 !important;
+}
+
+.admin-content-card {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+}
+
+/* Admin Form Responsive Grid */
+.admin-form-row-3 {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+}
+
+.admin-form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Toggle Option Tiles */
+.admin-toggle-tiles {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin: 20px 0;
+}
+
+.admin-toggle-tile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: var(--bg-surface-alt);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 14.5px;
+    transition: var(--transition);
+}
+
+.admin-toggle-tile:hover {
+    border-color: var(--primary);
+}
+
+.admin-toggle-tile input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    accent-color: var(--primary);
+    cursor: pointer;
+}
+
+/* Live Search & Filter Bar */
+.admin-filter-bar {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 18px;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.admin-search-box {
+    flex: 1;
+    min-width: 200px;
+    position: relative;
+}
+
+.admin-search-box input {
+    width: 100%;
+    padding: 10px 14px 10px 38px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    background: var(--bg-surface);
+    color: var(--text-main);
+    outline: none;
+}
+
+.admin-search-box input:focus {
+    border-color: var(--primary);
+}
+
+.admin-search-box i {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+}
+
+.admin-cat-filter {
+    width: 160px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 14px;
+    background: var(--bg-surface);
+    color: var(--text-main);
+}
+
+/* Admin News Cards for Mobile */
+.admin-news-card-mobile {
+    display: none;
+}
+
+/* Admin Pagination */
+.admin-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.admin-page-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--border-color);
+    background: var(--bg-surface);
+    color: var(--text-main);
+    border-radius: var(--radius-sm);
+    font-size: 13.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.admin-page-btn:hover:not(:disabled) {
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.admin-page-btn.active {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+}
+
+.admin-page-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+/* Admin Breaking News Manager */
+.admin-breaking-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--bg-surface-alt);
+    padding: 12px 16px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 10px;
+    border: 1px solid var(--border-color);
+    gap: 14px;
+    transition: var(--transition);
+}
+
+.admin-breaking-item:hover {
+    border-color: var(--border-hover);
+}
+
+.admin-breaking-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+    flex: 1;
+}
+
+.admin-breaking-thumb {
+    width: 48px;
+    height: 36px;
+    object-fit: cover;
+    border-radius: 4px;
+    flex-shrink: 0;
+    border: 1px solid var(--border-color);
+}
+
+.admin-breaking-text {
+    min-width: 0;
+    line-height: 1.35;
+}
+
+.admin-breaking-cat {
+    color: var(--primary);
+    font-weight: 700;
+    font-size: 13px;
+    margin-right: 6px;
+}
+
+.admin-breaking-title {
+    font-size: 14.5px;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.admin-breaking-toggle {
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    white-space: nowrap;
+    padding: 7px 14px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-surface);
+    border: 1px solid var(--border-color);
+    flex-shrink: 0;
+    user-select: none;
+    transition: var(--transition);
+}
+
+.admin-breaking-toggle:hover {
+    background: var(--primary-bg-light);
+}
+
+/* Mobile Media Queries for Admin */
+@media (max-width: 768px) {
+    .admin-layout {
+        grid-template-columns: 1fr;
+        gap: 16px;
+        margin-top: 14px;
+    }
+
+    .admin-sidebar {
+        position: static;
+        padding: 8px;
+        display: flex;
+        overflow-x: auto;
+        white-space: nowrap;
+        gap: 8px;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        border-radius: var(--radius-md);
+    }
+
+    .admin-sidebar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .admin-sidebar > div:first-child {
+        display: none; /* Hide 'মেনু নেভিগেশন' label on mobile */
+    }
+
+    .admin-nav-item {
+        flex-shrink: 0;
+        padding: 9px 14px;
+        font-size: 13.5px;
+        margin-bottom: 0;
+        border-radius: 50px;
+        background: var(--bg-surface-alt);
+    }
+
+    .admin-nav-item.active {
+        background: var(--primary);
+        color: #ffffff;
+        border-color: var(--primary);
+    }
+
+    .admin-nav-item.active i {
+        color: #ffffff !important;
+    }
+
+    .admin-nav-photocard {
+        margin-top: 0;
+    }
+
+    .admin-content-card {
+        padding: 16px;
+    }
+
+    .admin-form-row-3, .admin-form-row-2 {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .admin-toggle-tiles {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .admin-table-desktop {
+        display: none;
+    }
+
+    .admin-news-card-mobile {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .mobile-news-item {
+        background: var(--bg-surface);
+        border: 1px solid var(--border-color);
+        border-radius: var(--radius-sm);
+        padding: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+
+    .mobile-news-top {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .mobile-news-thumb {
+        width: 75px;
+        height: 55px;
+        object-fit: cover;
+        border-radius: 4px;
+        flex-shrink: 0;
+        border: 1px solid var(--border-color);
+    }
+
+    .mobile-news-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .mobile-news-title {
+        font-size: 14.5px;
+        font-weight: 700;
+        line-height: 1.35;
+        color: var(--text-main);
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        text-decoration: none;
+    }
+
+    .mobile-news-meta {
+        font-size: 12px;
+        color: var(--text-muted);
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        flex-wrap: wrap;
+    }
+
+    .mobile-news-actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 8px;
+        border-top: 1px solid var(--border-subtle);
+        padding-top: 8px;
+    }
+
+    .mobile-action-btn {
+        padding: 8px;
+        border-radius: 4px;
+        border: 1px solid var(--border-color);
+        background: var(--bg-surface-alt);
+        color: var(--text-main);
+        font-size: 12px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+    .mobile-action-btn.btn-edit {
+        color: var(--primary);
+    }
+
+    .mobile-action-btn.btn-photo {
+        color: #059669;
+    }
+
+    .mobile-action-btn.btn-del {
+        color: #dc2626;
+    }
+
+    .admin-filter-bar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .admin-cat-filter {
+        width: 100%;
+    }
+
+    .admin-breaking-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+        padding: 12px;
+    }
+
+    .admin-breaking-toggle {
+        justify-content: center;
+        width: 100%;
+        padding: 9px;
+    }
+}
+
