@@ -228,6 +228,8 @@ function renderNewsTable() {
     if (!container) return;
 
     const news = NewsDB.getAllNews();
+    const countEl = document.getElementById('totalNewsCount');
+    if (countEl) countEl.textContent = news.length;
 
     if (news.length === 0) {
         container.innerHTML = `
@@ -400,10 +402,72 @@ function toggleBreakingStatus(id, status) {
 }
 
 // ==========================================
+// 6. ADMIN PIN AUTHENTICATION & EXPORT
+// ==========================================
+
+const ADMIN_MASTER_PIN = '2424';
+
+function checkAdminAuth() {
+    const isAuth = sessionStorage.getItem('ourtimes_admin_auth');
+    const overlay = document.getElementById('adminPinOverlay');
+    if (isAuth === 'true') {
+        if (overlay) overlay.style.display = 'none';
+    } else {
+        if (overlay) overlay.style.display = 'flex';
+        const pinInput = document.getElementById('adminPinInput');
+        if (pinInput) setTimeout(() => pinInput.focus(), 100);
+    }
+}
+
+function handlePinSubmit(e) {
+    e.preventDefault();
+    const pin = document.getElementById('adminPinInput')?.value.trim();
+    const err = document.getElementById('pinError');
+    if (pin === ADMIN_MASTER_PIN) {
+        sessionStorage.setItem('ourtimes_admin_auth', 'true');
+        const overlay = document.getElementById('adminPinOverlay');
+        if (overlay) overlay.style.display = 'none';
+    } else {
+        if (err) err.style.display = 'block';
+    }
+}
+
+function adminLogout() {
+    if (confirm('আপনি কি নিশ্চিত যে অ্যাডমিন প্যানেল থেকে লগআউট করতে চান?')) {
+        sessionStorage.removeItem('ourtimes_admin_auth');
+        window.location.reload();
+    }
+}
+
+function downloadNewsJs() {
+    const all = NewsDB.getAllNews();
+    const jsContent = `/**\n * OURTIMES24 - REAL ARCHIVE & PUBLISHED NEWS DATASET\n * Total Articles: ${all.length}\n * Generated: ${new Date().toISOString()}\n */\n\nconst RAW_NEWS_DATA = ` + JSON.stringify(all, null, 2) + `;\n`;
+    
+    const blob = new Blob([jsContent], { type: 'application/javascript;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'news_data.js';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+}
+
+function resetToDefaultData() {
+    if (confirm('⚠️ আপনি কি ব্রাউজার ক্যাশ রিসেট করে news_data.js-এর মূল ডেটায় ফিরে যেতে চান? (আপনার সাম্প্রতিক অসংরক্ষিত পরিবর্তন মুছে যেতে পারে)')) {
+        localStorage.removeItem('ourtimes_news_v2');
+        alert('ক্যাশ সফলভাবে রিসেট হয়েছে!');
+        window.location.reload();
+    }
+}
+
+// ==========================================
 // INITIALIZATION
 // ==========================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    checkAdminAuth();
     setupDropzone();
     renderNewsTable();
 });

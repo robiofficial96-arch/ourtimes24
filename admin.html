@@ -9,6 +9,27 @@
 </head>
 <body>
 
+    <!-- ADMIN MASTER PIN LOCK OVERLAY -->
+    <div id="adminPinOverlay" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.96); backdrop-filter: blur(8px); z-index: 999999; display: flex; align-items: center; justify-content: center; padding: 20px;">
+        <div style="background: var(--bg-card, #ffffff); border-radius: 16px; padding: 36px 30px; max-width: 400px; width: 100%; box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5); text-align: center; border: 1px solid var(--border-color, #e2e8f0);">
+            <div style="width: 60px; height: 60px; background: #fee2e2; color: #dc2626; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; font-size: 26px;">
+                <i class="fa-solid fa-lock"></i>
+            </div>
+            <h3 style="font-size: 20px; font-weight: 800; color: var(--text-color, #0f172a); margin-bottom: 6px;">অ্যাডমিন নিরাপত্তা যাচাই</h3>
+            <p style="font-size: 13.5px; color: #64748b; margin-bottom: 22px;">নিউজরুম ড্যাশবোর্ডে প্রবেশের জন্য গোপন পিন (PIN) দিন</p>
+            <form onsubmit="handlePinSubmit(event)">
+                <input type="password" id="adminPinInput" maxlength="6" placeholder="PIN লিখুন..." autofocus style="width: 100%; font-size: 26px; letter-spacing: 12px; text-align: center; padding: 12px; border: 2px solid #cbd5e1; border-radius: 10px; margin-bottom: 14px; font-family: monospace; outline: none;">
+                <div id="pinError" style="display: none; color: #dc2626; font-size: 13px; font-weight: 700; margin-bottom: 14px;"><i class="fa-solid fa-circle-exclamation"></i> ভুল পিন! আবার চেষ্টা করুন।</div>
+                <button type="submit" style="width: 100%; padding: 14px; background: #dc2626; color: white; border: none; border-radius: 10px; font-size: 15px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                    <i class="fa-solid fa-right-to-bracket"></i> ড্যাশবোর্ডে প্রবেশ করুন
+                </button>
+            </form>
+            <div style="margin-top: 18px; font-size: 12.5px; color: #94a3b8;">
+                ডিফল্ট মাস্টার পিন: <strong>2424</strong>
+            </div>
+        </div>
+    </div>
+
     <!-- TOPBAR -->
     <div class="topbar">
         <div class="container">
@@ -17,10 +38,13 @@
                     <i class="fa-solid fa-arrow-up-right-from-square"></i> মূল ওয়েবসাইট দেখুন
                 </a>
             </div>
-            <div class="theme-switch-wrapper">
+            <div class="theme-switch-wrapper" style="display: flex; align-items: center; gap: 10px;">
                 <button class="theme-switch-btn" onclick="toggleTheme()" id="themeBtn" title="ডার্ক / লাইট মোড পরিবর্তন">
                     <i class="fa-solid fa-moon theme-switch-icon" id="themeIcon"></i>
                     <span id="themeText">ডার্ক মোড</span>
+                </button>
+                <button onclick="adminLogout()" style="background: #ef4444; color: white; border: none; padding: 6px 12px; border-radius: 6px; font-size: 13px; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px;">
+                    <i class="fa-solid fa-power-off"></i> লগআউট
                 </button>
             </div>
         </div>
@@ -35,8 +59,8 @@
                     <div class="brand-tagline-bn">অ্যাডমিন নিউজরুম ম্যানেজমেন্ট পোর্টাল</div>
                 </a>
             </div>
-            <div style="font-size: 14px; color: var(--text-muted); font-weight: 700;">
-                <i class="fa-solid fa-shield-halved text-primary"></i> <strong>কন্ট্রোল প্যানেল</strong>
+            <div style="font-size: 14px; color: var(--text-muted); font-weight: 700; display: flex; align-items: center; gap: 14px;">
+                <span><i class="fa-solid fa-shield-halved text-primary"></i> <strong>কন্ট্রোল প্যানেল</strong></span>
             </div>
         </div>
     </header>
@@ -200,9 +224,17 @@
 
                 <!-- TAB 2: MANAGE NEWS LIST -->
                 <div id="tabManageNews" style="display: none;">
-                    <div class="section-header">
+                    <div class="section-header" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px;">
                         <div class="section-title">
-                            <i class="fa-solid fa-list-check text-primary"></i> প্রকাশিত সকল সংবাদের তালিকা
+                            <i class="fa-solid fa-list-check text-primary"></i> প্রকাশিত সকল সংবাদের তালিকা (<span id="totalNewsCount">0</span>টি)
+                        </div>
+                        <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                            <button type="button" onclick="downloadNewsJs()" class="btn-epaper-topbar" style="background:#059669; color:white; border:none; padding:8px 16px; cursor:pointer; font-size:13.5px; border-radius: 6px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-cloud-arrow-down"></i> news_data.js ব্যাকআপ ডাউনলোড
+                            </button>
+                            <button type="button" onclick="resetToDefaultData()" class="btn-epaper-topbar" style="background:#475569; color:white; border:none; padding:8px 16px; cursor:pointer; font-size:13.5px; border-radius: 6px; font-weight: 700; display: flex; align-items: center; gap: 6px;">
+                                <i class="fa-solid fa-rotate"></i> ডিফল্ট ডেটা রিসেট
+                            </button>
                         </div>
                     </div>
                     <div id="adminNewsListTable">
@@ -281,7 +313,8 @@
     </footer>
 
     <!-- Scripts -->
-    <script src="app.js"></script>
-    <script src="admin.js"></script>
+    <script src="news_data.js?v=20260912"></script>
+    <script src="app.js?v=20260912"></script>
+    <script src="admin.js?v=20260912"></script>
 </body>
 </html>
