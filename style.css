@@ -4091,7 +4091,7 @@ button, input, select, textarea {
 
 /* Newspaper Canvas & Sheet */
 .epaper-viewer-wrapper {
-    background: #334155;
+    background: #1e293b;
     padding: 28px 12px 60px;
     min-height: 80vh;
     display: flex;
@@ -4104,39 +4104,29 @@ button, input, select, textarea {
 }
 
 .newspaper-sheet {
-    background: #ffffff;
+    background: #fdfdfa;
     color: #111827;
     width: 100%;
     max-width: 980px;
     min-height: 1200px;
-    box-shadow: 0 16px 40px rgba(0,0,0,0.45);
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    padding: 30px 32px;
+    box-shadow: 0 10px 36px rgba(0, 0, 0, 0.3);
+    border: 1px solid #d4d4d8;
+    border-radius: 2px;
+    padding: 28px 32px;
     position: relative;
     transform-origin: top center;
     transition: transform 0.2s ease;
     box-sizing: border-box;
+    outline: 1px solid #e4e4e7;
+    outline-offset: -6px;
 }
 
 .epaper-masthead {
+    border-top: 2px solid #111827;
     border-bottom: 3px double #111827;
-    padding-bottom: 12px;
-    margin-bottom: 18px;
+    padding: 14px 0 10px;
+    margin-bottom: 12px;
     text-align: center;
-}
-
-.epaper-masthead-top {
-    display: flex;
-    justify-content: space-between;
-    font-size: 11.5px;
-    font-weight: 700;
-    color: #4b5563;
-    border-bottom: 1px solid #e5e7eb;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-    flex-wrap: wrap;
-    gap: 6px;
 }
 
 .epaper-brand-title {
@@ -4144,13 +4134,68 @@ button, input, select, textarea {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    margin-bottom: 6px;
+}
+
+.epaper-masthead-logo {
+    font-family: var(--font-heading);
+    font-size: 46px;
+    font-weight: 900;
+    color: #111827;
+    line-height: 1;
+    letter-spacing: -0.5px;
+}
+
+.epaper-masthead-logo span {
+    color: var(--primary);
+}
+
+.epaper-masthead-tagline {
+    font-family: var(--font-heading);
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #4b5563;
+    margin-top: 4px;
+    letter-spacing: 0.5px;
+}
+
+.epaper-folio-bar {
+    border-bottom: 2px solid #111827;
+    padding-bottom: 5px;
+    margin-bottom: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-heading);
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #b91c1c;
+}
+
+.epaper-folio-bar .folio-edition {
+    color: #111827;
+    font-weight: 700;
 }
 
 .epaper-page-grid {
     display: grid;
     grid-template-columns: 2.2fr 1.2fr;
     gap: 20px;
+}
+
+.epaper-lead-block {
+    border-right: 1px solid #d4d4d8;
+    padding-right: 18px;
+}
+
+.epaper-side-col-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.epaper-side-item:not(:last-child) {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 12px;
 }
 
 .epaper-split-grid {
@@ -4164,49 +4209,108 @@ button, input, select, textarea {
 }
 
 .epaper-split-side {
-    border-left: 1px solid #e2e8f0;
+    border-left: 1px solid #d4d4d8;
     padding-left: 16px;
 }
 
 .epaper-cards-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-    gap: 14px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 2px solid #111827;
+    padding-top: 14px;
+    margin-top: 18px;
+}
+
+.epaper-cards-grid .epaper-story-block {
+    border-right: 1px solid #e5e7eb;
+    padding: 0 12px;
+}
+
+.epaper-cards-grid .epaper-story-block:last-child {
+    border-right: none;
 }
 
 .epaper-story-block {
     border: 1px solid transparent;
-    padding: 10px;
-    border-radius: 4px;
     cursor: pointer;
     position: relative;
-    transition: all 0.2s ease;
+    transition: background 0.15s ease;
     background: transparent;
 }
 
 .epaper-story-block:hover {
-    background: rgba(192, 6, 18, 0.05);
-    border-color: rgba(192, 6, 18, 0.35);
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    background: rgba(192, 6, 18, 0.04);
+}
+
+.epaper-kicker {
+    font-family: var(--font-heading);
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--primary);
+    margin-bottom: 4px;
+    display: inline-block;
 }
 
 .epaper-story-headline {
-    font-family: var(--font-heading);
-    font-weight: 800;
     color: #111827;
     line-height: 1.32;
     margin-bottom: 6px;
 }
 
-.epaper-lead-head { font-size: 26px; }
-.epaper-sub-head { font-size: 17px; }
-.epaper-col-head { font-size: 15px; }
+.epaper-lead-head {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.epaper-sub-head {
+    font-family: var(--font-serif);
+    font-size: 17px;
+    font-weight: 800;
+    line-height: 1.32;
+}
+
+.epaper-col-head {
+    font-family: var(--font-serif);
+    font-size: 14.5px;
+    font-weight: 700;
+    line-height: 1.32;
+}
+
+.epaper-photo-frame {
+    margin-bottom: 8px;
+}
+
+.epaper-photo-frame img {
+    width: 100%;
+    border: 1px solid #e5e7eb;
+    border-radius: 2px;
+    display: block;
+}
+
+.epaper-caption {
+    font-size: 11px;
+    color: #64748b;
+    font-style: italic;
+    padding-top: 3px;
+    display: block;
+    border-bottom: 1px solid #f1f5f9;
+}
 
 .epaper-story-body {
+    font-family: var(--font-body);
     font-size: 13.5px;
     line-height: 1.68;
-    color: #374151;
+    color: #262626;
     text-align: justify;
+    text-justify: inter-word;
+}
+
+.epaper-dateline {
+    font-weight: 800;
+    color: #111827;
 }
 
 /* Thumbnail Drawer */
@@ -4391,10 +4495,10 @@ button, input, select, textarea {
         max-width: 125px;
     }
 
-    /* E-Paper Viewer & Sheet: Full Width & Clean Reading */
+    /* E-Paper Viewer & Sheet: Realistic Newsprint on Phones */
     .epaper-viewer-wrapper {
-        background: #f1f5f9 !important;
-        padding: 8px 4px 30px !important;
+        background: #e2e8f0 !important;
+        padding: 8px 4px 24px !important;
         min-height: auto !important;
         overflow-x: hidden !important;
         width: 100% !important;
@@ -4404,69 +4508,49 @@ button, input, select, textarea {
     .newspaper-sheet {
         padding: 12px 10px !important;
         min-height: auto !important;
-        border-radius: 4px !important;
-        border: 1px solid #e2e8f0 !important;
-        box-shadow: 0 1px 6px rgba(0,0,0,0.06) !important;
+        border-radius: 2px !important;
+        border: 1px solid #d4d4d8 !important;
+        box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08) !important;
         width: 100% !important;
         max-width: 100% !important;
         box-sizing: border-box !important;
+        outline-offset: -3px !important;
     }
 
     /* Authentic Masthead on Mobile */
     .epaper-masthead {
-        border-bottom: 2px double #111827;
-        padding-bottom: 8px;
-        margin-bottom: 12px;
+        border-top: 2px solid #111827 !important;
+        border-bottom: 3px double #111827 !important;
+        padding: 10px 0 8px !important;
+        margin-bottom: 10px !important;
     }
 
-    .epaper-masthead-top {
-        flex-direction: column !important;
-        text-align: center !important;
-        gap: 2px !important;
-        font-size: 10px !important;
-        padding-bottom: 4px;
-        margin-bottom: 6px;
+    .epaper-masthead-logo {
+        font-size: 29px !important;
     }
 
-    .epaper-brand-title .top-logo-bn {
-        font-size: 28px !important;
+    .epaper-masthead-tagline {
+        font-size: 11.5px !important;
+        margin-top: 2px !important;
     }
 
-    .epaper-brand-title .top-logo-tagline-bottom {
-        font-size: 11px !important;
+    .epaper-folio-bar {
+        font-size: 11.5px !important;
+        padding-bottom: 4px !important;
+        margin-bottom: 10px !important;
     }
 
-    /* 1-Column Responsive Grids Across All Pages (1 to 5) */
-    .epaper-page-grid,
-    .epaper-split-grid,
-    .epaper-split-grid.editorial,
-    .epaper-cards-grid {
-        display: flex !important;
-        flex-direction: column !important;
-        gap: 14px !important;
-        width: 100% !important;
+    /* Authentic Newspaper Grid Layout on Phones */
+    .epaper-page-grid {
+        display: block !important;
     }
 
-    .epaper-story-block {
-        grid-column: auto !important;
-        width: 100% !important;
-        box-sizing: border-box !important;
-        padding: 8px 4px !important;
-    }
-
-    .epaper-story-block img {
-        width: 100% !important;
-        max-width: 100% !important;
-        height: auto !important;
-        max-height: 220px !important;
-        object-fit: cover !important;
-    }
-
-    .epaper-split-side {
-        border-left: none !important;
-        padding-left: 0 !important;
-        border-top: 1px dashed #cbd5e1 !important;
-        padding-top: 14px !important;
+    .epaper-lead-block {
+        border-right: none !important;
+        padding-right: 0 !important;
+        border-bottom: 2px solid #111827 !important;
+        padding-bottom: 14px !important;
+        margin-bottom: 14px !important;
     }
 
     .epaper-lead-head {
@@ -4474,20 +4558,86 @@ button, input, select, textarea {
         line-height: 1.34 !important;
     }
 
+    .epaper-photo-frame img {
+        height: 190px !important;
+        object-fit: cover !important;
+    }
+
+    /* Side stories in 2 columns with vertical dividing hairline rule on mobile */
+    .epaper-side-col-wrap {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+        border-bottom: 2px solid #111827 !important;
+        padding-bottom: 14px !important;
+        margin-bottom: 14px !important;
+    }
+
+    .epaper-side-col-wrap > div:first-child {
+        border-right: 1px solid #d4d4d8 !important;
+        padding-right: 10px !important;
+        border-bottom: none !important;
+        padding-bottom: 0 !important;
+    }
+
+    /* Split grids (Pages 2, 3, 4, 5) on mobile */
+    .epaper-split-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+        border-bottom: 2px solid #111827 !important;
+        padding-bottom: 14px !important;
+        margin-bottom: 14px !important;
+    }
+
+    .epaper-split-grid > div:first-child {
+        border-right: 1px solid #d4d4d8 !important;
+        padding-right: 10px !important;
+    }
+
+    .epaper-split-side {
+        border-left: none !important;
+        padding-left: 0 !important;
+        border-top: none !important;
+        padding-top: 0 !important;
+    }
+
+    /* Multi-story Cards in 2x2 grid on mobile with vertical divider */
+    .epaper-cards-grid {
+        display: grid !important;
+        grid-template-columns: 1fr 1fr !important;
+        gap: 12px !important;
+        border-top: none !important;
+        margin-top: 0 !important;
+        padding-top: 0 !important;
+    }
+
+    .epaper-cards-grid .epaper-story-block {
+        border-right: none !important;
+        padding: 0 !important;
+        border-bottom: 1px solid #e5e7eb !important;
+        padding-bottom: 10px !important;
+    }
+
+    .epaper-cards-grid .epaper-story-block:nth-child(odd) {
+        border-right: 1px solid #d4d4d8 !important;
+        padding-right: 10px !important;
+    }
+
     .epaper-sub-head {
-        font-size: 16.5px !important;
-        line-height: 1.35 !important;
+        font-size: 14.5px !important;
+        line-height: 1.3 !important;
     }
 
     .epaper-col-head {
-        font-size: 14.5px !important;
-        line-height: 1.35 !important;
+        font-size: 13.5px !important;
+        line-height: 1.3 !important;
     }
 
     .epaper-story-body {
-        font-size: 13px !important;
-        line-height: 1.62 !important;
-        text-align: left !important;
+        font-size: 12px !important;
+        line-height: 1.55 !important;
+        text-align: justify !important;
     }
 
     /* E-Paper Thumbnail Drawer on Phones: STATIC (does not block content) */

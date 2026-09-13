@@ -61,47 +61,63 @@ function renderEpaperPage(pageNum) {
         const bottomItems = allNews.slice(3, 7);
 
         contentContainer.innerHTML = `
-            <div style="border-bottom: 2px solid #111827; padding-bottom: 4px; margin-bottom: 12px; display:flex; justify-content:space-between; font-size:12px; font-weight:800; color:#b91c1c;">
+            <div class="epaper-folio-bar">
                 <span>প্রথম পাতা • শীর্ষ জাতীয় ও আন্তর্জাতিক সংবাদ</span>
-                <span>ঢাকা সংস্করণ</span>
+                <span class="folio-edition">ঢাকা সংস্করণ</span>
             </div>
 
             <div class="epaper-page-grid">
-                
                 <!-- Main Lead Story (Clickable Hotspot) -->
                 <div class="epaper-story-block epaper-lead-block" onclick="openNewsClip('${lead.id}')">
+                    <div class="epaper-kicker">[ বিশেষ প্রতিবেদন • ${escapeHtml(lead.category || 'জাতীয়')} ]</div>
                     <h1 class="epaper-story-headline epaper-lead-head">${escapeHtml(lead.title)}</h1>
-                    <div style="font-size:14.5px; font-weight:700; color:#b91c1c; margin-bottom:8px;">${escapeHtml(lead.subtitle || (lead.category + ' | ' + (lead.district || 'ঢাকা')))}</div>
-                    ${lead.image && lead.image !== 'logo.png' ? `<img src="${lead.image}" style="width:100%; height:260px; object-fit:cover; margin-bottom:10px; border-radius:3px; border:1px solid #e5e7eb;" alt="${escapeHtml(lead.title)}">` : ''}
+                    ${lead.image && lead.image !== 'logo.png' ? `
+                    <div class="epaper-photo-frame">
+                        <img src="${lead.image}" alt="${escapeHtml(lead.title)}">
+                        <span class="epaper-caption">ছবি: আওয়ার টাইমস২৪ আর্কাইভ</span>
+                    </div>` : ''}
                     <p class="epaper-story-body">
+                        <span class="epaper-dateline">স্টাফ রিপোর্টার : </span>
                         ${truncateText(lead.excerpt || lead.content, 260)}
                     </p>
                 </div>
 
                 <!-- Side Column Stories -->
-                <div style="display:flex; flex-direction:column; gap:12px;">
-                    <div class="epaper-story-block" onclick="openNewsClip('${side1.id}')">
+                <div class="epaper-side-col-wrap">
+                    <div class="epaper-story-block epaper-side-item" onclick="openNewsClip('${side1.id}')">
+                        <div class="epaper-kicker" style="color:#475569;">[ ${escapeHtml(side1.category || 'জাতীয়')} ]</div>
                         <h2 class="epaper-story-headline epaper-sub-head">${escapeHtml(side1.title)}</h2>
-                        ${side1.image ? `<img src="${side1.image}" style="width:100%; height:110px; object-fit:cover; margin-bottom:6px; border-radius:3px;" alt="">` : ''}
+                        ${side1.image && side1.image !== 'logo.png' ? `
+                        <div class="epaper-photo-frame">
+                            <img src="${side1.image}" style="height:115px; object-fit:cover;" alt="">
+                        </div>` : ''}
                         <p class="epaper-story-body">
+                            <span class="epaper-dateline">নিজস্ব প্রতিবেদক : </span>
                             ${truncateText(side1.excerpt || side1.content, 120)}
                         </p>
                     </div>
 
-                    <div class="epaper-story-block" onclick="openNewsClip('${side2.id}')">
+                    <div class="epaper-story-block epaper-side-item" onclick="openNewsClip('${side2.id}')">
+                        <div class="epaper-kicker" style="color:#475569;">[ ${escapeHtml(side2.category || 'সংবাদ')} ]</div>
                         <h3 class="epaper-story-headline epaper-col-head">${escapeHtml(side2.title)}</h3>
-                        <p class="epaper-story-body">${truncateText(side2.excerpt || side2.content, 110)}</p>
+                        <p class="epaper-story-body">
+                            <span class="epaper-dateline">ডেস্ক রিপোর্ট : </span>
+                            ${truncateText(side2.excerpt || side2.content, 110)}
+                        </p>
                     </div>
                 </div>
-
             </div>
 
             <!-- Bottom Multi-column Row -->
-            <div class="epaper-cards-grid" style="border-top: 2px solid #111827; padding-top: 14px; margin-top: 18px;">
+            <div class="epaper-cards-grid">
                 ${bottomItems.map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-thumbtack" style="font-size: 13px; color: var(--primary); margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
-                        <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 100)}</p>
+                        <div class="epaper-kicker">[ ${escapeHtml(item.category || 'সংবাদ')} ]</div>
+                        <h3 class="epaper-story-headline epaper-col-head">${escapeHtml(item.title)}</h3>
+                        <p class="epaper-story-body">
+                            <span class="epaper-dateline">প্রতিনিধি : </span>
+                            ${truncateText(item.excerpt || item.content, 95)}
+                        </p>
                     </div>
                 `).join('')}
             </div>
@@ -113,37 +129,35 @@ function renderEpaperPage(pageNum) {
         const opinions = allNews.slice(9, 13);
 
         contentContainer.innerHTML = `
-            <div style="border-bottom: 2px solid #b91c1c; padding-bottom: 6px; margin-bottom: 14px; display:flex; justify-content:space-between; font-weight:800; font-size:16px; color:#b91c1c;">
+            <div class="epaper-folio-bar">
                 <span>পৃষ্ঠা ২ • সম্পাদকীয় ও বিশেষ কলাম</span>
-                <span>OURTIMES24 OPINION</span>
+                <span class="folio-edition">OURTIMES24 OPINION</span>
             </div>
 
-            <div class="epaper-split-grid editorial" style="border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
-                
-                <div class="epaper-story-block" onclick="openNewsClip('${editLead.id}')">
-                    <div style="font-size:13px; font-weight:800; color:#b91c1c; margin-bottom:4px; text-transform:uppercase;">[প্রধান সম্পাদকীয়]</div>
-                    <h2 class="epaper-story-headline epaper-lead-head" style="font-size: 26px;">${escapeHtml(editLead.title)}</h2>
-                    <p class="epaper-story-body" style="font-size:14.5px; line-height:1.7;">
+            <div class="epaper-split-grid editorial">
+                <div class="epaper-story-block epaper-editorial-box" onclick="openNewsClip('${editLead.id}')">
+                    <div class="epaper-kicker">[ প্রধান সম্পাদকীয় ]</div>
+                    <h2 class="epaper-story-headline epaper-lead-head">${escapeHtml(editLead.title)}</h2>
+                    <p class="epaper-story-body" style="line-height:1.75;">
                         ${truncateText(editLead.content || editLead.excerpt, 480)}
                     </p>
                 </div>
 
                 <div class="epaper-story-block epaper-split-side" onclick="openNewsClip('${editSub.id}')">
-                    <div style="font-size:12px; font-weight:800; color:#64748b; margin-bottom:4px;">[বিশেষ সম্পাদকীয় কলাম]</div>
+                    <div class="epaper-kicker" style="color:#64748b;">[ বিশেষ সম্পাদকীয় কলাম ]</div>
                     <h3 class="epaper-story-headline epaper-sub-head">${escapeHtml(editSub.title)}</h3>
                     <p class="epaper-story-body">
                         ${truncateText(editSub.content || editSub.excerpt, 260)}
                     </p>
                 </div>
-
             </div>
 
-            <!-- Opinion Columns Grid -->
-            <div class="epaper-cards-grid" style="border-top:1px dashed #cbd5e1; padding-top:14px; margin-top:18px;">
+            <div class="epaper-cards-grid">
                 ${opinions.map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-pen-fancy" style="font-size: 13px; color: #b91c1c; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
-                        <div style="font-size:12px; color:#64748b; font-weight:700; margin-bottom:4px;">${escapeHtml(item.author || 'আমাদের সময়২৪ ডেস্ক')}</div>
+                        <div class="epaper-kicker"><i class="fa-solid fa-pen-nib" style="font-size: 11px; color: var(--primary); margin-right: 4px;"></i>মতামত</div>
+                        <h3 class="epaper-story-headline epaper-col-head">${escapeHtml(item.title)}</h3>
+                        <div style="font-size:12px; color:#64748b; font-weight:700; margin-bottom:4px;">${escapeHtml(item.author || 'সম্পাদকীয় বিভাগ')}</div>
                         <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 95)}</p>
                     </div>
                 `).join('')}
@@ -157,49 +171,50 @@ function renderEpaperPage(pageNum) {
         const p3Items = saradeshNews.slice(2, 10).length >= 4 ? saradeshNews.slice(2, 10) : allNews.slice(16, 24);
 
         contentContainer.innerHTML = `
-            <div style="border-bottom: 2px solid #b91c1c; padding-bottom: 6px; margin-bottom: 14px; display:flex; justify-content:space-between; font-weight:800; font-size:16px; color:#b91c1c;">
+            <div class="epaper-folio-bar">
                 <span>পৃষ্ঠা ৩ • সারাদেশ ও জেলা পরিক্রমা</span>
-                <span>বিভাগীয় ব্যুরো ও লোকাল নিউজ</span>
+                <span class="folio-edition">বিভাগীয় ব্যুরো ও লোকাল নিউজ</span>
             </div>
 
             <div class="epaper-split-grid">
                 <div class="epaper-story-block" onclick="openNewsClip('${p3Lead1.id}')">
-                    <h2 class="epaper-story-headline epaper-sub-head">${p3Lead1.district ? `[${p3Lead1.district}] ` : ''}${escapeHtml(p3Lead1.title)}</h2>
-                    ${p3Lead1.image && p3Lead1.image !== 'logo.png' ? `<img src="${p3Lead1.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
+                    <div class="epaper-kicker">${p3Lead1.district ? `[ ${escapeHtml(p3Lead1.district)} ]` : '[ জেলা সংবাদ ]'}</div>
+                    <h2 class="epaper-story-headline epaper-sub-head">${escapeHtml(p3Lead1.title)}</h2>
+                    ${p3Lead1.image && p3Lead1.image !== 'logo.png' ? `
+                    <div class="epaper-photo-frame">
+                        <img src="${p3Lead1.image}" style="height:160px; object-fit:cover;" alt="">
+                        <span class="epaper-caption">ছবি: ব্যুরো প্রতিনিধি</span>
+                    </div>` : ''}
                     <p class="epaper-story-body">
+                        <span class="epaper-dateline">জেলা প্রতিনিধি : </span>
                         ${truncateText(p3Lead1.excerpt || p3Lead1.content, 160)}
                     </p>
                 </div>
 
-                <div class="epaper-story-block" onclick="openNewsClip('${p3Lead2.id}')">
-                    <h2 class="epaper-story-headline epaper-sub-head">${p3Lead2.district ? `[${p3Lead2.district}] ` : ''}${escapeHtml(p3Lead2.title)}</h2>
-                    ${p3Lead2.image && p3Lead2.image !== 'logo.png' ? `<img src="${p3Lead2.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
+                <div class="epaper-story-block epaper-split-side" onclick="openNewsClip('${p3Lead2.id}')">
+                    <div class="epaper-kicker">${p3Lead2.district ? `[ ${escapeHtml(p3Lead2.district)} ]` : '[ জেলা সংবাদ ]'}</div>
+                    <h2 class="epaper-story-headline epaper-sub-head">${escapeHtml(p3Lead2.title)}</h2>
+                    ${p3Lead2.image && p3Lead2.image !== 'logo.png' ? `
+                    <div class="epaper-photo-frame">
+                        <img src="${p3Lead2.image}" style="height:160px; object-fit:cover;" alt="">
+                        <span class="epaper-caption">ছবি: ব্যুরো প্রতিনিধি</span>
+                    </div>` : ''}
                     <p class="epaper-story-body">
+                        <span class="epaper-dateline">নিজস্ব বার্তা : </span>
                         ${truncateText(p3Lead2.excerpt || p3Lead2.content, 160)}
                     </p>
                 </div>
             </div>
 
-            <!-- District Grid -->
-            <div class="epaper-cards-grid" style="border-top:1px solid #111827; padding-top:14px; margin-top:16px;">
+            <div class="epaper-cards-grid">
                 ${p3Items.slice(0, 4).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head">${item.district ? `<i class="fa-solid fa-location-dot" style="font-size: 12px; color: #b91c1c; margin-right: 4px;"></i>${item.district}: ` : ''}${escapeHtml(item.title)}</h3>
+                        <div class="epaper-kicker">${item.district ? `<i class="fa-solid fa-location-dot" style="font-size: 11px; margin-right: 3px;"></i>${escapeHtml(item.district)}` : '[ সারাদেশ ]'}</div>
+                        <h3 class="epaper-story-headline epaper-col-head">${escapeHtml(item.title)}</h3>
                         <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 90)}</p>
                     </div>
                 `).join('')}
             </div>
-
-            ${p3Items.slice(4, 8).length > 0 ? `
-            <div class="epaper-cards-grid" style="border-top:1px dashed #cbd5e1; padding-top:12px; margin-top:12px;">
-                ${p3Items.slice(4, 8).map(item => `
-                    <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head">${item.district ? `<i class="fa-solid fa-location-dot" style="font-size: 12px; color: #b91c1c; margin-right: 4px;"></i>${item.district}: ` : ''}${escapeHtml(item.title)}</h3>
-                        <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 90)}</p>
-                    </div>
-                `).join('')}
-            </div>
-            ` : ''}
         `;
     } else if (pageNum === 4) {
         // ================= PAGE 4: POLITICS & INTERNATIONAL =================
@@ -209,48 +224,48 @@ function renderEpaperPage(pageNum) {
         const p4Items = polAndInt.slice(2, 10).length >= 4 ? polAndInt.slice(2, 10) : allNews.slice(26, 34);
 
         contentContainer.innerHTML = `
-            <div style="border-bottom: 2px solid #b91c1c; padding-bottom: 6px; margin-bottom: 14px; display:flex; justify-content:space-between; font-weight:800; font-size:16px; color:#b91c1c;">
+            <div class="epaper-folio-bar">
                 <span>পৃষ্ঠা ৪ • রাজনীতি, অর্থনীতি ও আন্তর্জাতিক</span>
-                <span>POLITICS, ECONOMY & GLOBAL</span>
+                <span class="folio-edition">POLITICS & GLOBAL</span>
             </div>
 
             <div class="epaper-split-grid">
                 <div class="epaper-story-block" onclick="openNewsClip('${p4Lead1.id}')">
+                    <div class="epaper-kicker">[ ${escapeHtml(p4Lead1.category || 'রাজনীতি')} ]</div>
                     <h2 class="epaper-story-headline epaper-sub-head">${escapeHtml(p4Lead1.title)}</h2>
-                    ${p4Lead1.image && p4Lead1.image !== 'logo.png' ? `<img src="${p4Lead1.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
+                    ${p4Lead1.image && p4Lead1.image !== 'logo.png' ? `
+                    <div class="epaper-photo-frame">
+                        <img src="${p4Lead1.image}" style="height:160px; object-fit:cover;" alt="">
+                    </div>` : ''}
                     <p class="epaper-story-body">
+                        <span class="epaper-dateline">রাজনৈতিক প্রতিবেদক : </span>
                         ${truncateText(p4Lead1.excerpt || p4Lead1.content, 160)}
                     </p>
                 </div>
 
-                <div class="epaper-story-block" onclick="openNewsClip('${p4Lead2.id}')">
+                <div class="epaper-story-block epaper-split-side" onclick="openNewsClip('${p4Lead2.id}')">
+                    <div class="epaper-kicker">[ ${escapeHtml(p4Lead2.category || 'অর্থনীতি')} ]</div>
                     <h2 class="epaper-story-headline epaper-sub-head">${escapeHtml(p4Lead2.title)}</h2>
-                    ${p4Lead2.image && p4Lead2.image !== 'logo.png' ? `<img src="${p4Lead2.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
+                    ${p4Lead2.image && p4Lead2.image !== 'logo.png' ? `
+                    <div class="epaper-photo-frame">
+                        <img src="${p4Lead2.image}" style="height:160px; object-fit:cover;" alt="">
+                    </div>` : ''}
                     <p class="epaper-story-body">
+                        <span class="epaper-dateline">অর্থনৈতিক রিপোর্টার : </span>
                         ${truncateText(p4Lead2.excerpt || p4Lead2.content, 160)}
                     </p>
                 </div>
             </div>
 
-            <div class="epaper-cards-grid" style="border-top:1px solid #111827; padding-top:14px; margin-top:16px;">
+            <div class="epaper-cards-grid">
                 ${p4Items.slice(0, 4).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-earth-americas" style="font-size: 13px; color: #0284c7; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
+                        <div class="epaper-kicker">[ ${escapeHtml(item.category || 'আন্তর্জাতিক')} ]</div>
+                        <h3 class="epaper-story-headline epaper-col-head">${escapeHtml(item.title)}</h3>
                         <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 90)}</p>
                     </div>
                 `).join('')}
             </div>
-
-            ${p4Items.slice(4, 8).length > 0 ? `
-            <div class="epaper-cards-grid" style="border-top:1px dashed #cbd5e1; padding-top:12px; margin-top:12px;">
-                ${p4Items.slice(4, 8).map(item => `
-                    <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-earth-americas" style="font-size: 13px; color: #0284c7; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
-                        <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 90)}</p>
-                    </div>
-                `).join('')}
-            </div>
-            ` : ''}
         `;
     } else if (pageNum === 5) {
         // ================= PAGE 5: CRIME, COURTS, SPORTS & ENTERTAINMENT =================
@@ -260,48 +275,48 @@ function renderEpaperPage(pageNum) {
         const p5Items = p5Spec.slice(2, 10).length >= 4 ? p5Spec.slice(2, 10) : allNews.slice(36, 44);
 
         contentContainer.innerHTML = `
-            <div style="border-bottom: 2px solid #b91c1c; padding-bottom: 6px; margin-bottom: 14px; display:flex; justify-content:space-between; font-weight:800; font-size:16px; color:#b91c1c;">
+            <div class="epaper-folio-bar">
                 <span>পৃষ্ঠা ৫ • অপরাধ, আদালত, খেলা ও বিনোদন</span>
-                <span>SPECIAL FEATURES & SPORTS</span>
+                <span class="folio-edition">FEATURES & SPORTS</span>
             </div>
 
             <div class="epaper-split-grid">
                 <div class="epaper-story-block" onclick="openNewsClip('${p5Lead1.id}')">
-                    <h2 class="epaper-story-headline epaper-sub-head">${p5Lead1.category ? `[${p5Lead1.category}] ` : ''}${escapeHtml(p5Lead1.title)}</h2>
-                    ${p5Lead1.image && p5Lead1.image !== 'logo.png' ? `<img src="${p5Lead1.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
+                    <div class="epaper-kicker">[ ${escapeHtml(p5Lead1.category || 'অপরাধ')} ]</div>
+                    <h2 class="epaper-story-headline epaper-sub-head">${escapeHtml(p5Lead1.title)}</h2>
+                    ${p5Lead1.image && p5Lead1.image !== 'logo.png' ? `
+                    <div class="epaper-photo-frame">
+                        <img src="${p5Lead1.image}" style="height:160px; object-fit:cover;" alt="">
+                    </div>` : ''}
                     <p class="epaper-story-body">
+                        <span class="epaper-dateline">ক্রাইম রিপোর্টার : </span>
                         ${truncateText(p5Lead1.excerpt || p5Lead1.content, 160)}
                     </p>
                 </div>
 
-                <div class="epaper-story-block" onclick="openNewsClip('${p5Lead2.id}')">
-                    <h2 class="epaper-story-headline epaper-sub-head">${p5Lead2.category ? `[${p5Lead2.category}] ` : ''}${escapeHtml(p5Lead2.title)}</h2>
-                    ${p5Lead2.image && p5Lead2.image !== 'logo.png' ? `<img src="${p5Lead2.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
+                <div class="epaper-story-block epaper-split-side" onclick="openNewsClip('${p5Lead2.id}')">
+                    <div class="epaper-kicker">[ ${escapeHtml(p5Lead2.category || 'খেলাধুলা')} ]</div>
+                    <h2 class="epaper-story-headline epaper-sub-head">${escapeHtml(p5Lead2.title)}</h2>
+                    ${p5Lead2.image && p5Lead2.image !== 'logo.png' ? `
+                    <div class="epaper-photo-frame">
+                        <img src="${p5Lead2.image}" style="height:160px; object-fit:cover;" alt="">
+                    </div>` : ''}
                     <p class="epaper-story-body">
+                        <span class="epaper-dateline">ক্রীড়া প্রতিবেদক : </span>
                         ${truncateText(p5Lead2.excerpt || p5Lead2.content, 160)}
                     </p>
                 </div>
             </div>
 
-            <div class="epaper-cards-grid" style="border-top:1px solid #111827; padding-top:14px; margin-top:16px;">
+            <div class="epaper-cards-grid">
                 ${p5Items.slice(0, 4).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-scale-balanced" style="font-size: 13px; color: #059669; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
+                        <div class="epaper-kicker">[ ${escapeHtml(item.category || 'বিনোদন')} ]</div>
+                        <h3 class="epaper-story-headline epaper-col-head">${escapeHtml(item.title)}</h3>
                         <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 90)}</p>
                     </div>
                 `).join('')}
             </div>
-
-            ${p5Items.slice(4, 8).length > 0 ? `
-            <div class="epaper-cards-grid" style="border-top:1px dashed #cbd5e1; padding-top:12px; margin-top:12px;">
-                ${p5Items.slice(4, 8).map(item => `
-                    <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
-                        <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-scale-balanced" style="font-size: 13px; color: #059669; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
-                        <p class="epaper-story-body">${truncateText(item.excerpt || item.content, 90)}</p>
-                    </div>
-                `).join('')}
-            </div>
-            ` : ''}
         `;
     }
 }
