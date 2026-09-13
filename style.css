@@ -1373,6 +1373,18 @@ button, input, select, textarea {
     color: var(--primary);
 }
 
+.bottom-nav-item span {
+    font-size: 11px;
+    white-space: nowrap;
+    letter-spacing: -0.2px;
+}
+
+@media (max-width: 360px) {
+    .bottom-nav-item span {
+        font-size: 10px;
+    }
+}
+
 /* ==========================================================================
    13. INSTANT LIVE SEARCH MODAL
    ========================================================================== */

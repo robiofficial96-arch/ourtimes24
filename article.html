@@ -6,7 +6,7 @@
     <title id="pageTitle">সংবাদ বিস্তারিত - আওয়ার টাইমস২৪</title>
     <meta name="description" id="metaDescription" content="সত্য ও বস্তুনিষ্ঠ সংবাদের সার্বক্ষণিক ঠিকানা - আওয়ার টাইমস২৪। দেশ ও বিদেশের সর্বশেষ তাজা খবর।">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="style.css?v=20260913_v1">
+    <link rel="stylesheet" href="style.css?v=20260913_v2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
     <!-- OPEN GRAPH FOR SOCIAL MEDIA SHARING (FACEBOOK, WHATSAPP, LINKEDIN) -->
@@ -94,6 +94,7 @@
         <div class="container nav-container-sticky-row">
             <ul class="nav-menu-scrollable">
                 <li class="nav-item"><a href="/" class="nav-link"><i class="fa-solid fa-house" style="font-size:13px; margin-right:4px;"></i> প্রচ্ছদ</a></li>
+                <li class="nav-item"><a href="category.html?cat=latest" class="nav-link"><i class="fa-solid fa-bolt" style="color:var(--primary); font-size:12px; margin-right:4px;"></i> সর্বশেষ সংবাদ</a></li>
                 <li class="nav-item"><a href="category.html?cat=national" class="nav-link">জাতীয়</a></li>
                 <li class="nav-item"><a href="category.html?cat=politics" class="nav-link">রাজনীতি</a></li>
                 <li class="nav-item"><a href="category.html?cat=international" class="nav-link">আন্তর্জাতিক</a></li>
@@ -256,6 +257,7 @@
         </div>
         <ul class="drawer-nav-list">
             <li><a href="/" class="drawer-nav-link"><i class="fa-solid fa-house"></i> প্রচ্ছদ</a></li>
+            <li><a href="category.html?cat=latest" class="drawer-nav-link" style="color: var(--primary); font-weight: 700;"><i class="fa-solid fa-bolt"></i> সর্বশেষ সংবাদ</a></li>
             <li><a href="category.html?cat=national" class="drawer-nav-link"><i class="fa-solid fa-flag"></i> জাতীয়</a></li>
             <li><a href="category.html?cat=politics" class="drawer-nav-link"><i class="fa-solid fa-landmark"></i> রাজনীতি</a></li>
             <li><a href="category.html?cat=international" class="drawer-nav-link"><i class="fa-solid fa-earth-americas"></i> আন্তর্জাতিক</a></li>
@@ -274,10 +276,10 @@
             <i class="fa-solid fa-house"></i>
             <span>হোম</span>
         </a>
-        <button class="bottom-nav-item" onclick="toggleOffcanvasMenu()">
-            <i class="fa-solid fa-layer-group"></i>
-            <span>বিভাগ</span>
-        </button>
+        <a href="category.html?cat=latest" class="bottom-nav-item" id="bottomNavLatest">
+            <i class="fa-solid fa-bolt"></i>
+            <span>সর্বশেষ সংবাদ</span>
+        </a>
         <a href="epaper.html" class="bottom-nav-item">
             <i class="fa-regular fa-newspaper"></i>
             <span>ই-পেপার</span>
@@ -301,14 +303,16 @@
                         <div><strong>প্রধান প্রতিবেদক:</strong> রবিউল ইসলাম</div>
                     </div>
                 </div>
-                <div class="footer-latest-col">
-                    <h3 class="footer-col-title"><i class="fa-solid fa-clock-rotate-left"></i> সর্বশেষ সংবাদ</h3>
-                    <ul class="footer-latest-list" id="footerLatestNewsList">
-                        <!-- Populated dynamically by app.js -->
+                <div>
+                    <h3 class="footer-col-title">জরুরি বিভাগসমূহ</h3>
+                    <ul class="footer-links">
+                        <li><a href="category.html?cat=national">জাতীয় সংবাদ</a></li>
+                        <li><a href="category.html?cat=politics">রাজনীতি</a></li>
+                        <li><a href="category.html?cat=saradesh">সারাদেশের সংবাদ</a></li>
+                        <li><a href="category.html?cat=international">আন্তর্জাতিক</a></li>
+                        <li><a href="category.html?cat=economy">অর্থ-বাণিজ্য</a></li>
+                        <li><a href="category.html?cat=sports">খেলাধুলা</a></li>
                     </ul>
-                    <div style="margin-top: 14px;">
-                        <a href="category?cat=all" class="footer-view-all-link">সকল সংবাদ একসাথে দেখুন <i class="fa-solid fa-arrow-right"></i></a>
-                    </div>
                 </div>
                 <div>
                     <h3 class="footer-col-title">বার্তা ও বাণিজ্যিক কার্যালয়</h3>
