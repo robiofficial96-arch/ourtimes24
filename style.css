@@ -411,6 +411,7 @@ button, input, select, textarea {
     align-items: center;
     position: relative;
     width: 100%;
+    min-width: 0;
 }
 
 .nav-menu-scrollable {
@@ -421,6 +422,7 @@ button, input, select, textarea {
     white-space: nowrap;
     scrollbar-width: none;
     width: 100%;
+    min-width: 0;
     -webkit-overflow-scrolling: touch;
     padding: 0;
     margin: 0;
@@ -1785,40 +1787,97 @@ button, input, select, textarea {
    16. MOBILE VIEW OPTIMIZATIONS (PHONE VIEW MEDIA QUERIES <= 768px)
    ========================================================================== */
 @media (max-width: 768px) {
-    body {
-        padding-bottom: 64px; /* Space for Mobile Bottom Bar */
+    html, body {
+        width: 100% !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+        padding-bottom: 0 !important;
+    }
+
+    .container {
+        padding: 0 12px !important;
+        width: 100% !important;
+        max-width: 100vw !important;
+        box-sizing: border-box !important;
+    }
+
+    .main-nav-wrapper {
+        width: 100% !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
     }
 
     .top-utility-bar {
         display: none; /* Clean uncluttered mobile header */
     }
 
+    /* 1. User Preference: Hide Hamburger & Search Buttons on Phone Header */
     .btn-mobile-drawer {
-        display: block;
+        display: none !important;
+    }
+
+    .brand-right-actions {
+        display: none !important;
     }
 
     .search-trigger-btn {
-        width: 40px;
-        height: 40px;
-        padding: 0;
-        border-radius: 50%;
-        justify-content: center;
-    }
-
-    .search-trigger-btn span, .search-trigger-btn kbd {
-        display: none;
+        display: none !important;
     }
 
     .btn-photocard-quick {
-        display: none; /* accessible via mobile bottom bar */
+        display: none;
+    }
+
+    /* 2. User Preference: Remove Mobile Bottom Nav */
+    .mobile-bottom-nav {
+        display: none !important;
+    }
+
+    body {
+        padding-bottom: 0 !important;
+    }
+
+    /* 3. User Preference: E-Paper on Left, Logo on Right */
+    .mobile-header-epaper-btn {
+        display: inline-flex !important;
+        order: 1 !important;
+    }
+
+    .brand-header-grid {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+        padding: 10px 0 !important;
+    }
+
+    .brand-left-block {
+        display: flex !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+        width: 100% !important;
+        gap: 12px !important;
+    }
+
+    .brand-logo-wrap {
+        order: 2 !important;
+        margin-left: auto !important;
+        text-align: right !important;
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: flex-end !important;
+        white-space: nowrap !important;
+        text-decoration: none !important;
     }
 
     .logo-bangla {
-        font-size: 27px;
+        font-size: 22px !important;
+        line-height: 1.15 !important;
+        white-space: nowrap !important;
     }
 
     .logo-tagline {
-        font-size: 11px;
+        display: none !important;
     }
 
     /* Hero & Article Grid on Phones */
@@ -3803,6 +3862,374 @@ button, input, select, textarea {
     }
     50% {
         box-shadow: 0 0 0 14px rgba(16, 185, 129, 0);
+    }
+}
+
+/* ==========================================================================
+   20. MOBILE HEADER E-PAPER BUTTON
+   ========================================================================== */
+.mobile-header-epaper-btn {
+    display: none;
+    align-items: center;
+    gap: 6px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ffffff;
+    background: var(--primary);
+    padding: 6px 13px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: var(--transition);
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(192, 6, 18, 0.25);
+}
+
+.mobile-header-epaper-btn:hover {
+    background: #a0050f;
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   21. DIGITAL E-PAPER SYSTEM (DESKTOP & MOBILE RESPONSIVE)
+   ========================================================================== */
+.top-header-bar {
+    background: #ffffff;
+    border-bottom: 1px solid var(--border-color);
+    padding: 10px 0;
+}
+
+.top-header-inner {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.top-brand-logo {
+    text-decoration: none;
+    color: var(--text-main);
+    display: flex;
+    flex-direction: column;
+}
+
+.top-logo-bn {
+    font-family: var(--font-heading);
+    font-size: 28px;
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--text-main);
+}
+
+.top-logo-bn span {
+    color: var(--primary);
+}
+
+.top-logo-tagline-bottom {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.top-epaper-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13.5px;
+    font-weight: 700;
+    padding: 7px 14px;
+    border-radius: 6px;
+    background: var(--bg-subtle);
+    border: 1px solid var(--border-color);
+    color: var(--text-main);
+    text-decoration: none;
+    transition: var(--transition);
+}
+
+.top-epaper-btn:hover {
+    background: var(--primary);
+    color: #ffffff;
+    border-color: var(--primary);
+}
+
+/* E-Paper Interactive Toolbar */
+.epaper-toolbar {
+    background: #0f172a;
+    color: #ffffff;
+    padding: 10px 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2);
+}
+
+.epaper-toolbar .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.epaper-toolbar label {
+    color: #cbd5e1;
+}
+
+.epaper-toolbar .control-input,
+.epaper-toolbar .control-select {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #ffffff;
+    border-radius: 4px;
+}
+
+.epaper-toolbar .tool-btn {
+    background: #1e293b;
+    border: 1px solid #334155;
+    color: #ffffff;
+}
+
+.epaper-toolbar .tool-btn:hover {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: #ffffff;
+}
+
+/* Newspaper Canvas & Sheet */
+.epaper-viewer-wrapper {
+    background: #334155;
+    padding: 28px 12px 60px;
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    overflow-x: auto;
+    touch-action: pan-x pan-y pinch-zoom;
+    -webkit-overflow-scrolling: touch;
+}
+
+.newspaper-sheet {
+    background: #ffffff;
+    color: #111827;
+    width: 100%;
+    max-width: 980px;
+    min-height: 1200px;
+    box-shadow: 0 16px 40px rgba(0,0,0,0.45);
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    padding: 30px 32px;
+    position: relative;
+    transform-origin: top center;
+    transition: transform 0.2s ease;
+    box-sizing: border-box;
+}
+
+.epaper-masthead {
+    border-bottom: 3px double #111827;
+    padding-bottom: 12px;
+    margin-bottom: 18px;
+    text-align: center;
+}
+
+.epaper-masthead-top {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #4b5563;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 5px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.epaper-brand-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.epaper-page-grid {
+    display: grid;
+    grid-template-columns: 2.2fr 1.2fr;
+    gap: 20px;
+}
+
+.epaper-story-block {
+    border: 1px solid transparent;
+    padding: 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+    background: transparent;
+}
+
+.epaper-story-block:hover {
+    background: rgba(192, 6, 18, 0.05);
+    border-color: rgba(192, 6, 18, 0.35);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+}
+
+.epaper-story-headline {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    color: #111827;
+    line-height: 1.32;
+    margin-bottom: 6px;
+}
+
+.epaper-lead-head { font-size: 26px; }
+.epaper-sub-head { font-size: 17px; }
+.epaper-col-head { font-size: 15px; }
+
+.epaper-story-body {
+    font-size: 13.5px;
+    line-height: 1.68;
+    color: #374151;
+    text-align: justify;
+}
+
+/* Thumbnail Drawer */
+.epaper-thumbnail-drawer {
+    background: #ffffff;
+    border-top: 1px solid var(--border-color);
+    padding: 14px 0;
+    position: sticky;
+    bottom: 0;
+    z-index: 90;
+    box-shadow: 0 -4px 14px rgba(0, 0, 0, 0.06);
+}
+
+.thumbnail-slider {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+}
+
+.page-thumb-card {
+    border: 1px solid var(--border-color);
+    background: #f8fafc;
+    padding: 6px 10px;
+    min-width: 110px;
+    text-align: center;
+    cursor: pointer;
+    flex-shrink: 0;
+    border-radius: 6px;
+    transition: var(--transition);
+}
+
+.page-thumb-card.active, .page-thumb-card:hover {
+    border-color: var(--primary);
+    background: var(--primary-light);
+    color: var(--primary);
+}
+
+.thumb-preview-box {
+    width: 100%;
+    aspect-ratio: 3 / 4;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 4px;
+    margin-bottom: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    font-weight: 800;
+    color: #64748b;
+}
+
+/* News Clipping Modal */
+.clipping-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 99999;
+    padding: 16px;
+}
+
+.clipping-modal.active {
+    display: flex;
+}
+
+.clipping-modal-content {
+    background: #ffffff;
+    width: 100%;
+    max-width: 700px;
+    max-height: 90vh;
+    overflow-y: auto;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+    display: flex;
+    flex-direction: column;
+}
+
+.clipping-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--border-color);
+    background: #f8fafc;
+}
+
+.clipping-body {
+    padding: 20px;
+}
+
+.clipping-preview-frame {
+    background: #ffffff;
+    border: 2px solid #111827;
+    padding: 20px;
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.15);
+}
+
+/* Responsive E-Paper on Phones */
+@media (max-width: 768px) {
+    .epaper-toolbar {
+        position: relative;
+        padding: 8px 0;
+    }
+
+    .epaper-toolbar .container {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .epaper-viewer-wrapper {
+        padding: 12px 6px 40px;
+    }
+
+    .newspaper-sheet {
+        padding: 16px 12px;
+        min-height: auto;
+        border-radius: 4px;
+    }
+
+    .epaper-page-grid {
+        grid-template-columns: 1fr !important;
+        gap: 14px;
+    }
+
+    .epaper-lead-head {
+        font-size: 21px !important;
+    }
+
+    .epaper-brand-title .top-logo-bn {
+        font-size: 32px !important;
     }
 }
 
