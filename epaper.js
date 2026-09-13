@@ -69,7 +69,7 @@ function renderEpaperPage(pageNum) {
             <div class="epaper-page-grid">
                 
                 <!-- Main Lead Story (Clickable Hotspot) -->
-                <div class="epaper-story-block" style="grid-column: 1 / 3;" onclick="openNewsClip('${lead.id}')">
+                <div class="epaper-story-block epaper-lead-block" onclick="openNewsClip('${lead.id}')">
                     <h1 class="epaper-story-headline epaper-lead-head">${escapeHtml(lead.title)}</h1>
                     <div style="font-size:14.5px; font-weight:700; color:#b91c1c; margin-bottom:8px;">${escapeHtml(lead.subtitle || (lead.category + ' | ' + (lead.district || 'ঢাকা')))}</div>
                     ${lead.image && lead.image !== 'logo.png' ? `<img src="${lead.image}" style="width:100%; height:260px; object-fit:cover; margin-bottom:10px; border-radius:3px; border:1px solid #e5e7eb;" alt="${escapeHtml(lead.title)}">` : ''}
@@ -97,7 +97,7 @@ function renderEpaperPage(pageNum) {
             </div>
 
             <!-- Bottom Multi-column Row -->
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; border-top: 2px solid #111827; padding-top: 14px; margin-top: 18px;">
+            <div class="epaper-cards-grid" style="border-top: 2px solid #111827; padding-top: 14px; margin-top: 18px;">
                 ${bottomItems.map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
                         <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-thumbtack" style="font-size: 13px; color: var(--primary); margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
@@ -118,7 +118,7 @@ function renderEpaperPage(pageNum) {
                 <span>OURTIMES24 OPINION</span>
             </div>
 
-            <div style="display:grid; grid-template-columns: 2fr 1.2fr; gap:20px; border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
+            <div class="epaper-split-grid editorial" style="border-bottom: 1px solid #e2e8f0; padding-bottom: 16px;">
                 
                 <div class="epaper-story-block" onclick="openNewsClip('${editLead.id}')">
                     <div style="font-size:13px; font-weight:800; color:#b91c1c; margin-bottom:4px; text-transform:uppercase;">[প্রধান সম্পাদকীয়]</div>
@@ -128,7 +128,7 @@ function renderEpaperPage(pageNum) {
                     </p>
                 </div>
 
-                <div class="epaper-story-block" style="border-left: 1px solid #e2e8f0; padding-left: 16px;" onclick="openNewsClip('${editSub.id}')">
+                <div class="epaper-story-block epaper-split-side" onclick="openNewsClip('${editSub.id}')">
                     <div style="font-size:12px; font-weight:800; color:#64748b; margin-bottom:4px;">[বিশেষ সম্পাদকীয় কলাম]</div>
                     <h3 class="epaper-story-headline epaper-sub-head">${escapeHtml(editSub.title)}</h3>
                     <p class="epaper-story-body">
@@ -139,7 +139,7 @@ function renderEpaperPage(pageNum) {
             </div>
 
             <!-- Opinion Columns Grid -->
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:16px; border-top:1px dashed #cbd5e1; padding-top:14px; margin-top:18px;">
+            <div class="epaper-cards-grid" style="border-top:1px dashed #cbd5e1; padding-top:14px; margin-top:18px;">
                 ${opinions.map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
                         <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-pen-fancy" style="font-size: 13px; color: #b91c1c; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
@@ -162,7 +162,7 @@ function renderEpaperPage(pageNum) {
                 <span>বিভাগীয় ব্যুরো ও লোকাল নিউজ</span>
             </div>
 
-            <div style="display:grid; grid-template-columns: 1.5fr 1.5fr; gap:20px;">
+            <div class="epaper-split-grid">
                 <div class="epaper-story-block" onclick="openNewsClip('${p3Lead1.id}')">
                     <h2 class="epaper-story-headline epaper-sub-head">${p3Lead1.district ? `[${p3Lead1.district}] ` : ''}${escapeHtml(p3Lead1.title)}</h2>
                     ${p3Lead1.image && p3Lead1.image !== 'logo.png' ? `<img src="${p3Lead1.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
@@ -181,7 +181,7 @@ function renderEpaperPage(pageNum) {
             </div>
 
             <!-- District Grid -->
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:14px; border-top:1px solid #111827; padding-top:14px; margin-top:16px;">
+            <div class="epaper-cards-grid" style="border-top:1px solid #111827; padding-top:14px; margin-top:16px;">
                 ${p3Items.slice(0, 4).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
                         <h3 class="epaper-story-headline epaper-col-head">${item.district ? `<i class="fa-solid fa-location-dot" style="font-size: 12px; color: #b91c1c; margin-right: 4px;"></i>${item.district}: ` : ''}${escapeHtml(item.title)}</h3>
@@ -191,7 +191,7 @@ function renderEpaperPage(pageNum) {
             </div>
 
             ${p3Items.slice(4, 8).length > 0 ? `
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:14px; border-top:1px dashed #cbd5e1; padding-top:12px; margin-top:12px;">
+            <div class="epaper-cards-grid" style="border-top:1px dashed #cbd5e1; padding-top:12px; margin-top:12px;">
                 ${p3Items.slice(4, 8).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
                         <h3 class="epaper-story-headline epaper-col-head">${item.district ? `<i class="fa-solid fa-location-dot" style="font-size: 12px; color: #b91c1c; margin-right: 4px;"></i>${item.district}: ` : ''}${escapeHtml(item.title)}</h3>
@@ -214,7 +214,7 @@ function renderEpaperPage(pageNum) {
                 <span>POLITICS, ECONOMY & GLOBAL</span>
             </div>
 
-            <div style="display:grid; grid-template-columns: 1.5fr 1.5fr; gap:20px;">
+            <div class="epaper-split-grid">
                 <div class="epaper-story-block" onclick="openNewsClip('${p4Lead1.id}')">
                     <h2 class="epaper-story-headline epaper-sub-head">${escapeHtml(p4Lead1.title)}</h2>
                     ${p4Lead1.image && p4Lead1.image !== 'logo.png' ? `<img src="${p4Lead1.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
@@ -232,7 +232,7 @@ function renderEpaperPage(pageNum) {
                 </div>
             </div>
 
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:14px; border-top:1px solid #111827; padding-top:14px; margin-top:16px;">
+            <div class="epaper-cards-grid" style="border-top:1px solid #111827; padding-top:14px; margin-top:16px;">
                 ${p4Items.slice(0, 4).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
                         <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-earth-americas" style="font-size: 13px; color: #0284c7; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
@@ -242,7 +242,7 @@ function renderEpaperPage(pageNum) {
             </div>
 
             ${p4Items.slice(4, 8).length > 0 ? `
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:14px; border-top:1px dashed #cbd5e1; padding-top:12px; margin-top:12px;">
+            <div class="epaper-cards-grid" style="border-top:1px dashed #cbd5e1; padding-top:12px; margin-top:12px;">
                 ${p4Items.slice(4, 8).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
                         <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-earth-americas" style="font-size: 13px; color: #0284c7; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
@@ -265,7 +265,7 @@ function renderEpaperPage(pageNum) {
                 <span>SPECIAL FEATURES & SPORTS</span>
             </div>
 
-            <div style="display:grid; grid-template-columns: 1.5fr 1.5fr; gap:20px;">
+            <div class="epaper-split-grid">
                 <div class="epaper-story-block" onclick="openNewsClip('${p5Lead1.id}')">
                     <h2 class="epaper-story-headline epaper-sub-head">${p5Lead1.category ? `[${p5Lead1.category}] ` : ''}${escapeHtml(p5Lead1.title)}</h2>
                     ${p5Lead1.image && p5Lead1.image !== 'logo.png' ? `<img src="${p5Lead1.image}" style="width:100%; height:160px; object-fit:cover; margin-bottom:8px; border-radius:3px;" alt="">` : ''}
@@ -283,7 +283,7 @@ function renderEpaperPage(pageNum) {
                 </div>
             </div>
 
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:14px; border-top:1px solid #111827; padding-top:14px; margin-top:16px;">
+            <div class="epaper-cards-grid" style="border-top:1px solid #111827; padding-top:14px; margin-top:16px;">
                 ${p5Items.slice(0, 4).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
                         <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-scale-balanced" style="font-size: 13px; color: #059669; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
@@ -293,7 +293,7 @@ function renderEpaperPage(pageNum) {
             </div>
 
             ${p5Items.slice(4, 8).length > 0 ? `
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:14px; border-top:1px dashed #cbd5e1; padding-top:12px; margin-top:12px;">
+            <div class="epaper-cards-grid" style="border-top:1px dashed #cbd5e1; padding-top:12px; margin-top:12px;">
                 ${p5Items.slice(4, 8).map(item => `
                     <div class="epaper-story-block" onclick="openNewsClip('${item.id}')">
                         <h3 class="epaper-story-headline epaper-col-head"><i class="fa-solid fa-scale-balanced" style="font-size: 13px; color: #059669; margin-right: 6px;"></i>${escapeHtml(item.title)}</h3>
@@ -402,6 +402,12 @@ function downloadFullPage() {
 
 function changeEpaperDate(val) {
     alert(`${val} তারিখের ই-পেপার লোড করা হয়েছে!`);
+    renderEpaperPage(1);
+}
+
+function changeEdition(val) {
+    const name = val === 'ctg' ? 'চট্টগ্রাম সংস্করণ' : 'ঢাকা সংস্করণ';
+    alert(`${name} লোড করা হচ্ছে!`);
     renderEpaperPage(1);
 }
 

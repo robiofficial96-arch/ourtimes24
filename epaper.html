@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ই-পেপার - আওয়ার টাইমস২৪ (E-Paper)</title>
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <link rel="stylesheet" href="style.css?v=20260913_v3">
+    <link rel="stylesheet" href="style.css?v=20260913_v4">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 </head>
 <body>
@@ -13,11 +13,11 @@
     <!-- CLEAN TOP HEADER BAR: LOGO ON LEFT & NIGHT MODE ON RIGHT -->
     <header class="top-header-bar">
         <div class="container top-header-inner">
-            <a href="/" class="top-brand-logo">
+            <a href="index.html" class="top-brand-logo">
                 <div class="top-logo-bn">আওয়ার টাইমস<span>২৪</span></div>
                 <div class="top-logo-tagline-bottom">ডিজিটাল ই-পেপার সংস্করণ</div>
             </a>
-            <a href="/" class="top-epaper-btn">
+            <a href="index.html" class="top-epaper-btn">
                 <i class="fa-solid fa-arrow-left"></i> প্রধান পোর্টাল
             </a>
         </div>
@@ -27,36 +27,39 @@
     <div class="epaper-toolbar">
         <div class="container">
             
-            <!-- Left Controls: Date & Edition -->
-            <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <label style="font-size: 13.5px; font-weight: 700;">তারিখ:</label>
-                    <input type="date" id="epaperDatePicker" class="control-input" style="padding: 5px 10px; width: auto; font-size: 13px;" value="2026-08-29" onchange="changeEpaperDate(this.value)">
+            <div class="epaper-tool-row-top">
+                <!-- Left Controls: Date & Edition -->
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <label style="font-size: 13px; font-weight: 700; color:#cbd5e1;">তারিখ:</label>
+                    <input type="date" id="epaperDatePicker" class="control-input" style="padding: 4px 8px; width: auto; font-size: 12.5px;" value="2026-08-29" onchange="changeEpaperDate(this.value)">
                 </div>
 
-                <div style="display: flex; align-items: center; gap: 6px;">
-                    <label style="font-size: 13.5px; font-weight: 700;">সংস্করণ:</label>
-                    <select class="control-select" style="padding: 5px 10px; width: auto; font-size: 13px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <select class="control-select" style="padding: 4px 8px; width: auto; font-size: 12.5px;" onchange="changeEdition(this.value)">
                         <option value="dhaka">ঢাকা সংস্করণ</option>
                         <option value="ctg">চট্টগ্রাম সংস্করণ</option>
                     </select>
+                    <button class="tool-btn btn-download-page" style="background:var(--primary); color:white; border:none; padding:5px 10px;" onclick="downloadFullPage()" title="পাতা ডাউনলোড">
+                        <i class="fa-solid fa-download"></i> <span class="d-none-mobile">পাতা ডাউনলোড</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- Center Controls: Page Switcher -->
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <button class="tool-btn" onclick="prevEpaperPage()"><i class="fa-solid fa-chevron-left"></i> আগের পাতা</button>
-                <span style="font-weight: 800; font-size: 14.5px; min-width: 90px; text-align: center;" id="currentPageIndicator">পৃষ্ঠা ১ / ৫</span>
-                <button class="tool-btn" onclick="nextEpaperPage()">পরের পাতা <i class="fa-solid fa-chevron-right"></i></button>
-            </div>
+            <div class="epaper-tool-row-bottom">
+                <!-- Center Controls: Page Switcher -->
+                <div style="display: flex; align-items: center; gap: 6px; justify-content: center; flex: 1;">
+                    <button class="tool-btn" onclick="prevEpaperPage()"><i class="fa-solid fa-chevron-left"></i> আগের পাতা</button>
+                    <span style="font-weight: 800; font-size: 14px; min-width: 85px; text-align: center;" id="currentPageIndicator">পৃষ্ঠা ১ / ৫</span>
+                    <button class="tool-btn" onclick="nextEpaperPage()">পরের পাতা <i class="fa-solid fa-chevron-right"></i></button>
+                </div>
 
-            <!-- Right Controls: Zoom & Download -->
-            <div style="display: flex; align-items: center; gap: 8px;">
-                <button class="tool-btn" onclick="zoomEpaper(0.1)" title="বড় করুন"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
-                <button class="tool-btn" onclick="zoomEpaper(-0.1)" title="ছোট করুন"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
-                <button class="tool-btn" onclick="resetEpaperZoom()" title="রিসেট">১০০%</button>
-                <button class="tool-btn" onclick="toggleEpaperFullscreen()" title="ফুলস্ক্রিন"><i class="fa-solid fa-expand"></i></button>
-                <button class="tool-btn" style="background:var(--primary); color:white; border:none;" onclick="downloadFullPage()"><i class="fa-solid fa-download"></i> পাতা ডাউনলোড</button>
+                <!-- Right Controls: Zoom & Fullscreen (Desktop Only) -->
+                <div class="tool-zoom-btn-group" style="display: flex; align-items: center; gap: 6px;">
+                    <button class="tool-btn tool-zoom-btn" onclick="zoomEpaper(0.1)" title="বড় করুন"><i class="fa-solid fa-magnifying-glass-plus"></i></button>
+                    <button class="tool-btn tool-zoom-btn" onclick="zoomEpaper(-0.1)" title="ছোট করুন"><i class="fa-solid fa-magnifying-glass-minus"></i></button>
+                    <button class="tool-btn tool-zoom-btn" onclick="resetEpaperZoom()" title="রিসেট">১০০%</button>
+                    <button class="tool-btn tool-zoom-btn" onclick="toggleEpaperFullscreen()" title="ফুলস্ক্রিন"><i class="fa-solid fa-expand"></i></button>
+                </div>
             </div>
 
         </div>
@@ -154,7 +157,7 @@
                 </div>
 
                 <!-- Action Tools -->
-                <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-top: 16px;">
+                <div class="clipping-action-tools" style="margin-top: 16px;">
                     <button class="btn-epaper-topbar" onclick="downloadClippingImage()" style="border:none; cursor:pointer; background:var(--primary); color:white; padding:8px 16px;">
                         <i class="fa-solid fa-download"></i> কাটিং ছবি ডাউনলোড
                     </button>
@@ -175,8 +178,8 @@
     </div>
 
     <!-- Scripts -->
-    <script src="news_data.js?v=20260912"></script>
-    <script src="app.js?v=20260912"></script>
-    <script src="epaper.js?v=20260912"></script>
+    <script src="news_data.js?v=20260913"></script>
+    <script src="app.js?v=20260913"></script>
+    <script src="epaper.js?v=20260913_v4"></script>
 </body>
 </html>
